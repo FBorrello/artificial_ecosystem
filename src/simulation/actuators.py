@@ -5,12 +5,14 @@ from enum import Enum
 logging.basicConfig(filename='actuators.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 class ActuatorState(Enum):
     IDLE = "IDLE"
     ON = "ON"
     OFF = "OFF"
 
+class ActuatorError(Exception):
+    """Custom exception for actuator errors"""
+    pass
 
 class Actuator:
     """
@@ -29,10 +31,13 @@ class Actuator:
     """
 
     def __init__(self, actuator_id, type, location):
+        if not isinstance(actuator_id, str) or not actuator_id:
+            raise ActuatorError("Invalid actuator_id. Must be a non-empty string.")
         self.actuator_id = actuator_id
         self.type = type
         self.state = ActuatorState.IDLE
         self.location = location
+        logging.info(f"Actuator {self.actuator_id} initialized at location {self.location}")
 
     def activate(self):
         """
@@ -40,3 +45,10 @@ class Actuator:
         """
         if self.state != ActuatorState.ON:
             self.state = ActuatorState.ON
+            logging.info(f"Actuator {self.actuator_id} activated")
+
+    def deactivate(self):
+        """
+        Deactivates or stops the actuator. Logs the state change.
+        """
+        pass

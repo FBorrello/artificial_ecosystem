@@ -2,53 +2,53 @@
 ```
 artificial_ecosystem/
 │
-├── README.md                    # Project description, setup instructions, etc.
-├── requirements.txt             # List of Python packages needed for both simulation and real-world
-├── setup.py                     # Python setup script for packaging (if needed)
+├── README.md                        # Project description, setup instructions, etc.
+├── requirements.txt                 # List of Python packages needed for both simulation and real-world
+├── setup.py                         # Python setup script for packaging (if needed)
 │
-├── src/                         # Source code for both simulation and real-world application
-│   ├── init.py              # Makes 'src' a Python package
-│   ├── main.py                  # Entry point for both simulation and real-world app
+├── src/                             # Source code for both simulation and real-world application
+│   ├── init.py                      # Makes 'src' a Python package
+│   ├── main.py                      # Entry point for both simulation and real-world app
 │   │
-│   ├── simulation/              # Simulation-specific code
+│   ├── simulation/                  # Simulation-specific code
 │   │   ├── init.py
-│   │   ├── models.py            # Models for fish, plants, environment
-│   │   ├── sensors.py           # Simulated sensor logic
-│   │   ├── actuators.py         # Simulated actuator logic
-│   │   └── visualization.py     # Visualization of the simulation
+│   │   ├── models.py                # Models for fish, plants, environment
+│   │   ├── sensors.py               # Simulated sensor logic
+│   │   ├── actuators.py             # Simulated actuator logic
+│   │   └── visualization.py         # Visualization of the simulation
 │   │
-│   ├── hardware/                # Hardware interface for real-world application
+│   ├── hardware/                    # Hardware interface for real-world application
 │   │   ├── init.py
-│   │   ├── sensors.py           # Real sensor interface
-│   │   ├── actuators.py         # Real actuator control
-│   │   └── hardware_interface.py# General hardware control logic
+│   │   ├── sensors.py               # Real sensor interface
+│   │   ├── actuators.py             # Real actuator control
+│   │   └── hardware_interface.py    # General hardware control logic
 │   │
-│   ├── common/                  # Shared logic between simulation and real-world
+│   ├── common/                      # Shared logic between simulation and real-world
 │   │   ├── init.py
-│   │   ├── ecosystem.py         # Core ecosystem logic
-│   │   └── utils.py             # Utility functions
+│   │   ├── ecosystem.py             # Core ecosystem logic
+│   │   └── utils.py                 # Utility functions
 │   │
-│   └── web/                     # Web interface
+│   └── web/                         # Web interface
 │       ├── init.py
-│       ├── app.py               # Flask or Django application
-│       └── templates/           # HTML templates for web UI
+│       ├── app.py                   # Flask or Django application
+│       └── templates/               # HTML templates for web UI
 │
-├── tests/                       # Tests for both simulation and real-world code
+├── tests/                           # Tests for both simulation and real-world code
 │   ├── init.py
-│   ├── test_simulation.py       # Tests for simulation
-│   └── test_hardware.py         # Tests for hardware interaction
+│   ├── test_simulation.py           # Tests for simulation
+│   └── test_hardware.py             # Tests for hardware interaction
 │
-├── docs/                        # Documentation
-│   ├── setup_guide.md           # How to set up both simulation and real-world environments
-│   └── api_docs.md              # API documentation if applicable
+├── docs/                            # Documentation
+│   ├── setup_guide.md               # How to set up both simulation and real-world environments
+│   └── api_docs.md                  # API documentation if applicable
 │
-├── data/                        # Data storage
-│   ├── calibration_data.json    # Example: sensor calibration data
-│   └── logs/                    # Log files from both simulation and real-world
+├── data/                            # Data storage
+│   ├── calibration_data.json        # Example: sensor calibration data
+│   └── logs/                        # Log files from both simulation and real-world
 │
-└── config/                      # Configuration files
-    ├── simulation_config.yml    # Configuration for simulation parameters
-    └── hardware_config.yml      # Configuration for real hardware connections
+└── config/                          # Configuration files
+    ├── simulation_config.yml        # Configuration for simulation parameters
+    └── hardware_config.yml          # Configuration for real hardware connections
 ```
 
 ### **Explanations and Tips:**

@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyCharm specific
+.idea/*
+*.iml
+
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Coverage.py
+.coverage
+coverage.xml
+
+# Virtual environment
+venv/
+.venv/
+
+# SQLite databases
+*.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# Miscellaneous
+.DS_Store
+*.pyc
+*.pyo
+*.swp
+*.swo
+*~

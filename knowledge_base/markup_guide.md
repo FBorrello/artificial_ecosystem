@@ -114,6 +114,57 @@ graph TD;
     C-->D;
 ```
 
+Yes, it is possible to graph flow charts using Mermaid. Mermaid is designed to generate diagrams and visualizations from text-based descriptions. Here's how you can create a flow chart using Mermaid syntax:
+
+Basic Flow Chart:
+
+```mermaid
+graph TD;
+    A[Start] --> B{Is it raining?};
+    B -- Yes --> C[Take umbrella];
+    B -- No --> D[Go outside without umbrella];
+    C --> E[Reach destination];
+    D --> E[Reach destination];
+```
+This will render a simple flow chart where:
+
+- `TD` specifies the direction of the flow from Top to Down.
+- `A`, `B`, `C`, `D`, and `E` are nodes in the flow chart.
+- `-->` and `--` are used to connect nodes. The latter with text allows for conditional or labeled edges.
+
+More Complex Flow Chart:
+You can also create more complex structures:
+
+```mermaid
+graph LR;
+    A[Choose Fruit] --> B{Is it sweet?};
+    B -- Yes --> C[Apple];
+    B -- No --> D{Is it sour?};
+    D -- Yes --> E[Lemon];
+    D -- No --> F[Banana];
+```
+
+This one goes Left to Right (`LR`) and includes decision points:
+
+Mermaid Features for Flow Charts:
+- Node Shapes: You can use square brackets for rectangles `[ ]`, curly braces for rhombus `{ }`, and parentheses for circles `( )`.
+- Direction: `TD` or `TB` for top-down, `LR` for left-right, `RL` for right-left, BT for bottom-top.
+- Links: Use `-->` for links without text, `--` Text `-->` for links with text.
+- Subgraphs: You can group nodes into subgraphs to represent different sections or components of your system.
+- Styling: You can also style edges and nodes using specific syntax or CSS.
+
+Usage Tips:
+- Environment: Mermaid works in environments that support rendering Mermaid diagrams, like GitHub READMEs, some markdown editors, or when used in conjunction with JavaScript in web projects.
+- Tools: Online editors like Mermaid Live Editor can help visualize your diagrams before integrating them into your documentation.
+
+Remember, the actual rendering depends on the platform or tool you're using. Not all markdown parsers or viewers will support Mermaid out of the box, so you might need to check compatibility or use a specific Mermaid-enabled viewer or editor.
+
+```mermaid
+graph TD;
+    A[See Data Distribution] --> B[Refer to Histogram];
+    B -->|Click for image| IMG[["<img src='path/to/histogram.png' width=300 />"]];
+```
+
 However, support for Mermaid would depend on the text platform or editor you're using; not all markdown viewers support it.
 
 4. Textual Description:

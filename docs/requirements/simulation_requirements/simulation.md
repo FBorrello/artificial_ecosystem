@@ -678,3 +678,76 @@ By following these practices, you can make the evolution of your simulation visu
 
 This approach would give you a robust simulation to predict how an aerator affects water conditions in a fish tank, allowing for better planning before hardware implementation.
 
+# Artificial Ecosystem Simulation Requirements
+
+## Introduction
+The Artificial Ecosystem project aims to simulate an ecological environment where species interact based on predefined rules, simulating natural phenomena like predation, reproduction, and environmental impact. This document outlines the software requirements for implementing this simulation in Python.
+
+## Functional Requirements
+
+### Initialization:
+- **Ecosystem Setup**: The system must initialize an ecosystem with species, their populations, and environmental parameters.
+- **Species Definition**: Each species must have attributes like size, speed, energy, reproduction rate, and dietary preferences.
+
+### Simulation Logic:
+- **Movement**: Implement movement algorithms for each species based on their characteristics and environmental conditions.
+- **Predation and Feeding**: Define rules for how species interact for feeding, including energy transfer between prey and predator.
+- **Reproduction**: Implement a mechanism where species reproduce under favorable conditions, considering factors like space and energy availability.
+- **Environmental Impact**: The simulation should account for changes in the environment affecting species' survival and behavior.
+
+### Time Management:
+- **Time Steps**: The simulation should advance through time steps, updating all relevant parameters of species and the environment at each step.
+
+### Output and Reporting:
+- **Data Collection**: Collect data on population sizes, species distribution, and key events like extinction or boom in population.
+- **Visualization**: Optionally, provide visualization of the ecosystem using libraries like Matplotlib or Pygame to show species distribution and changes over time.
+
+## Non-Functional Requirements
+
+### Performance:
+- **Efficiency**: The simulation should handle large numbers of species and environmental interactions within reasonable time frames for both simulation steps and overall run-time.
+- **Scalability**: Must be able to scale from small, simple ecosystems to more complex ones with many species and interactions.
+
+### Accuracy:
+- **Simulation Fidelity**: The system should simulate ecological dynamics with a high degree of realism, reflecting known biological and ecological principles.
+
+### Usability:
+- **User Configuration**: Allow users to set up different scenarios easily through configuration files or an interactive interface.
+- **Documentation**: Comprehensive documentation explaining how to use, configure, and extend the simulation.
+
+## Technical Requirements
+
+### Python Compatibility:
+- **Version**: Python 3.x (preferably the latest stable version for better performance and feature support).
+
+### Libraries:
+- **NumPy**: For efficient numerical computations, particularly for vector operations in species movement or population dynamics.
+- **Pandas**: For data manipulation and analysis of simulation results.
+- **Matplotlib**: For visualization purposes, if graphical output is required.
+- **Optional**: Pygame for real-time simulation visualization.
+
+### File Handling:
+- **Configuration**: Use JSON or YAML for configuration files to define initial states and parameters of the ecosystem.
+- **Data Saving**: CSV or HDF5 for storing simulation results for further analysis.
+
+## Testing and Validation
+
+### Unit Tests:
+- Develop unit tests for each module, particularly focusing on species behavior, environmental effects, and interaction logic.
+
+### Integration Tests:
+- Ensure different parts of the ecosystem (like species and environment) interact correctly over time.
+
+### Performance Testing:
+- Benchmark simulation with various ecosystem sizes to ensure performance meets requirements.
+
+## Maintenance and Support
+
+- **Version Control**: Utilize Git for code versioning, hosted on GitHub or similar platforms.
+- **Bug Tracking**: Implement a system for reporting and tracking issues, perhaps using GitHub Issues.
+- **Documentation**: Maintain up-to-date documentation using tools like Sphinx for generating Python documentation.
+
+## Deployment
+- **Environment**: Ensure the software can be run in a standard Python environment, possibly using virtual environments for dependency management.
+
+This requirements document should be revisited and refined as the project progresses, particularly if new features or insights from the simulation demand changes in the system design or functionality.

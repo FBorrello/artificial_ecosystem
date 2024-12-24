@@ -1,62 +1,64 @@
 # src/simulation/water.py
 
 class Water:
-    def __init__(self):
-        self.water_volume = []
-        self.storage_capacity = 0
+    def __init__(self, initial_nutrients, tank_capacity):
+        self.nutrients = initial_nutrients
+        self.tank_capacity = tank_capacity
+        self.current_nutrients = initial_nutrients
+        self._temperature = 25  # Default temperature in Celsius
+        self._ph = 7.0  # Neutral pH
+        self._turbidity = 0  # Clear water
+        self._viscosity = 1.0  # Default viscosity
+        self._tds = 0  # Default TDS value
 
-    def set_water_volume(self, volume):
-        """Set the water volume for each cell in the ecosystem."""
-        self.water_volume = volume
+    @property
+    def temperature(self):
+        return self._temperature
 
-    def get_water_volume(self):
-        """Return the current water volume distribution."""
-        return self.water_volume
+    @temperature.setter
+    def temperature(self, value):
+        if not (-10 <= value <= 100):
+            raise ValueError("Temperature must be between -10 and 100 degrees Celsius.")
+        self._temperature = value
 
-    def flow_water(self, terrain_map):
-        """Simulate water flow based on terrain slope."""
-        new_volume = [[0 for _ in row] for row in terrain_map]
-        for i in range(len(terrain_map)):
-            for j in range(len(terrain_map[0])):
-                if self.water_volume[i][j] > 0:
-                    # Check adjacent cells for lower elevation
-                    for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                        nx, ny = i + dx, j + dy
-                        if 0 <= nx < len(terrain_map) and 0 <= ny < len(terrain_map[0]):
-                            if terrain_map[nx][ny] < terrain_map[i][j]:
-                                # Determine flow based on elevation difference
-                                flow = self.water_volume[i][j] * 0.1  # Example flow fraction
-                                new_volume[i][j] -= flow
-                                new_volume[nx][ny] += flow
-        self.water_volume = new_volume
+    @property
+    def ph(self):
+        return self._ph
 
-    def evaporate_water(self, temperature, surface_area):
-        """Simulate evaporation of water based on temperature and surface area."""
-        evaporation_rate = temperature * surface_area * 0.001  # Simplified evaporation rate calculation
-        for i, row in enumerate(self.water_volume):
-            for j, volume in enumerate(row):
-                if volume > evaporation_rate:
-                    self.water_volume[i][j] -= evaporation_rate
+    @ph.setter
+    def ph(self, value):
+        if not (0 <= value <= 14):
+            raise ValueError("pH must be between 0 and 14.")
+        self._ph = value
 
-    def add_precipitation(self, precipitation_type, amount):
-        """Add precipitation to the ecosystem."""
-        for i, row in enumerate(self.water_volume):
-            for j, _ in enumerate(row):
-                if precipitation_type == "rain":
-                    self.water_volume[i][j] += amount
-                elif precipitation_type == "snow":
-                    # Snow accumulation, might need further logic for melting
-                    self.water_volume[i][j] += amount / 10  # Assume snow compacts to 1/10th volume
+    @property
+    def turbidity(self):
+        return self._turbidity
 
-    def update_storage_capacity(self, soil_type, structures=False):
-        """Update the water storage capacity based on soil type and structures."""
-        if soil_type == 'clay':
-            self.storage_capacity = 50  # Example capacity for clay
-        elif soil_type == 'sand':
-            self.storage_capacity = 200  # Example capacity for sand
-        if structures:
-            self.storage_capacity += 100  # Increase capacity if structures present
+    @turbidity.setter
+    def turbidity(self, value):
+        if value < 0:
+            raise ValueError("Turbidity cannot be negative.")
+        self._turbidity = value
 
-    def get_storage_capacity(self):
-        """Return the current storage capacity."""
-        return self.storage_capacity
+    @property
+    def viscosity(self):
+        return self._viscosity
+
+    @viscosity.setter
+    def viscosity(self, value):
+        if value <= 0:
+            raise ValueError("Viscosity must be positive.")
+        self._viscosity = value
+
+    @property
+    def tds(self):
+        """Get the Total Dissolved Solids (TDS) value."""
+        return self._tds
+
+    @tds.setter
+    def tds(self, value):
+        """Set the Total Dissolved Solids (TDS) value."""
+        if value < 0:
+            raise ValueError("TDS cannot be negative.")
+        self._tds = value

@@ -11,6 +11,8 @@ class TestWater(unittest.TestCase):
         self.assertEqual(water.nutrients, initial_nutrients)
         self.assertEqual(water.tank_capacity, tank_capacity)
         self.assertEqual(water.current_nutrients, initial_nutrients)
+        self.assertEqual(water.current_volume, 0, "Initial current volume should be 0")
+        self.assertEqual(water.snow_accumulation, 0, "Initial snow accumulation should be 0")
         self.assertEqual(water.temperature, 25)
         self.assertEqual(water.ph, 7.0)
         self.assertEqual(water.turbidity, 0)
@@ -151,6 +153,61 @@ class TestWaterTDS(unittest.TestCase):
         """Test setting an invalid TDS raises ValueError."""
         with self.assertRaises(ValueError, msg="Setting TDS to a negative value should raise ValueError"):
             self.water.tds = -10
+
+class TestWaterPrecipitationManagement(unittest.TestCase):
+
+    def setUp(self):
+        """Set up a Water instance for testing."""
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+
+    def test_manage_precipitation_rain(self):
+        """Test managing precipitation with rain."""
+        precipitation_type = 'rain'
+        amount = 20
+        pattern = 'steady'
+
+        initial_volume = self.water.current_volume
+        self.water.manage_precipitation(precipitation_type, amount, pattern)
+
+        expected_volume = initial_volume + amount
+        self.assertEqual(self.water.current_volume, expected_volume,
+                         "Water volume should increase by the amount of rain")
+
+    def test_manage_precipitation_snow(self):
+        """Test managing precipitation with snow."""
+        precipitation_type = 'snow'
+        amount = 10
+        pattern = 'intermittent'
+
+        # Set temperature to a value above 0 to allow snow melting
+        self.water.temperature = 5
+
+        initial_volume = self.water.current_volume
+        self.water.manage_precipitation(precipitation_type, amount, pattern)
+
+        # Calculate expected volume after snow melting
+        expected_melted_snow = min(amount, self.water.temperature)
+        expected_volume = initial_volume + expected_melted_snow
+
+        self.assertEqual(self.water.current_volume, expected_volume,
+                         "Water volume should reflect snow accumulation and melting")
+
+    def test_invalid_precipitation_type(self):
+        """Test handling of invalid precipitation type."""
+        with self.assertRaises(ValueError, msg="Invalid precipitation type should raise ValueError"):
+            self.water.manage_precipitation('hail', 10, 'steady')
+
+    def test_precipitation_exceeds_capacity(self):
+        """Test precipitation management when it exceeds tank capacity."""
+        precipitation_type = 'rain'
+        amount = 300  # Exceeds tank capacity
+        pattern = 'steady'
+
+        self.water.manage_precipitation(precipitation_type, amount, pattern)
+
+        self.assertEqual(self.water.current_volume, self.water.tank_capacity,
+                         "Water volume should not exceed tank capacity")
+
 
 if __name__ == '__main__':
     unittest.main()

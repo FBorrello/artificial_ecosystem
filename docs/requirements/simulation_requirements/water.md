@@ -25,6 +25,8 @@
   - [ ] Track water volume, ensuring it remains within capacity limits.
 
 ### 1.3 Water Quality Management
+- **Water Quality Monitoring**
+  - [X] Continuously monitor water quality parameters.
 - **Nutrient Tracking**
   - [ ] Monitor and adjust levels of key nutrients.
 - **Pollution Management**

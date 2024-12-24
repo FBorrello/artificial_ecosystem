@@ -5,6 +5,8 @@ class Water:
         self.nutrients = initial_nutrients
         self.tank_capacity = tank_capacity
         self.current_nutrients = initial_nutrients
+        self.current_volume = 0  # Initialize current volume
+        self.snow_accumulation = 0  # Initialize snow accumulation
         self._temperature = 25  # Default temperature in Celsius
         self._ph = 7.0  # Neutral pH
         self._turbidity = 0  # Clear water
@@ -62,3 +64,23 @@ class Water:
         if value < 0:
             raise ValueError("TDS cannot be negative.")
         self._tds = value
+
+    def manage_precipitation(self, precipitation_type, amount, pattern):
+        """Manage precipitation events, adjusting the water volume."""
+        if precipitation_type not in ['rain', 'snow']:
+            raise ValueError("Invalid precipitation type. Must be 'rain' or 'snow'.")
+
+        if precipitation_type == 'rain':
+            self.current_volume += amount
+        elif precipitation_type == 'snow':
+            # Accumulate snow, which will melt over time
+            self.snow_accumulation += amount
+            # Simulate melting based on temperature
+            if self.temperature > 0:  # Assume snow melts when temperature is above 0°C
+                melted_snow = min(self.snow_accumulation, self.temperature)  # Simple melting logic
+                self.current_volume += melted_snow
+                self.snow_accumulation -= melted_snow
+
+        # Ensure the current volume does not exceed the tank capacity
+        if self.current_volume > self.tank_capacity:
+            self.current_volume = self.tank_capacity

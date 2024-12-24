@@ -19,10 +19,8 @@
   - [X] Reflects acidity or alkalinity, influencing chemical reactions and biological processes.
 
 ### 1.2 Water Collection
-- **Rainfall Simulation**
-  - [ ] Simulate variable rainfall based on seasonal data or user-defined patterns.
-- **Precipitation Method**
-  - [ ] `add_precipitation(self, precipitation_type, amount)`: Adds water to the system, considering snow accumulation and melting.
+- **Precipitation Management**
+  - [ ] `manage_precipitation(self, precipitation_type, amount, pattern)`: Simulates and manages precipitation events, including variable rainfall based on seasonal data or user-defined patterns, and considers snow accumulation and melting.
 - **Storage Management**
   - [ ] Track water volume, ensuring it remains within capacity limits.
 

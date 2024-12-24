@@ -5,14 +5,14 @@
 |                              |                   | Functions                                | 9                    |
 | **Intermediate Python**      | 7.5               | Modules and Packages                     | 8                    |
 |                              |                   | File I/O                                 | 7                    |
-|                              |                   | Error Handling                           | 8                    |
-| **Advanced Python Programming** | 8.5          | Object-Oriented Programming (OOP)        | 9                    |
+|                              |                   | Error Handling                           | 8.5                  |
+| **Advanced Python Programming** | 8.5          | Object-Oriented Programming (OOP)        | 9.5                  |
 |                              |                   | Lambda Functions                         | 9                    |
 |                              |                   | Closures                                 | 7                    |
 |                              |                   | Decorators                               | 9                    |
 | **Pythonic Idioms and Best Practices** | 8.0   | List Comprehensions, Dict Comprehensions | 8                    |
 |                              |                   | Generator Expressions                    | 6                    |
-|                              |                   | PEP 8 and Code Style                     | 9                    |
+|                              |                   | PEP 8 and Code Style                     | 9.5                  |
 | **Data Structures and Algorithms** | 7.5     | Built-in Data Structures                 | 8                    |
 |                              |                   | Algorithmic Thinking                     | 7                    |
 |                              |                   | Custom Data Structures                   | 6                    |
@@ -20,7 +20,7 @@
 |                              |                   | AsyncIO and Coroutines                   | 5                    |
 |                              |                   | Multiprocessing                           | 4                    |
 |                              |                   | Metaprogramming                          | 5                    |
-|                              |                   | Testing and TDD                          | 9                    |
+|                              |                   | Testing and TDD                          | 9.5                  |
 | **Performance and Optimization** | 6.0           | Profiling and Optimization               | 6                    |
 |                              |                   | Memory Management                        | 5                    |
 | **Practical Application**    | 8.0               | Building Projects                        | 9                    |

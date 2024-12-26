@@ -4,7 +4,7 @@ import os
 import unittest
 import tempfile
 import time
-from src.data_logger import data_logger_class_decorator_factory
+from src.common.data_logger import data_logger_class_decorator_factory
 
 class MockClass:
     def __init__(self, value):

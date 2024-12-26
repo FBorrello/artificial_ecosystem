@@ -300,11 +300,83 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         self.assertEqual(self.water.current_volume, self.water.tank_capacity,
                          "Water volume should not exceed tank capacity")
 
+class TestWaterEvaporationManagement(unittest.TestCase):
+    def setUp(self):
+        """Set up a Water instance for testing."""
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+
+    @staticmethod
+    def calc_evaporation(air_temp, surface_area, rel_humidity, water_temperature, time_elapsed_sec):
+        # Constants for the Antoine equation for water
+        a_const = 8.07131
+        b_const = 1730.63
+        c_const = 233.426
+
+        # Calculate the saturation vapor pressure (SVP) of water at the given temperature
+        saturation_vapor_pressure = 10 ** (a_const - (b_const / (c_const + water_temperature)))
+
+        # Calculate the actual vapor pressure (AVP) of air
+        saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
+
+        # Coefficient for evaporation rate (this value can vary and can be influenced by air temperature)
+        k = 0.1 + 0.01 * (air_temp - water_temperature)  # Example adjustment for air temperature
+
+        # Calculate the evaporation rate
+        evaporation_rate = k * surface_area * (saturation_vapor_pressure - saturation_vapor_pressor_air)
+
+        # Calculate the total evaporation over the given time period in grams
+        time_elapsed_hours = time_elapsed_sec / 3600
+        total_evaporation_grams = evaporation_rate * time_elapsed_hours
+
+        # Convert grams to liters (1 liter = 1000 grams)
+        total_evaporation_liters = total_evaporation_grams / 1000
+
+        return total_evaporation_liters
+    
+    def test_water_evaporation(self):
+        air_temp = 20
+        surface_area = 6
+        rel_humidity = 0.5
+        water_temperature = 10
+        time_elapsed = 600
+        expected_water_evaporation = self.calc_evaporation(air_temp,
+                                                           surface_area,
+                                                           rel_humidity,
+                                                           water_temperature,
+                                                           time_elapsed)
+        self.water.temperature = water_temperature
+        water_evaporated = self.water.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
+        self.assertEqual(expected_water_evaporation, water_evaporated,
+                         "Water evaporation should be calculated correctly")
+
+    def test_water_evaporation_params_out_of_range(self):
+        properties_ranges = WaterPropertyRange.properties_ranges
+        evaporation_params = [{'param_name': 'air_temp', 'property_name': 'temperature'},
+                              {'param_name': 'surface_area', 'property_name': 'surface_area'},
+                              {'param_name': 'rel_humidity', 'property_name': 'relative_humidity'}]
+        test_cases = list()
+        for property_name, property_range in properties_ranges.items():
+            for param_dct in evaporation_params:
+                if param_dct['property_name'] == property_name:
+                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5, 'time_elapsed_sec': 600}
+                    lower_bound = property_range['lower_bound']
+                    allowed_params_values[param_dct['param_name']] = lower_bound - 1
+                    test_cases.append(allowed_params_values)
+                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5, 'time_elapsed_sec': 600}
+                    upper_bound = property_range['upper_bound']
+                    allowed_params_values[param_dct['param_name']] = upper_bound + 1
+                    test_cases.append(allowed_params_values)
+        with self.assertRaises(ValueError):
+            for test_case in test_cases:
+                self.water.evaporate(**test_case)
+
+
 class TestWaterQualityMonitor(unittest.TestCase):
     """
         Unit tests for the WaterQualityMonitor class.
 
-        This test suite includes tests for initialization, data validation, data analysis, alert generation, and output status of the WaterQualityMonitor class.
+        This test suite includes tests for initialization, data validation, data analysis, alert generation, and
+        output status of the WaterQualityMonitor class.
 
         Methods
         -------
@@ -331,10 +403,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the initialization of the WaterQualityMonitor class.
 
-                Ensures that the WaterQualityMonitor is correctly initialized with the given water property ranges and that initial alerts and status are empty.
+        Ensures that the WaterQualityMonitor is correctly initialized with the given water property ranges and
+        that initial alerts and status are empty.
 
-                Raises:
-                    AssertionError: If any of the initial values do not match the expected values.
+        Raises:
+            AssertionError: If any of the initial values do not match the expected values.
         """
         ph_range = WaterPropertyRange("ph", 6.5, 8.5)
         turbidity_range = WaterPropertyRange("turbidity", 0, 10)
@@ -352,10 +425,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the data validation functionality of the WaterQualityMonitor class.
 
-            This test checks if the WaterQualityMonitor correctly validates water quality data against predefined acceptable ranges for pH, turbidity, temperature, and TDS.
+        This test checks if the WaterQualityMonitor correctly validates water quality data against predefined
+        acceptable ranges for pH, turbidity, temperature, and TDS.
 
-            Raises:
-                AssertionError: If the data does not validate correctly.
+        Raises:
+            AssertionError: If the data does not validate correctly.
 
         """
         # Define ranges for each parameter
@@ -374,11 +448,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the water quality monitor's data validation for invalid parameter names.
 
-                This test checks that the WaterQualityMonitor raises an AttributeError when the data dictionary
-                contains a parameter name that is not recognized by the monitor.
+        This test checks that the WaterQualityMonitor raises an AttributeError when the data dictionary
+        contains a parameter name that is not recognized by the monitor.
 
-                Raises:
-                    AttributeError: If the data contains an invalid parameter name.
+        Raises:
+            AttributeError: If the data contains an invalid parameter name.
 
         """
         # Define ranges for each parameter
@@ -398,11 +472,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the water quality monitor's data validation for invalid data types.
 
-            This test checks that the WaterQualityMonitor raises a TypeError when the data contains invalid types.
-            Specifically, it verifies that a string value for 'ph' instead of a numeric value triggers the exception.
+        This test checks that the WaterQualityMonitor raises a TypeError when the data contains invalid types.
+        Specifically, it verifies that a string value for 'ph' instead of a numeric value triggers the exception.
 
-            Raises:
-                TypeError: If the data contains invalid types for any parameter.
+        Raises:
+            TypeError: If the data contains invalid types for any parameter.
 
         """
         # Define ranges for each parameter
@@ -422,9 +496,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the analyze_data method of the WaterQualityMonitor class.
 
-            This test checks if the WaterQualityMonitor correctly identifies data within acceptable limits for pH, turbidity, temperature, and TDS.
+        This test checks if the WaterQualityMonitor correctly identifies data within acceptable limits for pH,
+        turbidity, temperature, and TDS.
 
-            It initializes the WaterQualityMonitor with predefined ranges for each parameter and verifies that the analyze_data method returns True for data within these ranges.
+        It initializes the WaterQualityMonitor with predefined ranges for each parameter and verifies that
+        the analyze_data method returns True for data within these ranges.
         """
         # Define ranges for each parameter
         ph_range = WaterPropertyRange("ph", 6.5, 8.5)
@@ -442,9 +518,11 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the WaterQualityMonitor's analyze_data method for out-of-range values.
 
-            This test checks if the analyze_data method correctly identifies when the water quality data is out of the specified acceptable ranges for each parameter.
+        This test checks if the analyze_data method correctly identifies when the water quality data is out of
+        the specified acceptable ranges for each parameter.
 
-            It initializes the WaterQualityMonitor with predefined ranges for pH, turbidity, temperature, and TDS, and then verifies that the method returns False when the temperature is out of range.
+        It initializes the WaterQualityMonitor with predefined ranges for pH, turbidity, temperature, and TDS,
+        and then verifies that the method returns False when the temperature is out of range.
 
         """
         # Define ranges for each parameter
@@ -463,15 +541,17 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the water quality monitor's ability to generate alerts for out-of-range values.
 
-            This test checks if the WaterQualityMonitor correctly identifies and alerts when a parameter value is outside the specified range.
+        This test checks if the WaterQualityMonitor correctly identifies and alerts when a parameter value is outside
+        the specified range.
 
-            It sets up a WaterQualityMonitor with defined ranges for pH, turbidity, temperature, and TDS, then provides data with an out-of-range temperature value to verify that an alert is generated.
+        It sets up a WaterQualityMonitor with defined ranges for pH, turbidity, temperature, and TDS, then provides
+        data with an out-of-range temperature value to verify that an alert is generated.
 
-            Asserts:
-                - Data validation should succeed for the given data.
-                - Data analysis should fail due to out-of-range temperature.
-                - An alert should be generated for the out-of-range temperature.
-                - The alert message should correctly indicate the out-of-range parameter and its value.
+        Asserts:
+            - Data validation should succeed for the given data.
+            - Data analysis should fail due to out-of-range temperature.
+            - An alert should be generated for the out-of-range temperature.
+            - The alert message should correctly indicate the out-of-range parameter and its value.
         """
         # Define ranges for each parameter
         ph_range = WaterPropertyRange("ph", 6.5, 8.5)
@@ -510,10 +590,13 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the output status of the water quality monitor.
 
-                This test checks if the water quality monitor correctly validates and analyzes data within specified ranges for pH, turbidity, temperature, and TDS. It ensures that the monitor outputs a status without alerts when data is within acceptable ranges.
+        This test checks if the water quality monitor correctly validates and analyzes data within specified
+        ranges for pH, turbidity, temperature, and TDS. It ensures that the monitor outputs a status without alerts
+        when data is within acceptable ranges.
 
-                Raises:
-                    AssertionError: If any of the assertions fail, indicating a problem with data validation, analysis, or output status.
+        Raises:
+            AssertionError: If any of the assertions fail, indicating a problem with data validation, analysis,
+            or output status.
         """
         # Define ranges for each parameter
         ph_range = WaterPropertyRange("ph", 6.5, 8.5)
@@ -535,10 +618,13 @@ class TestWaterQualityMonitor(unittest.TestCase):
         """
         Test the water quality monitor's output status when data is out of range.
 
-            This test checks if the water quality monitor correctly identifies and handles out-of-range values for various water properties such as pH, turbidity, temperature, and TDS. It ensures that the monitor generates alerts for out-of-range values and that the output status reflects these alerts.
+            This test checks if the water quality monitor correctly identifies and handles out-of-range values for
+            various water properties such as pH, turbidity, temperature, and TDS. It ensures that the monitor
+            generates alerts for out-of-range values and that the output status reflects these alerts.
 
             Raises:
-                AssertionError: If the data validation or analysis does not behave as expected, or if the output status does not correctly reflect the alerts.
+                AssertionError: If the data validation or analysis does not behave as expected, or if the output
+                status does not correctly reflect the alerts.
         """
         # Define ranges for each parameter
         ph_range = WaterPropertyRange("ph", 6.5, 8.5)

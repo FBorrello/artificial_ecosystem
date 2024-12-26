@@ -15,12 +15,15 @@ class WaterPropertyRange:
         __repr__(): Returns a string representation of the PropertyRange object.
     """
     properties_ranges={
-        "temperature": {"lower_bound": -10, "upper_bound": 100},
+        "temperature": {"lower_bound": -30, "upper_bound": 100},
         "ph":{"lower_bound": 0, "upper_bound": 14},
-        "turbidity":{"lower_bound": 0, "upper_bound": float('inf')},
-        "viscosity":{"lower_bound": 0, "upper_bound": float('inf')},
-        "tds":{"lower_bound": 0, "upper_bound": float('inf')}
+        "turbidity":{"lower_bound": 0, "upper_bound": 1000},
+        "viscosity":{"lower_bound": 0, "upper_bound": 1.79},
+        "tds":{"lower_bound": 0, "upper_bound": 10000},
+        "surface_area": {"lower_bound": 1, "upper_bound": 10000},
+        "relative_humidity": {"lower_bound": 0, "upper_bound": 100}
     }
+
     def __init__(self, property_name, lower_bound, upper_bound):
         self.property_name = property_name
         self.lower_bound = lower_bound
@@ -82,10 +85,17 @@ class WaterPropertyRange:
             Raises:
                 ValueError: If the value is not a non-negative number or if it is not less than the upper bound.
         """
-        if not isinstance(value, (float, int)) or value < 0:
-            raise ValueError("Lower bound must be a non-negative floating-point number.")
+        if not isinstance(value, (float, int)):
+            raise ValueError("Lower bound must be a numeric value.")
         elif hasattr(self, "upper_bound") and value >= self.upper_bound:
             raise ValueError("Lower bound must be less than the upper bound.")
+
+        value_range = self.properties_ranges[self.property_name]
+        lower_bound = value_range["lower_bound"]
+        upper_bound = value_range["upper_bound"]
+        if not lower_bound <= value <= upper_bound:
+            raise ValueError(f"Lower bound must be between {lower_bound} and {upper_bound} for {self.property_name}.")
+
         self._lower_bound = value
 
     @property
@@ -114,6 +124,13 @@ class WaterPropertyRange:
             raise ValueError("Upper bound must be a non-negative floating-point number.")
         elif hasattr(self, "lower_bound") and value <= self.lower_bound:
             raise ValueError("Upper bound must be greater than the lower bound.")
+
+        value_range = self.properties_ranges[self.property_name]
+        lower_bound = value_range["lower_bound"]
+        upper_bound = value_range["upper_bound"]
+        if not lower_bound <= value <= upper_bound:
+            raise ValueError(f"Upper bound must be between {lower_bound} and {upper_bound} for {self.property_name}.")
+
         self._upper_bound = value
 
     def __repr__(self):
@@ -138,8 +155,8 @@ class Water:
 
     @temperature.setter
     def temperature(self, value):
-        if not (-10 <= value <= 100):
-            raise ValueError("Temperature must be between -10 and 100 degrees Celsius.")
+        if not (0 <= value <= 100):
+            raise ValueError("Temperature must be between 0 and 100 degrees Celsius.")
         self._temperature = value
 
     @property
@@ -203,6 +220,62 @@ class Water:
         # Ensure the current volume does not exceed the tank capacity
         if self.current_volume > self.tank_capacity:
             self.current_volume = self.tank_capacity
+
+    def evaporate(self,
+                  air_temp: int|float,
+                  surface_area: int | float,
+                  rel_humidity: int|float,
+                  time_elapsed_sec: int) -> int | float:
+        if not isinstance(air_temp, (int, float)):
+            raise TypeError("Air temperature must be a numeric value.")
+        air_temp_range = WaterPropertyRange("temperature", -10, 50)
+        if air_temp_range.lower_bound > air_temp or air_temp_range.upper_bound < air_temp:
+            raise ValueError(f"Air temperature must be between {air_temp_range.lower_bound} "
+                             f"and {air_temp_range.upper_bound} degrees Celsius.")
+
+        if not isinstance(surface_area, (int, float)):
+            raise TypeError("Surface area must be a numeric value.")
+        surface_are_range = WaterPropertyRange("surface_area", 1, 100)
+        if surface_are_range.lower_bound > surface_area or surface_are_range.upper_bound < surface_area:
+            raise ValueError(f"Surface area must be between {surface_are_range.lower_bound} "
+                             f"and {surface_are_range.upper_bound} square meters.")
+
+        if not isinstance(rel_humidity, (int, float)):
+            raise TypeError("Relative humidity must be a numeric value.")
+        rel_humidity_range = WaterPropertyRange("relative_humidity", 0, 100)
+        if rel_humidity_range.lower_bound > rel_humidity or rel_humidity_range.upper_bound < rel_humidity:
+            raise ValueError(f"Relative humidity must be between {rel_humidity_range.lower_bound} "
+                             f"and {rel_humidity_range.upper_bound} percent.")
+
+        if not isinstance(time_elapsed_sec, (int, float)):
+            raise TypeError("Time must be a numeric value.")
+
+        # Constants for the Antoine equation for water
+        a_const = 8.07131
+        b_const = 1730.63
+        c_const = 233.426
+
+        # Calculate the saturation vapor pressure (SVP) of water at the given temperature
+        saturation_vapor_pressure = 10 ** (a_const - (b_const / (c_const + self.temperature)))
+
+        # Calculate the actual vapor pressure (AVP) of air
+        saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
+
+        # Coefficient for evaporation rate (this value can vary and can be influenced by air temperature)
+        k = 0.1 + 0.01 * (air_temp - self.temperature)
+
+        # Calculate the evaporation rate
+        evaporation_rate = k * surface_area * (saturation_vapor_pressure - saturation_vapor_pressor_air)
+
+        # Calculate the total evaporation over the given time period in grams
+        time_elapsed_hours = time_elapsed_sec / 3600
+        total_evaporation_grams = evaporation_rate * time_elapsed_hours
+
+        # Convert grams to liters (1 liter = 1000 grams)
+        total_evaporation_liters = total_evaporation_grams / 1000
+
+        return total_evaporation_liters
+
 
 class WaterQualityMonitor:
     """

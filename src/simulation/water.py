@@ -132,365 +132,6 @@ class WaterPropertyRange:
     def __repr__(self):
         return f"{self.property_name.capitalize()}_range(lower={self.lower_bound}, upper={self.upper_bound})"
 
-class Water:
-    def __init__(self, initial_nutrients, tank_capacity):
-        self.nutrients = initial_nutrients
-        self.tank_capacity = tank_capacity
-        self.current_nutrients = initial_nutrients
-        self.current_volume = 0  # Initialize current volume
-        self.snow_accumulation = 0  # Initialize snow accumulation
-        self._temperature = 25  # Default temperature in Celsius
-        self._ph = 7.0  # Neutral pH
-        self._turbidity = 0  # Clear water
-        self._viscosity = 1.0  # Default viscosity
-        self._tds = 0  # Default TDS value
-
-    @property
-    def temperature(self):
-        """
-        Get the current temperature of the water.
-
-        This property returns the temperature value, expressed in degrees Celsius.
-        The temperature of the water affects various properties and behaviors,
-        such as snow melting in precipitation management and evaporation rates.
-        It is constrained to typical physical bounds (e.g., 0-100°C) in the class
-        via its setter method.
-
-        Returns:
-            float: The current temperature of the water in degrees Celsius.
-        """
-        return self._temperature
-
-    @temperature.setter
-    def temperature(self, value):
-        """
-        Setter for the `temperature` property that assigns a value to the private `_temperature` attribute.
-
-        Validates that the provided temperature is within an acceptable range (0 to 100 degrees Celsius).
-        If the value falls outside this range, it raises a `ValueError`.
-
-        Parameters:
-            value (int | float): The temperature value to set (must be between 0 and 100).
-
-        Raises:
-            ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
-            TypeError: If the provided value is not a numeric type (int or float).
-        """
-        if not (0 <= value <= 100):
-            raise ValueError("Temperature must be between 0 and 100 degrees Celsius.")
-        elif not isinstance(value, (int, float)):
-            raise TypeError("Temperature must be a numeric value.")
-        self._temperature = value
-
-    @property
-    def ph(self):
-        """
-        Get the pH level of the water.
-
-        The pH level is a measure of how acidic or basic the water is,
-        with values ranging from 0 (very acidic) to 14 (very basic). A
-        typical default value for pH in this context is 7.0, representing
-        neutral water.
-
-        Returns:
-            float: The current pH level of the water.
-        """
-        return self._ph
-
-    @ph.setter
-    def ph(self, value):
-        """
-        Sets the value of the pH level of the water.
-
-        Validates that the pH value is within the permissible range of 0 to 14.
-        If the value is outside this range, a ValueError is raised.
-
-        Parameters:
-            value (int | float): The desired pH level to set. Must be between 0 and 14.
-
-        Raises:
-            ValueError: If the provided pH value is not within the range of 0 to 14.
-            TypeError: If the provided value is not a numeric type (int or float).
-        """
-        if not (0 <= value <= 14):
-            raise ValueError("pH must be between 0 and 14.")
-        if not isinstance(value, (int, float)):
-            raise TypeError("pH must be a numeric value.")
-        self._ph = value
-
-    @property
-    def turbidity(self):
-        """
-        Represents the turbidity level of the water.
-
-        Turbidity refers to the cloudiness or haziness of a liquid caused by large numbers
-        of individual particles. It is typically measured in NTU (Nephelometric Turbidity Units).
-
-        Returns:
-            int or float: The current turbidity value of the water. The value must fall within
-            the valid range defined in the application (e.g., 0 to 1000).
-        """
-        return self._turbidity
-
-    @turbidity.setter
-    def turbidity(self, value):
-        """
-        Sets the turbidity of the water.
-
-        The turbidity represents the cloudiness or haziness of the water, which is
-        typically measured in NTU (Nephelometric Turbidity Units). This setter
-        ensures that the turbidity value is not negative, as turbidity values
-        below zero are invalid.
-
-        Args:
-            value (float | int): The turbidity value to set. Must be greater than or equal to 0.
-
-        Raises:
-            ValueError: If the turbidity value is negative.
-            TypeError: If the provided value is not a numeric type (int or float).
-        """
-        if value < 0:
-            raise ValueError("Turbidity cannot be negative.")
-        elif not isinstance(value, (int, float)):
-            raise TypeError("Turbidity must be a numeric value.")
-        self._turbidity = value
-
-    @property
-    def viscosity(self):
-        """
-        Retrieve the current viscosity of the water.
-
-        Viscosity is a measure of the water's resistance to flow, which can be influenced by
-        various factors such as temperature and the presence of dissolved substances.
-        This property stores the current viscosity value, which is typically positive.
-
-        Returns:
-            float: The current viscosity of the water.
-        """
-        return self._viscosity
-
-    @viscosity.setter
-    def viscosity(self, value):
-        """
-        Sets the viscosity value for the Water object.
-
-        This method ensures that the input is a valid positive numeric value
-        as viscosity cannot be negative or zero. It raises an exception if
-        the input value violates the constraints.
-
-        Args:
-            value (int | float): The new viscosity value to be set.
-
-        Raises:
-            ValueError: If the viscosity value is non-positive (<= 0).
-            TypeError: If the viscosity value is not a numeric type (int or float).
-
-        Example:
-            water = Water(50, 100)
-            water.viscosity = 1.0  # Valid
-            water.viscosity = 0    # Raises ValueError
-            water.viscosity = "a"  # Raises TypeError
-        """
-        if value <= 0:
-            raise ValueError("Viscosity must be positive.")
-        elif not isinstance(value, (int, float)):
-            raise TypeError("Viscosity must be a numeric value.")
-        self._viscosity = value
-
-    @property
-    def tds(self):
-        """
-        Get the current Total Dissolved Solids (TDS) of the water.
-
-        This property represents the concentration of dissolved substances
-        (e.g., minerals, salts, and organic matter) in the water, measured in ppm (parts per million).
-        """
-        return self._tds
-
-    @tds.setter
-    def tds(self, value):
-        """
-        Setter method for the Total Dissolved Solids (TDS) attribute.
-
-        This method sets the TDS value for the water instance. TDS represents
-        the concentration of dissolved solids in the water, measured in units
-        like ppm (parts per million).
-
-        Validations:
-        - The TDS value must be numeric (either an integer or a float).
-        - The TDS value cannot be negative.
-
-        Args:
-            value (int | float): The new TDS value to be set.
-
-        Raises:
-            ValueError: If the provided TDS value is negative.
-            TypeError: If the provided TDS value is not numeric.
-        """
-        if value < 0:
-            raise ValueError("TDS cannot be negative.")
-        elif not isinstance(value, (int, float)):
-            raise TypeError("TDS must be a numeric value.")
-        self._tds = value
-
-    def manage_precipitation(self, precipitation_type: str, amount: int, pattern: str = 'steady'):
-        """
-        Manages the effect of precipitation (rain or snow) on the water system.
-
-        This method adjusts the current water volume based on the precipitation type,
-        amount, and other environmental factors like temperature, which impacts snow melting.
-        Rain directly increases the water volume, while snow accumulates and melts
-        depending on the temperature.
-
-        Parameters:
-            precipitation_type (str): The type of precipitation ('rain' or 'snow').
-            amount (float): The amount of precipitation received (in liters or appropriate unit).
-            pattern (str): The pattern of precipitation (e.g., 'steady', 'intermittent').
-                           [Note: Currently unused, provided for potential future use.]
-
-        Raises:
-            ValueError: If precipitation_type is not 'rain' or 'snow'.
-
-        Notes:
-            - Precipitation will not cause the water volume to exceed the tank capacity.
-            - Snow melting is simulated by assuming snow melts at a rate corresponding to
-              the temperature, provided the temperature is above 0°C.
-        """
-        # Validate precipitation type
-        if precipitation_type not in ['rain', 'snow']:
-            raise ValueError("Invalid precipitation type. Must be 'rain' or 'snow'.")
-        elif not isinstance(precipitation_type, str):
-            raise TypeError("Precipitation type must be a string.")
-
-        # Validate amount
-        if not isinstance(amount, (int, float)):
-            raise TypeError("Amount must be a numeric value.")
-        elif amount < 0:
-            raise ValueError("Amount must be non-negative.")
-
-        # Validate pattern
-        if pattern not in ['steady', 'intermittent']:
-            raise ValueError("Invalid pattern. Must be 'steady' or 'intermittent'.")
-        elif not isinstance(pattern, str):
-            raise TypeError("Pattern must be a string.")
-
-        # Handle rain: directly add the amount to the current water volume
-        if precipitation_type == 'rain' and pattern == 'steady':
-            self.current_volume += amount
-        elif precipitation_type == 'rain' and pattern == 'intermittent':
-            self.current_volume += amount * 0.5
-
-        # Handle snow: accumulate and consider melting based on temperature
-        elif precipitation_type == 'snow':
-            # Snow accumulates in a separate variable
-            self.snow_accumulation += amount
-
-            # Simulate snow melting if temperature is above 0°C
-            if self.temperature > 0:  # Snow melts at temperatures greater than 0°C
-                # Determine the amount of snow that melts
-                melting_rate = int(self.temperature ** 2)  # Quadratic relation
-                melted_snow = min(self.snow_accumulation, melting_rate)
-
-                # Add the melted snow to the current water volume
-                self.current_volume += melted_snow
-
-                # Subtract the melted snow from the remaining snow accumulation
-                self.snow_accumulation -= melted_snow
-
-        # Ensure the current water volume does not exceed the tank's capacity
-        if self.current_volume > self.tank_capacity:
-            self.current_volume = self.tank_capacity
-
-    def evaporate(self,
-                  air_temp: int | float,
-                  surface_area: int | float,
-                  rel_humidity: int | float,
-                  time_elapsed_sec: int) -> int | float:
-        """
-        Calculate the amount of water evaporated over a given time period.
-
-        This method estimates the amount of water evaporated, in liters, based on
-        air temperature, surface area, relative humidity, and elapsed time. It uses
-        the Antoine equation to calculate the vapor pressure of water and factors
-        in external environmental conditions to determine the evaporation rate.
-
-        Parameters:
-            air_temp (int | float): The air temperature in degrees Celsius.
-                                    Must be between -10 and 50.
-            surface_area (int | float): The surface area of the water exposed to air, in square meters.
-                                         Must be between 1 and 100.
-            rel_humidity (int | float): The relative humidity of the surrounding air, as a percentage.
-                                        Must be between 0 and 100.
-            time_elapsed_sec (int): The total time elapsed for evaporation, in seconds.
-
-        Returns:
-            int | float: The total amount of water evaporated, in liters.
-
-        Raises:
-            TypeError: If any input parameter is not numeric.
-            ValueError: If any input parameter is outside the acceptable range.
-        """
-        # Validate that air_temp is a numeric value and within the acceptable range (-10 to 50 degrees Celsius)
-        if not isinstance(air_temp, (int, float)):
-            raise TypeError("Air temperature must be a numeric value.")
-        air_temp_range = WaterPropertyRange("temperature", -10, 50)
-        if air_temp_range.lower_bound > air_temp or air_temp_range.upper_bound < air_temp:
-            raise ValueError(f"Air temperature must be between {air_temp_range.lower_bound} "
-                             f"and {air_temp_range.upper_bound} degrees Celsius.")
-
-        # Validate that surface_area is numeric and within the acceptable range (1 to 100 square meters)
-        if not isinstance(surface_area, (int, float)):
-            raise TypeError("Surface area must be a numeric value.")
-        surface_are_range = WaterPropertyRange("surface_area", 1, 100)
-        if surface_are_range.lower_bound > surface_area or surface_are_range.upper_bound < surface_area:
-            raise ValueError(f"Surface area must be between {surface_are_range.lower_bound} "
-                             f"and {surface_are_range.upper_bound} square meters.")
-
-        # Validate that rel_humidity is numeric and within the range (0 to 100 percent)
-        if not isinstance(rel_humidity, (int, float)):
-            raise TypeError("Relative humidity must be a numeric value.")
-        rel_humidity_range = WaterPropertyRange("relative_humidity", 0, 100)
-        if rel_humidity_range.lower_bound > rel_humidity or rel_humidity_range.upper_bound < rel_humidity:
-            raise ValueError(f"Relative humidity must be between {rel_humidity_range.lower_bound} "
-                             f"and {rel_humidity_range.upper_bound} percent.")
-
-        # Validate that time_elapsed_sec is a numeric value
-        if not isinstance(time_elapsed_sec, (int, float)):
-            raise TypeError("Time must be a numeric value.")
-
-        # Constants for the Antoine equation for water (used for calculating vapor pressure)
-        a_const = 8.07131
-        b_const = 1730.63
-        c_const = 233.426
-
-        # Calculate the saturation vapor pressure (SVP) of water using the Antoine equation
-        # SVP is the maximum pressure exerted by water vapor at the current water temperature
-        saturation_vapor_pressure = 10 ** (a_const - (b_const / (c_const + self.temperature)))
-
-        # Calculate the actual vapor pressure (AVP) of air using relative humidity
-        # AVP accounts for the water vapor already present in the air
-        saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
-
-        # Evaporation rate coefficient (k) varies depending on air temperature relative to water temperature
-        k = 0.1 + 0.01 * (air_temp - self.temperature)
-
-        # Calculate the evaporation rate in grams per hour
-        # This is determined by the difference between SVP and AVP, the surface area, and the coefficient
-        evaporation_rate = k * surface_area * (saturation_vapor_pressure - saturation_vapor_pressor_air)
-
-        # Convert the elapsed time from seconds to hours (as evaporation rate is in grams/hour)
-        time_elapsed_hours = time_elapsed_sec / 3600
-
-        # Calculate total water evaporated in grams over the given time period
-        total_evaporation_grams = evaporation_rate * time_elapsed_hours
-
-        # Convert the total evaporation from grams to liters (1 liter = 1000 grams)
-        total_evaporation_liters = total_evaporation_grams / 1000
-
-        # Return the total evaporation in liters
-        return total_evaporation_liters
-
-
 class WaterQualityMonitor:
     """
     A class to monitor water quality by analyzing various water properties such as pH, turbidity, temperature, and TDS (Total Dissolved Solids).
@@ -750,3 +391,415 @@ class WaterQualityMonitor:
             The status attribute of the object.
         """
         return self.status
+
+class Water:
+    def __init__(self, initial_nutrients, tank_capacity):
+        self.nutrients = initial_nutrients
+        self.tank_capacity = tank_capacity
+        self.current_nutrients = initial_nutrients
+        self.current_volume = 0  # Initialize current volume
+        self.snow_accumulation = 0  # Initialize snow accumulation
+        self._temperature = 25  # Default temperature in Celsius
+        self._ph = 7.0  # Neutral pH
+        self._turbidity = 0  # Clear water
+        self._viscosity = 1.0  # Default viscosity
+        self._tds = 0  # Default TDS value
+
+    @property
+    def temperature(self):
+        """
+        Get the current temperature of the water.
+
+        This property returns the temperature value, expressed in degrees Celsius.
+        The temperature of the water affects various properties and behaviors,
+        such as snow melting in precipitation management and evaporation rates.
+        It is constrained to typical physical bounds (e.g., 0-100°C) in the class
+        via its setter method.
+
+        Returns:
+            float: The current temperature of the water in degrees Celsius.
+        """
+        return self._temperature
+
+    @temperature.setter
+    def temperature(self, value):
+        """
+        Setter for the `temperature` property that assigns a value to the private `_temperature` attribute.
+
+        Validates that the provided temperature is within an acceptable range (0 to 100 degrees Celsius).
+        If the value falls outside this range, it raises a `ValueError`.
+        
+        Updates the `viscosity` attribute based on the new temperature value.
+
+        Parameters:
+            value (int | float): The temperature value to set (must be between 0 and 100).
+
+        Raises:
+            ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
+            TypeError: If the provided value is not a numeric type (int or float).
+        """
+        if not (0 <= value <= 100):
+            raise ValueError("Temperature must be between 0 and 100 degrees Celsius.")
+        elif not isinstance(value, (int, float)):
+            raise TypeError("Temperature must be a numeric value.")
+        self._temperature = value
+        self.update_water_viscosity()
+
+    @property
+    def ph(self):
+        """
+        Get the pH level of the water.
+
+        The pH level is a measure of how acidic or basic the water is,
+        with values ranging from 0 (very acidic) to 14 (very basic). A
+        typical default value for pH in this context is 7.0, representing
+        neutral water.
+
+        Returns:
+            float: The current pH level of the water.
+        """
+        return self._ph
+
+    @ph.setter
+    def ph(self, value):
+        """
+        Sets the value of the pH level of the water.
+
+        Validates that the pH value is within the permissible range of 0 to 14.
+        If the value is outside this range, a ValueError is raised.
+
+        Parameters:
+            value (int | float): The desired pH level to set. Must be between 0 and 14.
+
+        Raises:
+            ValueError: If the provided pH value is not within the range of 0 to 14.
+            TypeError: If the provided value is not a numeric type (int or float).
+        """
+        if not (0 <= value <= 14):
+            raise ValueError("pH must be between 0 and 14.")
+        if not isinstance(value, (int, float)):
+            raise TypeError("pH must be a numeric value.")
+        self._ph = value
+
+    @property
+    def turbidity(self):
+        """
+        Represents the turbidity level of the water.
+
+        Turbidity refers to the cloudiness or haziness of a liquid caused by large numbers
+        of individual particles. It is typically measured in NTU (Nephelometric Turbidity Units).
+
+        Returns:
+            int or float: The current turbidity value of the water. The value must fall within
+            the valid range defined in the application (e.g., 0 to 1000).
+        """
+        return self._turbidity
+
+    @turbidity.setter
+    def turbidity(self, value):
+        """
+        Sets the turbidity of the water.
+
+        The turbidity represents the cloudiness or haziness of the water, which is
+        typically measured in NTU (Nephelometric Turbidity Units). This setter
+        ensures that the turbidity value is not negative, as turbidity values
+        below zero are invalid.
+
+        Args:
+            value (float | int): The turbidity value to set. Must be greater than or equal to 0.
+
+        Raises:
+            ValueError: If the turbidity value is negative.
+            TypeError: If the provided value is not a numeric type (int or float).
+        """
+        if value < 0:
+            raise ValueError("Turbidity cannot be negative.")
+        elif not isinstance(value, (int, float)):
+            raise TypeError("Turbidity must be a numeric value.")
+        self._turbidity = value
+
+    @property
+    def viscosity(self):
+        """
+        Retrieve the current viscosity of the water.
+
+        Viscosity is a measure of the water's resistance to flow, which can be influenced by
+        various factors such as temperature and the presence of dissolved substances.
+        This property stores the current viscosity value, which is typically positive.
+
+        Returns:
+            float: The current viscosity of the water.
+        """
+        return self._viscosity
+
+    @viscosity.setter
+    def viscosity(self, value):
+        """
+        Sets the viscosity value for the Water object.
+
+        This method ensures that the input is a valid positive numeric value
+        as viscosity cannot be negative or zero. It raises an exception if
+        the input value violates the constraints.
+
+        Args:
+            value (int | float): The new viscosity value to be set.
+
+        Raises:
+            ValueError: If the viscosity value is non-positive (<= 0).
+            TypeError: If the viscosity value is not a numeric type (int or float).
+
+        Example:
+            water = Water(50, 100)
+            water.viscosity = 1.0  # Valid
+            water.viscosity = 0    # Raises ValueError
+            water.viscosity = "a"  # Raises TypeError
+        """
+        if value <= 0:
+            raise ValueError("Viscosity must be positive and non-zero.")
+        elif not isinstance(value, (int, float)):
+            raise TypeError("Viscosity must be a numeric value.")
+        self._viscosity = value
+
+    @property
+    def tds(self):
+        """
+        Get the current Total Dissolved Solids (TDS) of the water.
+
+        This property represents the concentration of dissolved substances
+        (e.g., minerals, salts, and organic matter) in the water, measured in ppm (parts per million).
+        """
+        return self._tds
+
+    @tds.setter
+    def tds(self, value):
+        """
+        Setter method for the Total Dissolved Solids (TDS) attribute.
+
+        This method sets the TDS value for the water instance. TDS represents
+        the concentration of dissolved solids in the water, measured in units
+        like ppm (parts per million).
+        
+        Updates the `viscosity` attribute based on the new TDS value.
+
+        Validations:
+        - The TDS value must be numeric (either an integer or a float).
+        - The TDS value cannot be negative.
+
+        Args:
+            value (int | float): The new TDS value to be set.
+
+        Raises:
+            ValueError: If the provided TDS value is negative.
+            TypeError: If the provided TDS value is not numeric.
+        """
+        if value < 0:
+            raise ValueError("TDS cannot be negative.")
+        elif not isinstance(value, (int, float)):
+            raise TypeError("TDS must be a numeric value.")
+        self._tds = value
+        self.update_water_viscosity()
+
+    def update_water_viscosity(self):
+        """
+        Update the viscosity of the water based on temperature and TDS (Total Dissolved Solids).
+    
+        This method calculates the water viscosity using a simplified formula that incorporates
+        the effects of temperature and TDS concentration. The temperature affects the viscosity
+        inversely, while the TDS concentration adds directly to it. The method ensures that 
+        viscosity never drops below a small positive threshold (0.1) to prevent invalid values.
+    
+        Effects:
+            - Updates `self.viscosity` based on the calculated value.
+    
+        Formula:
+            new_viscosity = reference_viscosity * (1 - temperature_coefficient * (self.temperature - temperature_reference))
+                            + (tds_coefficient * self.tds)
+    
+        Constants:
+            - reference_viscosity (float): The viscosity of water at a reference temperature (25°C).
+            - temperature_reference (int): The reference temperature for calculation (25°C).
+            - temperature_coefficient (float): The constant determining the sensitivity of viscosity to temperature.
+            - tds_coefficient (float): The constant determining the sensitivity of viscosity to TDS concentration.
+    
+        Raises:
+            - No exceptions are expected from this method.
+    
+        Returns:
+            None
+        """
+        # Reference temperature
+        temperature_reference = 25
+
+        # Temperature impact constant
+        temperature_coefficient = 0.02
+        temperature_component = 1 - temperature_coefficient * (self.temperature - temperature_reference)
+
+        # TDS impact constant
+        tds_coefficient = 0.0005
+        tds_component = tds_coefficient * self.tds
+
+        # Reference viscosity for water at 25°C
+        reference_viscosity = 1.0
+
+        # Calculate viscosity using the simplified formula
+        new_viscosity = reference_viscosity * temperature_component + tds_component
+
+        # Ensure viscosity never goes below a small threshold to prevent invalid values
+        self.viscosity = max(new_viscosity, 0.1)
+
+    def manage_precipitation(self, precipitation_type: str, amount: int, pattern: str = 'steady'):
+        """
+        Manages the effect of precipitation (rain or snow) on the water system.
+
+        This method adjusts the current water volume based on the precipitation type,
+        amount, and other environmental factors like temperature, which impacts snow melting.
+        Rain directly increases the water volume, while snow accumulates and melts
+        depending on the temperature.
+
+        Parameters:
+            precipitation_type (str): The type of precipitation ('rain' or 'snow').
+            amount (float): The amount of precipitation received (in liters or appropriate unit).
+            pattern (str): The pattern of precipitation (e.g., 'steady', 'intermittent').
+                           [Note: Currently unused, provided for potential future use.]
+
+        Raises:
+            ValueError: If precipitation_type is not 'rain' or 'snow'.
+
+        Notes:
+            - Precipitation will not cause the water volume to exceed the tank capacity.
+            - Snow melting is simulated by assuming snow melts at a rate corresponding to
+              the temperature, provided the temperature is above 0°C.
+        """
+        # Validate precipitation type
+        if precipitation_type not in ['rain', 'snow']:
+            raise ValueError("Invalid precipitation type. Must be 'rain' or 'snow'.")
+        elif not isinstance(precipitation_type, str):
+            raise TypeError("Precipitation type must be a string.")
+
+        # Validate amount
+        if not isinstance(amount, (int, float)):
+            raise TypeError("Amount must be a numeric value.")
+        elif amount < 0:
+            raise ValueError("Amount must be non-negative.")
+
+        # Validate pattern
+        if pattern not in ['steady', 'intermittent']:
+            raise ValueError("Invalid pattern. Must be 'steady' or 'intermittent'.")
+        elif not isinstance(pattern, str):
+            raise TypeError("Pattern must be a string.")
+
+        # Handle rain: directly add the amount to the current water volume
+        if precipitation_type == 'rain' and pattern == 'steady':
+            self.current_volume += amount
+        elif precipitation_type == 'rain' and pattern == 'intermittent':
+            self.current_volume += amount * 0.5
+
+        # Handle snow: accumulate and consider melting based on temperature
+        elif precipitation_type == 'snow':
+            # Snow accumulates in a separate variable
+            self.snow_accumulation += amount
+
+            # Simulate snow melting if temperature is above 0°C
+            if self.temperature > 0:  # Snow melts at temperatures greater than 0°C
+                # Determine the amount of snow that melts
+                melting_rate = int(self.temperature ** 2)  # Quadratic relation
+                melted_snow = min(self.snow_accumulation, melting_rate)
+
+                # Add the melted snow to the current water volume
+                self.current_volume += melted_snow
+
+                # Subtract the melted snow from the remaining snow accumulation
+                self.snow_accumulation -= melted_snow
+
+        # Ensure the current water volume does not exceed the tank's capacity
+        if self.current_volume > self.tank_capacity:
+            self.current_volume = self.tank_capacity
+
+    def evaporate(self,
+                  air_temp: int | float,
+                  surface_area: int | float,
+                  rel_humidity: int | float,
+                  time_elapsed_sec: int) -> int | float:
+        """
+        Calculate the amount of water evaporated over a given time period.
+
+        This method estimates the amount of water evaporated, in liters, based on
+        air temperature, surface area, relative humidity, and elapsed time. It uses
+        the Antoine equation to calculate the vapor pressure of water and factors
+        in external environmental conditions to determine the evaporation rate.
+
+        Parameters:
+            air_temp (int | float): The air temperature in degrees Celsius.
+                                    Must be between -10 and 50.
+            surface_area (int | float): The surface area of the water exposed to air, in square meters.
+                                         Must be between 1 and 100.
+            rel_humidity (int | float): The relative humidity of the surrounding air, as a percentage.
+                                        Must be between 0 and 100.
+            time_elapsed_sec (int): The total time elapsed for evaporation, in seconds.
+
+        Returns:
+            int | float: The total amount of water evaporated, in liters.
+
+        Raises:
+            TypeError: If any input parameter is not numeric.
+            ValueError: If any input parameter is outside the acceptable range.
+        """
+        # Validate that air_temp is a numeric value and within the acceptable range (-10 to 50 degrees Celsius)
+        if not isinstance(air_temp, (int, float)):
+            raise TypeError("Air temperature must be a numeric value.")
+        air_temp_range = WaterPropertyRange("temperature", -10, 50)
+        if air_temp_range.lower_bound > air_temp or air_temp_range.upper_bound < air_temp:
+            raise ValueError(f"Air temperature must be between {air_temp_range.lower_bound} "
+                             f"and {air_temp_range.upper_bound} degrees Celsius.")
+
+        # Validate that surface_area is numeric and within the acceptable range (1 to 100 square meters)
+        if not isinstance(surface_area, (int, float)):
+            raise TypeError("Surface area must be a numeric value.")
+        surface_are_range = WaterPropertyRange("surface_area", 1, 100)
+        if surface_are_range.lower_bound > surface_area or surface_are_range.upper_bound < surface_area:
+            raise ValueError(f"Surface area must be between {surface_are_range.lower_bound} "
+                             f"and {surface_are_range.upper_bound} square meters.")
+
+        # Validate that rel_humidity is numeric and within the range (0 to 100 percent)
+        if not isinstance(rel_humidity, (int, float)):
+            raise TypeError("Relative humidity must be a numeric value.")
+        rel_humidity_range = WaterPropertyRange("relative_humidity", 0, 100)
+        if rel_humidity_range.lower_bound > rel_humidity or rel_humidity_range.upper_bound < rel_humidity:
+            raise ValueError(f"Relative humidity must be between {rel_humidity_range.lower_bound} "
+                             f"and {rel_humidity_range.upper_bound} percent.")
+
+        # Validate that time_elapsed_sec is a numeric value
+        if not isinstance(time_elapsed_sec, (int, float)):
+            raise TypeError("Time must be a numeric value.")
+
+        # Constants for the Antoine equation for water (used for calculating vapor pressure)
+        a_const = 8.07131
+        b_const = 1730.63
+        c_const = 233.426
+
+        # Calculate the saturation vapor pressure (SVP) of water using the Antoine equation
+        # SVP is the maximum pressure exerted by water vapor at the current water temperature
+        saturation_vapor_pressure = 10 ** (a_const - (b_const / (c_const + self.temperature)))
+
+        # Calculate the actual vapor pressure (AVP) of air using relative humidity
+        # AVP accounts for the water vapor already present in the air
+        saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
+
+        # Evaporation rate coefficient (k) varies depending on air temperature relative to water temperature
+        k = 0.1 + 0.01 * (air_temp - self.temperature)
+
+        # Calculate the evaporation rate in grams per hour
+        # This is determined by the difference between SVP and AVP, the surface area, and the coefficient
+        evaporation_rate = k * surface_area * (saturation_vapor_pressure - saturation_vapor_pressor_air)
+
+        # Convert the elapsed time from seconds to hours (as evaporation rate is in grams/hour)
+        time_elapsed_hours = time_elapsed_sec / 3600
+
+        # Calculate total water evaporated in grams over the given time period
+        total_evaporation_grams = evaporation_rate * time_elapsed_hours
+
+        # Convert the total evaporation from grams to liters (1 liter = 1000 grams)
+        total_evaporation_liters = total_evaporation_grams / 1000
+
+        # Return the total evaporation in liters
+        return total_evaporation_liters

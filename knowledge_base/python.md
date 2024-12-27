@@ -5,33 +5,33 @@
 |                                        |                   | Functions                                | 9                    |
 | **Intermediate Python**                | 7.6               | Modules and Packages                     | 8                    |
 |                                        |                   | File I/O                                 | 8                    |
-|                                        |                   | Error Handling                           | 8.5                  |
-| **Advanced Python Programming**        | 8.7               | Object-Oriented Programming (OOP)        | 9.5                  |
+|                                        |                   | Error Handling                           | 9                    |
+| **Advanced Python Programming**        | 8.7               | Object-Oriented Programming (OOP)        | 9.7                  |
 |                                        |                   | Lambda Functions                         | 9                    |
 |                                        |                   | Closures                                 | 7                    |
 |                                        |                   | Decorators                               | 9.5                  |
 | **Pythonic Idioms and Best Practices** | 8.0               | List Comprehensions, Dict Comprehensions | 8                    |
 |                                        |                   | Generator Expressions                    | 6                    |
-|                                        |                   | PEP 8 and Code Style                     | 9.5                  |
+|                                        |                   | PEP 8 and Code Style                     | 10                   |
 | **Data Structures and Algorithms**     | 7.5               | Built-in Data Structures                 | 8                    |
-|                                        |                   | Algorithmic Thinking                     | 7                    |
+|                                        |                   | Algorithmic Thinking                     | 7.5                  |
 |                                        |                   | Custom Data Structures                   | 6                    |
 | **Advanced Topics**                    | 7.2               | Concurrency and Multithreading           | 8                    |
 |                                        |                   | AsyncIO and Coroutines                   | 5                    |
 |                                        |                   | Multiprocessing                          | 4                    |
 |                                        |                   | Metaprogramming                          | 5                    |
-|                                        |                   | Testing and TDD                          | 9.5                  |
+|                                        |                   | Testing and TDD                          | 10                   |
 | **Performance and Optimization**       | 6.1               | Profiling and Optimization               | 6.5                  |
 |                                        |                   | Memory Management                        | 5                    |
-| **Practical Application**              | 8.1               | Building Projects                        | 9.5                  |
-|                                        |                   | Code Review and Refactoring              | 7                    |
+| **Practical Application**              | 8.1               | Building Projects                        | 10                   |
+|                                        |                   | Code Review and Refactoring              | 8                    |
 |                                        |                   | Web Development                          | 6                    |
 | **System Interaction**                 | 5.5               | Interfacing with System                  | 5                    |
 |                                        |                   | Networking                               | 4                    |
 | **Database Interaction**               | 6.0               | ORMs and Database Management             | 6                    |
-| **Scientific Computing**               | 7.0               | NumPy, SciPy, Pandas                     | 7                    |
+| **Scientific Computing**               | 7.0               | NumPy, SciPy, Pandas                     | 7.5                  |
 | **Machine Learning and AI**            | 6.5               | AI Libraries (TensorFlow, PyTorch, etc.) | 6                    |
-| **Code Quality and Tools**             | 7.0               | Linting and Static Analysis              | 7                    |
+| **Code Quality and Tools**             | 7.0               | Linting and Static Analysis              | 7.5                  |
 |                                        |                   | Continuous Integration                   | 5                    |
 | **Documentation**                      | 6.1               | Writing Documentation                    | 7                    |
 | **Version Control**                    | 7.0               | Git                                      | 7                    |

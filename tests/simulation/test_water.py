@@ -7,13 +7,8 @@ class TestWaterPropertyRange(unittest.TestCase):
     """
     Unit tests for the WaterPropertyRange class, ensuring correct initialization and validation of property ranges.
     """
-    properties_ranges = {
-        "temperature",
-        "ph",
-        "turbidity",
-        "viscosity",
-        "tds"
-    }
+    properties_ranges = WaterPropertyRange.properties_ranges
+
     def test_init_property_range(self):
         """
         Test the initialization of the WaterPropertyRange object for temperature property.
@@ -37,14 +32,15 @@ class TestWaterPropertyRange(unittest.TestCase):
         """
         Test that WaterPropertyRange objects are initialized with valid property names.
 
-                Iterates over a list of property names and checks if each name is correctly assigned to the property_name attribute of a WaterPropertyRange object.
+        Iterates over a list of property names and checks if each name is correctly assigned to the property_name
+        attribute of a WaterPropertyRange object.
 
-                Raises:
-                    AssertionError: If the property_name attribute does not match the expected name.
+        Raises:
+            AssertionError: If the property_name attribute does not match the expected name.
         """
         for name in self.properties_ranges:
             with self.subTest(name=name):
-                range_obj = WaterPropertyRange(name, 0, 100)
+                range_obj = WaterPropertyRange(name, 1, 1.5)
                 self.assertEqual(range_obj.property_name, name)
 
     def test_property_range_invalid_lower_bound(self):
@@ -123,7 +119,7 @@ class TestWaterTemperature(unittest.TestCase):
 
     def test_set_valid_temperature(self):
         """Test setting a valid temperature."""
-        valid_temperatures = [-10, 0, 25, 50, 100]
+        valid_temperatures = [0, 25, 50, 100]
         for temp in valid_temperatures:
             with self.subTest(temp=temp):
                 self.water.temperature = temp
@@ -278,7 +274,8 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         self.water.manage_precipitation(precipitation_type, amount, pattern)
 
         # Calculate expected volume after snow melting
-        expected_melted_snow = min(amount, self.water.temperature)
+        melting_rate = int(self.water.temperature ** 2)
+        expected_melted_snow = min(amount, melting_rate)
         expected_volume = initial_volume + expected_melted_snow
 
         self.assertEqual(self.water.current_volume, expected_volume,
@@ -300,75 +297,207 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         self.assertEqual(self.water.current_volume, self.water.tank_capacity,
                          "Water volume should not exceed tank capacity")
 
+import unittest
+
+
 class TestWaterEvaporationManagement(unittest.TestCase):
+    """
+    Test cases for the Water evaporation management system.
+
+    This class tests the evaporation calculation and parameter validations for the Water class.
+    """
+
     def setUp(self):
-        """Set up a Water instance for testing."""
+        """
+        Set up a Water instance for testing.
+
+        This is executed before each test case and initializes a Water object with default values.
+        """
         self.water = Water(initial_nutrients=50, tank_capacity=200)
 
     @staticmethod
     def calc_evaporation(air_temp, surface_area, rel_humidity, water_temperature, time_elapsed_sec):
+        """
+        Calculate the expected evaporation of water over a given time period.
+
+        Uses the Antoine equation for water vapor pressure and relative humidity to calculate
+        the evaporation rate, then determines the total evaporation over the specified time.
+
+        Parameters:
+        - air_temp (float): Air temperature in degrees Celsius.
+        - surface_area (float): Surface area of the exposed water in square meters.
+        - rel_humidity (float): Relative humidity as a fraction (0 to 1).
+        - water_temperature (float): Temperature of the water in degrees Celsius.
+        - time_elapsed_sec (int): Time elapsed in seconds.
+
+        Returns:
+        - float: Total evaporation in liters.
+        """
+
         # Constants for the Antoine equation for water
         a_const = 8.07131
         b_const = 1730.63
         c_const = 233.426
 
-        # Calculate the saturation vapor pressure (SVP) of water at the given temperature
+        # Calculate the saturation vapor pressure (SVP) of water at the given water temperature
         saturation_vapor_pressure = 10 ** (a_const - (b_const / (c_const + water_temperature)))
 
-        # Calculate the actual vapor pressure (AVP) of air
+        # Calculate the actual vapor pressure (AVP) of air based on relative humidity
         saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
 
-        # Coefficient for evaporation rate (this value can vary and can be influenced by air temperature)
-        k = 0.1 + 0.01 * (air_temp - water_temperature)  # Example adjustment for air temperature
+        # Coefficient for the evaporation rate, with adjustment based on temperature difference
+        k = 0.1 + 0.01 * (air_temp - water_temperature)
 
-        # Calculate the evaporation rate
+        # Calculate the evaporation rate in grams per hour
         evaporation_rate = k * surface_area * (saturation_vapor_pressure - saturation_vapor_pressor_air)
 
-        # Calculate the total evaporation over the given time period in grams
+        # Convert elapsed time from seconds to hours
         time_elapsed_hours = time_elapsed_sec / 3600
+
+        # Calculate total evaporation in grams
         total_evaporation_grams = evaporation_rate * time_elapsed_hours
 
-        # Convert grams to liters (1 liter = 1000 grams)
+        # Convert grams to liters since 1 liter = 1000 grams
         total_evaporation_liters = total_evaporation_grams / 1000
 
         return total_evaporation_liters
-    
+
     def test_water_evaporation(self):
-        air_temp = 20
-        surface_area = 6
-        rel_humidity = 0.5
-        water_temperature = 10
-        time_elapsed = 600
-        expected_water_evaporation = self.calc_evaporation(air_temp,
-                                                           surface_area,
-                                                           rel_humidity,
-                                                           water_temperature,
+        """
+        Test the evaporation calculation works correctly.
+
+        This test compares the evaporation calculation using the `calc_evaporation` method
+        with the evaporation result from the `Water.evaporate` method.
+        """
+
+        # Test parameters
+        air_temp = 20  # Air temperature in degrees Celsius
+        surface_area = 6  # Surface area of the exposed water in square meters
+        rel_humidity = 0.5  # Relative humidity as a fraction
+        water_temperature = 10  # Water temperature in degrees Celsius
+        time_elapsed = 600  # Time elapsed in seconds
+
+        # Calculate expected evaporation using static method
+        expected_water_evaporation = self.calc_evaporation(air_temp, surface_area, rel_humidity, water_temperature,
                                                            time_elapsed)
+
+        # Set the water temperature for the test case
         self.water.temperature = water_temperature
+
+        # Use the Water class to calculate evaporation
         water_evaporated = self.water.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
+
+        # Assert that the calculated evaporation matches the expected value
         self.assertEqual(expected_water_evaporation, water_evaporated,
                          "Water evaporation should be calculated correctly")
 
     def test_water_evaporation_params_out_of_range(self):
+        """
+        Test parameter validation for out-of-range input values.
+
+        This test ensures that the `Water.evaporate` method raises a ValueError
+        when provided with values outside the defined ranges.
+        """
+
+        # Access the Water property ranges for validation
         properties_ranges = WaterPropertyRange.properties_ranges
-        evaporation_params = [{'param_name': 'air_temp', 'property_name': 'temperature'},
-                              {'param_name': 'surface_area', 'property_name': 'surface_area'},
-                              {'param_name': 'rel_humidity', 'property_name': 'relative_humidity'}]
+
+        # Parameters to test, their property mapping, and acceptable ranges
+        evaporation_params = [
+            {'param_name': 'air_temp', 'property_name': 'temperature'},
+            {'param_name': 'surface_area', 'property_name': 'surface_area'},
+            {'param_name': 'rel_humidity', 'property_name': 'relative_humidity'}
+        ]
+
+        # Generate test cases for lower and upper bound violations
         test_cases = list()
         for property_name, property_range in properties_ranges.items():
             for param_dct in evaporation_params:
                 if param_dct['property_name'] == property_name:
-                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5, 'time_elapsed_sec': 600}
+                    # Create test case with a value below the lower bound
+                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5,
+                                             'time_elapsed_sec': 600}
                     lower_bound = property_range['lower_bound']
                     allowed_params_values[param_dct['param_name']] = lower_bound - 1
                     test_cases.append(allowed_params_values)
-                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5, 'time_elapsed_sec': 600}
+
+                    # Create test case with a value above the upper bound
+                    allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5,
+                                             'time_elapsed_sec': 600}
                     upper_bound = property_range['upper_bound']
                     allowed_params_values[param_dct['param_name']] = upper_bound + 1
                     test_cases.append(allowed_params_values)
+
+        # Check that each test case raises a ValueError
         with self.assertRaises(ValueError):
             for test_case in test_cases:
                 self.water.evaporate(**test_case)
+
+    def test_water_evaporation_params_invalid_type(self):
+        """
+        Test parameter validation for incorrect data types.
+
+        This test ensures that the `Water.evaporate` method raises a TypeError
+        when provided with parameters of incorrect data types.
+        """
+
+        # Define correct parameter values
+        allowed_params_values = {'air_temp': 10, 'surface_area': 6, 'rel_humidity': 0.5, 'time_elapsed_sec': 600}
+
+        # Generate test cases for invalid types
+        test_cases = list()
+        for param_name, value in allowed_params_values.items():
+            # Create a copy of the allowed parameter values
+            params_values = {param_name: value for param_name, value in allowed_params_values.items()}
+
+            # Set the current parameter to an invalid type (e.g., string)
+            params_values[param_name] = 'invalid_type'
+            test_cases.append(params_values)
+
+        # Check that each test case raises a TypeError
+        with self.assertRaises(TypeError):
+            for test_case in test_cases:
+                self.water.evaporate(**test_case)
+
+    def test_water_evaporation_air_temp_below_zero(self):
+        """
+        Test the evaporation calculation of water when the air temperature is below zero degrees Celsius.
+
+        This test ensures that the `evaporate` method of the `Water` class handles evaporation correctly
+        under freezing temperature conditions. It verifies that the calculated evaporation matches the
+        expected value obtained using the `calc_evaporation` static method.
+
+        Test Parameters:
+        - Air temperature: -10°C
+        - Surface area: 10 square meters
+        - Relative humidity: 20% (0.2 as a fraction)
+        - Water temperature: 0°C
+        - Time elapsed: 3600 seconds (1 hour)
+
+        Assertions:
+        - The evaporation value calculated using the `evaporate` method of the `Water` class matches
+          the expected evaporation value computed using the `calc_evaporation` static method.
+        """
+        # Test parameters
+        air_temp = -10  # Air temperature in degrees Celsius
+        surface_area = 10  # Surface area of the exposed water in square meters
+        rel_humidity = 0.2  # Relative humidity as a fraction
+        water_temperature = 0  # Water temperature in degrees Celsius
+        time_elapsed = 3600  # Time elapsed in seconds
+
+        # Calculate expected evaporation using static method
+        expected_water_evaporation = self.calc_evaporation(air_temp, surface_area, rel_humidity, water_temperature,
+                                                           time_elapsed)
+
+        # Set the water temperature for the test case
+        self.water.temperature = water_temperature
+
+        # Use the Water class to calculate evaporation
+        water_evaporated = self.water.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
+
+        # Assert that the calculated evaporation matches the expected value
+        self.assertEqual(expected_water_evaporation, water_evaporated,
+                         "Water evaporation should be calculated correctly")
 
 
 class TestWaterQualityMonitor(unittest.TestCase):

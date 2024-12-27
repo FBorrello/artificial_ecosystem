@@ -9,8 +9,8 @@
   - [X] Influences biological processes, species distribution, and chemical reactions.
   - [ ] Implementation considerations include data integration, temporal and spatial variability, feedback loops, sensitivity analysis, and model calibration.
 - **Viscosity**
-  - [ ] Affects flow dynamics, heat transfer, biological interactions, and chemical dispersion.
-  - [ ] Considerations include temperature dependency, pressure and salinity effects, computational complexity, and model calibration.
+  - [X] Affects flow dynamics, heat transfer, biological interactions, and chemical dispersion.
+  - [X] Considerations include temperature dependency, pressure and salinity effects, computational complexity, and model calibration.
 
 #### 1.1.2 Chemical Properties
 - **Total Dissolved Solids (TDS)**

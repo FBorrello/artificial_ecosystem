@@ -219,6 +219,72 @@ class TestWaterViscosity(unittest.TestCase):
         with self.assertRaises(ValueError, msg="Setting viscosity to a non-positive value should raise ValueError"):
             self.water.viscosity = 0
 
+    def test_change_viscosity_according_with_water_temperature_change(self):
+        """
+        Test the relationship between water temperature changes and viscosity.
+    
+        This test verifies the following:
+        - Viscosity decreases as the temperature increases, simulating real-world physical behavior.
+        - Viscosity increases as the temperature decreases.
+        - The test uses temperature increments and decrements in a loop, ensuring changes
+          are reflected correctly in the viscosity property.
+    
+        Assertions:
+        - Viscosity decreases when the temperature is increased in steps.
+        - Viscosity increases when the temperature is decreased in steps.
+        """
+        initial_viscosity = self.water.viscosity  # Store the initial viscosity for comparison
+    
+        # Test the effect of increasing temperature on viscosity
+        for increment in range(1, 6):
+            with self.subTest(increment=increment):
+                self.water.temperature += 10  # Increment temperature by 10 units
+                self.assertLess(self.water.viscosity, initial_viscosity,
+                                'Viscosity should decrease as temperature increases')  # Check viscosity decreases
+                initial_viscosity = self.water.viscosity  # Update the reference viscosity for the next iteration
+    
+        # Test the effect of decreasing temperature on viscosity
+        for decrement in range(1, 6):
+            with self.subTest(decrement=decrement):
+                self.water.temperature -= 10  # Decrement temperature by 10 units
+                self.assertGreater(self.water.viscosity, initial_viscosity,
+                                'Viscosity should increase as temperature decreases')  # Check viscosity increases
+                initial_viscosity = self.water.viscosity  # Update the reference viscosity for the next iteration
+
+    def test_change_viscosity_according_with_water_tds_change(self):
+        """
+        Test the relationship between water TDS (Total Dissolved Solids) and viscosity.
+    
+        This test verifies the following:
+        - Viscosity increases as the TDS increases, simulating real-world behavior.
+        - Viscosity decreases as the TDS decreases.
+        - The test iterates over TDS increments and decrements, ensuring changes are reflected
+          correctly in the viscosity property.
+    
+        Assertions:
+        - Viscosity increases when TDS is incremented in steps.
+        - Viscosity decreases when TDS is decremented in steps.
+        """
+        initial_viscosity = self.water.viscosity  # Store initial viscosity for reference
+    
+        # Test the effect of increasing TDS on viscosity
+        for increment in range(1, 6):
+            with self.subTest(increment=increment):
+                self.water.tds += 100  # Increment TDS by 100 units
+                # Verify that viscosity increases as TDS increases
+                self.assertGreater(self.water.viscosity, initial_viscosity,
+                                'Viscosity should increase as TDS increases')
+                initial_viscosity = self.water.viscosity  # Update reference viscosity
+    
+        # Test the effect of decreasing TDS on viscosity
+        for decrement in range(1, 6):
+            with self.subTest(decrement=decrement):
+                self.water.tds -= 100  # Decrement TDS by 100 units
+                # Verify that viscosity decreases as TDS decreases
+                self.assertLess(self.water.viscosity, initial_viscosity,
+                                'Viscosity should decrease as TDS decreases')
+                initial_viscosity = self.water.viscosity  # Update reference viscosity
+
 class TestWaterTDS(unittest.TestCase):
 
     def setUp(self):
@@ -296,9 +362,6 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
 
         self.assertEqual(self.water.current_volume, self.water.tank_capacity,
                          "Water volume should not exceed tank capacity")
-
-import unittest
-
 
 class TestWaterEvaporationManagement(unittest.TestCase):
     """
@@ -498,7 +561,6 @@ class TestWaterEvaporationManagement(unittest.TestCase):
         # Assert that the calculated evaporation matches the expected value
         self.assertEqual(expected_water_evaporation, water_evaporated,
                          "Water evaporation should be calculated correctly")
-
 
 class TestWaterQualityMonitor(unittest.TestCase):
     """

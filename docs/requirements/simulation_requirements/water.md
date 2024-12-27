@@ -52,7 +52,7 @@
 
 ### 1.7 Evaporation and Losses
 - **Evaporation Method**
-  - [ ] `evaporate_water(self, temperature, surface_area)`: Calculates water loss based on evaporation rate.
+  - [X] `evaporate_water(self, temperature, surface_area)`: Calculates water loss based on evaporation rate.
 
 ## 2. Non-Functional Requirements
 

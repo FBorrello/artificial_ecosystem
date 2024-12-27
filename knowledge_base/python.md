@@ -1,42 +1,70 @@
+# Python Mastery Overview
+
+This document provides a detailed assessment of Python mastery, divided into expanded main areas and subsections for better resolution of skills. Scores range from 0 to 10, with 10 being the highest level of proficiency.
+
+---
+
 | **Main Area**                          | **Overall Score** | **Subsection**                           | **Subsection Score** |
 |----------------------------------------|-------------------|------------------------------------------|----------------------|
-| **Python Basics**                      | 9.0               | Syntax and Basic Data Types              | 9                    |
-|                                        |                   | Control Flow                             | 9                    |
-|                                        |                   | Functions                                | 9                    |
-| **Intermediate Python**                | 7.6               | Modules and Packages                     | 8                    |
-|                                        |                   | File I/O                                 | 8                    |
-|                                        |                   | Error Handling                           | 9                    |
-| **Advanced Python Programming**        | 8.7               | Object-Oriented Programming (OOP)        | 9.7                  |
-|                                        |                   | Lambda Functions                         | 9                    |
-|                                        |                   | Closures                                 | 7                    |
-|                                        |                   | Decorators                               | 9.5                  |
-| **Pythonic Idioms and Best Practices** | 8.0               | List Comprehensions, Dict Comprehensions | 8                    |
-|                                        |                   | Generator Expressions                    | 6                    |
-|                                        |                   | PEP 8 and Code Style                     | 10                   |
-| **Data Structures and Algorithms**     | 7.5               | Built-in Data Structures                 | 8                    |
-|                                        |                   | Algorithmic Thinking                     | 7.5                  |
-|                                        |                   | Custom Data Structures                   | 6                    |
-| **Advanced Topics**                    | 7.2               | Concurrency and Multithreading           | 8                    |
-|                                        |                   | AsyncIO and Coroutines                   | 5                    |
-|                                        |                   | Multiprocessing                          | 4                    |
-|                                        |                   | Metaprogramming                          | 5                    |
-|                                        |                   | Testing and TDD                          | 10                   |
-| **Performance and Optimization**       | 6.1               | Profiling and Optimization               | 6.5                  |
-|                                        |                   | Memory Management                        | 5                    |
-| **Practical Application**              | 8.1               | Building Projects                        | 10                   |
-|                                        |                   | Code Review and Refactoring              | 8                    |
-|                                        |                   | Web Development                          | 6                    |
-| **System Interaction**                 | 5.5               | Interfacing with System                  | 5                    |
-|                                        |                   | Networking                               | 4                    |
-| **Database Interaction**               | 6.0               | ORMs and Database Management             | 6                    |
-| **Scientific Computing**               | 7.0               | NumPy, SciPy, Pandas                     | 7.5                  |
-| **Machine Learning and AI**            | 6.5               | AI Libraries (TensorFlow, PyTorch, etc.) | 6                    |
-| **Code Quality and Tools**             | 7.0               | Linting and Static Analysis              | 7.5                  |
-|                                        |                   | Continuous Integration                   | 5                    |
-| **Documentation**                      | 6.1               | Writing Documentation                    | 7                    |
-| **Version Control**                    | 7.0               | Git                                      | 7                    |
-| **Python Ecosystem**                   | 6.5               | Virtual Environments                     | 7                    |
-|                                        |                   | Package Management                       | 6                    |
-| **Design Patterns**                    | 6.0               | Pythonic Implementation of Patterns      | 6                    |
-| **Community and Learning**             | 4.5               | Contributing to Open Source              | 4                    |
-|                                        |                   | Python Community Engagement              | 5                    |
+| **Python Fundamentals**                | 9.0               | Syntax and Basic Data Types              | 9.0                  |
+|                                        |                   | Control Flow (Loops, Conditionals)       | 9.0                  |
+|                                        |                   | Functions (Defining and Calling)         | 9.0                  |
+|                                        |                   | Basic Debugging and Error Identification | 8.5                  |
+| **Intermediate Python**                | 8.0               | Modules and Packages                     | 8.0                  |
+|                                        |                   | File I/O                                 | 8.5                  |
+|                                        |                   | Error Handling                           | 9.0                  |
+|                                        |                   | Basic Regular Expressions                | 7.5                  |
+| **Advanced Python Programming**        | 8.7               | Object-Oriented Programming (OOP)        | 9.5                  |
+|                                        |                   | Lambda and Functional Programming        | 8.5                  |
+|                                        |                   | Closures                                 | 7.5                  |
+|                                        |                   | Decorators                               | 9.0                  |
+|                                        |                   | Metaclasses and Dynamic Attributes       | 6.0                  |
+|                                        |                   | Context Managers                         | 9.0                  |
+| **Pythonic Idioms and Best Practices** | 8.5               | List and Dictionary Comprehensions       | 8.5                  |
+|                                        |                   | Generator Functions and Expressions      | 7.5                  |
+|                                        |                   | Writing Pythonic Code                    | 8.0                  |
+|                                        |                   | PEP 8 Compliance and Code Style          | 10                   |
+|                                        |                   | Zen of Python Principles                 | 8.0                  |
+| **Testing and Debugging**              | 9.5               | Testing Frameworks (unittest, pytest)    | 9.5                  |
+|                                        |                   | Mocking and Test Doubles                 | 9.0                  |
+|                                        |                   | Edge Case Testing and Validation         | 9.5                  |
+|                                        |                   | Debugging Strategies and Tools           | 8.5                  |
+| **Data Structures and Algorithms**     | 8.0               | Built-in Data Structures                 | 8.5                  |
+|                                        |                   | Custom Data Structures Implementation    | 7.0                  |
+|                                        |                   | Algorithmic Thinking                     | 8.0                  |
+|                                        |                   | Algorithm Complexity Analysis            | 6.5                  |
+| **Advanced Topics**                    | 7.5               | Concurrency and Multithreading           | 8.0                  |
+|                                        |                   | AsyncIO and Coroutines                   | 7.0                  |
+|                                        |                   | Multiprocessing                          | 6.0                  |
+|                                        |                   | Type Hints and Annotations               | 8.5                  |
+|                                        |                   | Metaprogramming                          | 6.0                  |
+|                                        |                   | C Extensions and Low-Level Interfacing   | 5.5                  |
+| **Scientific Computing and Data Analytics** | 7.2           | NumPy and SciPy                          | 7.5                  |
+|                                        |                   | Pandas                                   | 7.5                  |
+|                                        |                   | Matplotlib and Data Visualization        | 7.0                  |
+|                                        |                   | Statistical Analysis                     | 6.5                  |
+| **Practical Applications**             | 8.5               | Project Building                         | 9.5                  |
+|                                        |                   | Code Review and Refactoring              | 8.5                  |
+|                                        |                   | Web Development (Django, Flask)          | 7.0                  |
+|                                        |                   | API Development and Integration          | 8.0                  |
+|                                        |                   | Task Automation                          | 8.5                  |
+| **System Interaction**                 | 7.0               | File System Manipulation                 | 7.5                  |
+|                                        |                   | OS Module and Shell Command Execution    | 7.0                  |
+|                                        |                   | Networking (Sockets, HTTP Requests)      | 6.5                  |
+|                                        |                   | Interfacing with Hardware or APIs        | 6.0                  |
+| **Performance and Optimization**       | 7.0               | Profiling Tools (cProfile, timeit)       | 7.5                  |
+|                                        |                   | Algorithm Optimization                   | 7.0                  |
+|                                        |                   | Memory Management                        | 7.5                  |
+|                                        |                   | Parallel and Distributed Computing       | 6.5                  |
+| **Documentation and Code Maintainability** | 7.5           | Writing Documentation                    | 8.0                  |
+|                                        |                   | Docstrings and API Documentation         | 7.5                  |
+|                                        |                   | Code Readability and Maintainability     | 8.0                  |
+| **Version Control and Collaboration**  | 7.5               | Git Basics (Commits, Branching, Merging) | 7.5                  |
+|                                        |                   | Advanced Git Usage and Workflows         | 7.0                  |
+|                                        |                   | CI/CD Integration                        | 6.5                  |
+| **Python Ecosystem**                   | 7.0               | Package Management                       | 7.0                  |
+|                                        |                   | Virtual Environments                     | 7.5                  |
+|                                        |                   | Popular Libraries (e.g., Requests)       | 6.5                  |
+| **Design Patterns**                    | 6.5               | Pythonic Implementation of Patterns      | 6.5                  |
+| **Community and Learning**             | 5.0               | Contributing to Open Source              | 4.5                  |
+|                                        |                   | Python Community Engagement              | 5.5                  |

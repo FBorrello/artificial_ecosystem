@@ -656,7 +656,6 @@ class Water:
         # Ensure viscosity never goes below a realistic minimum threshold (0.000282) pure water at 100 degrees C
         self.viscosity = max(viscosity_with_tds, 0.000282)
 
-
     def manage_precipitation(self, precipitation_type: str, amount: int, pattern: str = 'steady'):
         """
         Manages the effect of precipitation (rain or snow) on the water system.

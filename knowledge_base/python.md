@@ -39,9 +39,9 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                        |                   | Type Hints and Annotations               | 8.5                  |
 |                                        |                   | Metaprogramming                          | 6.0                  |
 |                                        |                   | C Extensions and Low-Level Interfacing   | 5.5                  |
-| **Scientific Computing and Data Analytics** | 7.2           | NumPy and SciPy                          | 7.5                  |
+| **Scientific Computing and Data Analytics** | 7.2           | NumPy and SciPy                          | 8.0                  |
 |                                        |                   | Pandas                                   | 7.5                  |
-|                                        |                   | Matplotlib and Data Visualization        | 7.0                  |
+|                                        |                   | Matplotlib and Data Visualization        | 7.5                  |
 |                                        |                   | Statistical Analysis                     | 6.5                  |
 | **Practical Applications**             | 8.5               | Project Building                         | 9.5                  |
 |                                        |                   | Code Review and Refactoring              | 8.5                  |
@@ -53,7 +53,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                        |                   | Networking (Sockets, HTTP Requests)      | 6.5                  |
 |                                        |                   | Interfacing with Hardware or APIs        | 6.0                  |
 | **Performance and Optimization**       | 7.0               | Profiling Tools (cProfile, timeit)       | 7.5                  |
-|                                        |                   | Algorithm Optimization                   | 7.0                  |
+|                                        |                   | Algorithm Optimization                   | 7.5                  |
 |                                        |                   | Memory Management                        | 7.5                  |
 |                                        |                   | Parallel and Distributed Computing       | 6.5                  |
 | **Documentation and Code Maintainability** | 7.5           | Writing Documentation                    | 8.5                  |

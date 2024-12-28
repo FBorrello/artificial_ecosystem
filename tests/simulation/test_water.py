@@ -104,7 +104,7 @@ class TestWater(unittest.TestCase):
         self.assertEqual(water.temperature, 25)
         self.assertEqual(water.ph, 7.0)
         self.assertEqual(water.turbidity, 0)
-        self.assertEqual(water.viscosity, 1.0)
+        self.assertEqual(water.viscosity, 0.00089)
         self.assertEqual(water.tds, 0)
 
 class TestWaterTemperature(unittest.TestCase):
@@ -203,8 +203,8 @@ class TestWaterViscosity(unittest.TestCase):
         self.water = Water(initial_nutrients=50, tank_capacity=200)
 
     def test_default_viscosity(self):
-        """Test the default viscosity value."""
-        self.assertEqual(self.water.viscosity, 1.0, "Default viscosity should be 1.0")
+        """Test the default viscosity value of pure water at 25 degrees Celsius."""
+        self.assertEqual(self.water.viscosity, 0.00089, "Default viscosity should be 0.00089")
 
     def test_set_valid_viscosity(self):
         """Test setting a valid viscosity."""
@@ -218,6 +218,15 @@ class TestWaterViscosity(unittest.TestCase):
         """Test setting an invalid viscosity raises ValueError."""
         with self.assertRaises(ValueError, msg="Setting viscosity to a non-positive value should raise ValueError"):
             self.water.viscosity = 0
+
+    def test_empirical_viscosity_based_on_water_temperature(self):
+        expected_viscosity_by_temp = {25: 0.00089, 50: 0.00054, 100: 0.00028}
+        for temp, expected_viscosity in expected_viscosity_by_temp.items():
+            with self.subTest(temp=temp):
+                self.water.temperature = temp
+                self.assertAlmostEqual(self.water.viscosity, expected_viscosity, 4,
+                                 f"Viscosity should be based on temperature, "
+                                 f"expected viscosity to be {expected_viscosity} for temperature {temp}")
 
     def test_change_viscosity_according_with_water_temperature_change(self):
         """
@@ -270,7 +279,7 @@ class TestWaterViscosity(unittest.TestCase):
         # Test the effect of increasing TDS on viscosity
         for increment in range(1, 6):
             with self.subTest(increment=increment):
-                self.water.tds += 100  # Increment TDS by 100 units
+                self.water.tds += 10000  # Increment TDS by 100 units
                 # Verify that viscosity increases as TDS increases
                 self.assertGreater(self.water.viscosity, initial_viscosity,
                                 'Viscosity should increase as TDS increases')
@@ -279,7 +288,7 @@ class TestWaterViscosity(unittest.TestCase):
         # Test the effect of decreasing TDS on viscosity
         for decrement in range(1, 6):
             with self.subTest(decrement=decrement):
-                self.water.tds -= 100  # Decrement TDS by 100 units
+                self.water.tds -= 10000  # Decrement TDS by 100 units
                 # Verify that viscosity decreases as TDS decreases
                 self.assertLess(self.water.viscosity, initial_viscosity,
                                 'Viscosity should decrease as TDS decreases')

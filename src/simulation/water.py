@@ -399,13 +399,18 @@ class Water:
         self.nutrients = initial_nutrients
         self.tank_capacity = tank_capacity
         self.current_nutrients = initial_nutrients
-        self.current_volume = 0  # Initialize current volume
+        self._current_volume = 0  # Initialize current volume
+        self.overflow_volume = 0
+        self._underflow_capacity_threshold = 0.2
+        self._overflow_capacity_threshold = 0.1
         self.snow_accumulation = 0  # Initialize snow accumulation
         self._temperature = 25  # Default temperature in Celsius
         self._ph = 7.0  # Neutral pH
         self._turbidity = 0  # Clear water
         self._viscosity = 0.00089  # Default viscosity of pure water at 25 degrees C
         self._tds = 0  # Default TDS value
+        self.is_empty = True
+        self.is_full = False
 
     @property
     def temperature(self):
@@ -600,6 +605,196 @@ class Water:
             raise TypeError("TDS must be a numeric value.")
         self._tds = value
         self.update_water_viscosity()
+    
+    @property
+    def current_volume(self) -> int|float:
+        """
+        Get the current water volume in the tank.
+    
+        This property represents the current volume of water in the system, measured in liters.
+        Ensures that water volume is non-negative and within the tank's capacity.
+        
+        Returns:
+            int | float: The current water volume in liters.
+        """
+        return self._current_volume
+    
+    @current_volume.setter
+    def current_volume(self, value: int|float):
+        """
+        Set the current volume of water in the tank.
+    
+        This setter assigns a value to the water volume, ensuring it is a valid numeric value,
+        non-negative, and does not exceed the tank's total capacity. If the provided volume exceeds
+        the tank's capacity, it calculates the overflow and caps the volume at the maximum capacity.
+    
+        Parameters:
+            value (int | float): The water volume to set, measured in liters.
+    
+        Raises:
+            TypeError: If the provided value is not of a numeric type (int or float).
+            ValueError: If the value is negative or exceeds the tank's total capacity.
+    
+        Notes:
+            - The overflow amount is calculated and assigned to `overflow_volume` when the input value
+              exceeds the tank's capacity.
+            - In case of overflow, the water volume is limited to the tank's capacity.
+        """
+        # Ensure the provided value is numeric
+        if not isinstance(value, (int, float)):
+            raise TypeError("Current volume must be a numeric value.")
+        
+        # Check that the volume is non-negative
+        if value < 0:
+            raise ValueError("Current volume must be non-negative.")
+    
+        # If the volume exceeds the tank capacity, calculate overflow
+        if value > self.tank_capacity:
+            self.overflow_volume = value - self.tank_capacity  # Calculate overflow
+            self._current_volume = self.tank_capacity  # Cap the volume at tank capacity
+            raise ValueError("Current volume cannot exceed the tank's capacity.")
+
+        # Otherwise, update the current volume directly
+        else:
+            self._current_volume = value  # Assign the validated volume
+
+        if self.current_volume <= self.underflow_capacity_threshold:
+            self.is_empty = True
+        else:
+            self.is_empty = False
+
+        if self.current_volume >= self.tank_capacity - self.overflow_capacity_threshold:
+            self.is_full = True
+        else:
+            self.is_full = False
+    
+    @property
+    def underflow_capacity_threshold(self) -> int | float:
+        """
+        Get the current underflow capacity threshold of the water system.
+    
+        The underflow threshold is calculated as a fraction of the tank's capacity,
+        representing the minimum water level that should be maintained in the tank.
+        If the water volume falls below this threshold, it may trigger an underflow alert.
+    
+        Returns:
+            int | float: The underflow threshold, in liters, as a fraction of the tank's total capacity.
+        """
+        return self.tank_capacity * self._underflow_capacity_threshold
+    
+    @underflow_capacity_threshold.setter
+    def underflow_capacity_threshold(self, value: int | float):
+        """
+        Set the underflow capacity threshold.
+    
+        This property defines the minimum water level needed to avoid underflow, relative to the 
+        tank's capacity. Two approaches are supported for setting the threshold:
+        - If the input value is <= 1, it is treated as a fraction of the total capacity.
+        - If the input value is > 1, it is assumed to be an absolute volume in liters, which will 
+          be converted to a fraction of the tank's capacity.
+    
+        The setter ensures that the threshold does not exceed the tank capacity limits and is
+        positive. Providing a value >= the tank capacity or less than 0 triggers a `ValueError`.
+    
+        Parameters:
+            value (int | float): The numeric underflow threshold to set. 
+    
+        Raises:
+            ValueError: If the threshold is less than 0, invalid, or exceeds the tank's total capacity.
+            TypeError: If the provided value is not a numeric type.
+        """
+        # Validation: Ensure the value is non-negative
+        if value < 0:
+            raise ValueError("Underflow threshold cannot be negative.")
+        # Validation: Ensure the value is numeric
+        elif not isinstance(value, (int, float)):
+            raise ValueError("Underflow threshold must be a numeric value.")
+        # If value is greater than 1, treat it as an absolute volume in liters
+        elif value > 1:
+            if value >= self.tank_capacity - self.overflow_capacity_threshold:
+                raise ValueError("Underflow threshold must be less than or equal to the tank capacity.")
+            self._underflow_capacity_threshold = value / self.tank_capacity
+        # If value is a fraction, assign it as is
+        elif value >= 0:
+            self._underflow_capacity_threshold = value
+
+    @property
+    def overflow_capacity_threshold(self) -> int | float:
+        """
+        Retrieve the overflow capacity threshold of the tank.
+
+        The overflow threshold is calculated as a fraction of the tank's total capacity.
+        It represents the maximum limit of water volume that the tank can hold without spilling over.
+        Any volume added beyond this threshold will result in overflow.
+
+        Returns:
+            int | float: The overflow threshold, in liters, as a fraction of the tank's total capacity.
+        """
+        return self.tank_capacity * self._overflow_capacity_threshold
+
+    @overflow_capacity_threshold.setter
+    def overflow_capacity_threshold(self, value: int | float):
+        """
+        Set the overflow capacity threshold of the tank.
+        
+        This setter allows configuring the overflow limit as either a fraction of the tank's total 
+        capacity or an absolute volume in liters:
+        - If the input value is <= 1, it is treated as a fraction of the total capacity.
+        - If the input value is > 1, it is assumed to be an absolute volume, which will be converted 
+          to a fraction relative to the tank's total capacity.
+        
+        The setter ensures that the threshold is non-negative and does not exceed the tank's total 
+        capacity. If the threshold exceeds the defined tank capacity, a `ValueError` is raised.
+        
+        Args:
+            value (int | float): The desired overflow threshold to set, in either fractional or 
+                                 absolute terms.
+        
+        Raises:
+            ValueError: If the threshold is negative or exceeds the tank's total capacity.
+            TypeError: If the input value is not of a numeric type (int or float).
+        """
+        # Check that the input value is non-negative
+        if value < 0:
+            raise ValueError("Overflow threshold cannot be negative.")
+        # Validate input type as numeric
+        elif not isinstance(value, (int, float)):
+            raise TypeError("Overflow threshold must be a numeric value.")
+        # If value is greater than or equal to 1, treat it as an absolute volume
+        elif value >= 1:
+            if value >= self.tank_capacity:
+                raise ValueError("Overflow threshold must be less than the tank capacity.")
+            self._overflow_capacity_threshold = value / self.tank_capacity
+        # If value is a fraction, directly assign it
+        elif value >= 0:
+            self._overflow_capacity_threshold = value
+
+    @property
+    def status(self) -> dict:
+        """
+        Retrieve the current status of the water system.
+    
+        This property compiles a dictionary containing various attributes and metrics associated with the current state of the water system.
+        The dictionary includes physical properties (e.g., temperature, pH, turbidity, viscosity, and TDS), capacity states (e.g., current volume,
+        underflow and overflow thresholds, and whether the system is empty or full), and tank-related metrics (e.g., capacity and overflow volume).
+    
+        Returns:
+            dict: A dictionary summarizing the current status of the water system.
+        """
+        return {
+            "temperature": self.temperature,
+            "ph": self.ph,
+            "turbidity": self.turbidity,
+            "viscosity": self.viscosity,
+            "tds": self.tds,
+            "current_volume": self.current_volume,
+            "underflow_capacity_threshold": self.underflow_capacity_threshold,
+            "overflow_capacity_threshold": self.overflow_capacity_threshold,
+            "is_empty": self.is_empty,
+            "is_full": self.is_full,
+            "tank_capacity": self.tank_capacity,
+            "overflow_volume": self.overflow_volume
+        }
 
     def update_water_viscosity(self):
         """
@@ -675,7 +870,6 @@ class Water:
             ValueError: If precipitation_type is not 'rain' or 'snow'.
 
         Notes:
-            - Precipitation will not cause the water volume to exceed the tank capacity.
             - Snow melting is simulated by assuming snow melts at a rate corresponding to
               the temperature, provided the temperature is above 0°C.
         """
@@ -720,10 +914,6 @@ class Water:
                 # Subtract the melted snow from the remaining snow accumulation
                 self.snow_accumulation -= melted_snow
 
-        # Ensure the current water volume does not exceed the tank's capacity
-        if self.current_volume > self.tank_capacity:
-            self.current_volume = self.tank_capacity
-
     def evaporate(self,
                   air_temp: int | float,
                   surface_area: int | float,
@@ -736,6 +926,7 @@ class Water:
         air temperature, surface area, relative humidity, and elapsed time. It uses
         the Antoine equation to calculate the vapor pressure of water and factors
         in external environmental conditions to determine the evaporation rate.
+        After the amount of water evaporated is calculated, the method updates the current_volume attribute.
 
         Parameters:
             air_temp (int | float): The air temperature in degrees Celsius.
@@ -810,5 +1001,91 @@ class Water:
         # Convert the total evaporation from grams to liters (1 liter = 1000 grams)
         total_evaporation_liters = total_evaporation_grams / 1000
 
+        # Update current_volume property by removing the evaporated water volume
+        self.current_volume -= total_evaporation_liters
+
         # Return the total evaporation in liters
         return total_evaporation_liters
+
+    def add_water(self, amount: int | float) -> int | float:
+        """
+        Add a specified amount of water to the tank.
+    
+        This method increases the current water volume by the given `amount`,
+        provided it does not exceed the tank's capacity or violate any constraints.
+    
+        Parameters:
+            amount (int | float): The amount of water to add, in liters. Must be 
+                                  a positive numeric value.
+    
+        Returns:
+            int | float: The amount of water successfully added to the tank.
+    
+        Raises:
+            ValueError: If the amount is not positive, exceeds the tank's total 
+                        capacity, or causes overflow beyond the acceptable range.
+            TypeError: If the provided amount is not numeric.
+        """
+        # Check if the provided amount is non-negative and greater than zero
+        if amount <= 0:
+            raise ValueError("Amount must be non-negative and greater than zero.")
+        
+        # Validate the type of the provided amount
+        elif not isinstance(amount, (int, float)):
+            raise TypeError("Amount must be a numeric value.")
+        
+        # Ensure the amount does not exceed the overall tank capacity
+        elif amount > self.tank_capacity:
+            raise ValueError("Amount must be less than or equal to the tank capacity.")
+        
+        # Check if the addition of the amount exceeds the remaining capacity of the tank
+        elif amount > self.tank_capacity - self.current_volume:
+            raise ValueError("Amount exceed the tank capacity when added to current volume.")
+        
+        # If all checks pass, add the specified amount to the current water volume
+        else:
+            self.current_volume += amount
+            return amount
+
+    def extract_water(self, amount: int | float, force_underflow_capacity_threshold: bool = False) -> int | float:
+        """
+        Extract a specified amount of water from the tank.
+    
+        This method reduces the current water volume by the specified `amount`, provided it
+        does not breach the underflow capacity threshold. The `force_underflow_capacity_threshold`
+        parameter can be set to override the underflow constraint.
+    
+        Parameters:
+            amount (int | float): The amount of water to be extracted, in liters.
+                                  Must be a non-negative value and not exceed the current volume.
+            force_underflow_capacity_threshold (bool): If True, allows extraction below the 
+                                                       underflow threshold. Defaults to False.
+    
+        Returns:
+            int | float: The actual amount of water extracted from the tank.
+    
+        Raises:
+            ValueError: If the `amount` is negative, exceeds the current volume, or is invalid
+                        relative to the underflow threshold.
+            TypeError: If the `amount` is not a numeric value.
+        """
+        # Ensure the extraction amount is non-negative
+        if amount < 0:
+            raise ValueError("Amount must be non-negative.")
+    
+        # Validate that the extraction amount is numeric
+        elif not isinstance(amount, (int, float)):
+            raise TypeError("Amount must be a numeric value.")
+    
+        # Check if extraction violates the underflow threshold unless force is enabled
+        elif amount > self.current_volume - self.underflow_capacity_threshold and not force_underflow_capacity_threshold:
+            raise ValueError("Amount must be less than or equal to the current volume minus the underflow threshold.")
+    
+        # Ensure the amount does not exceed the current volume
+        elif amount > self.current_volume:
+            raise ValueError("Amount must be less than or equal to the current volume.")
+    
+        # Proceed with extraction if all checks pass
+        else:
+            self.current_volume -= amount  # Reduce the current volume
+            return amount  # Return the amount of water extracted

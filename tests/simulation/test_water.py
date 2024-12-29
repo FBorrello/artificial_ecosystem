@@ -3,6 +3,7 @@
 import unittest
 from src.simulation.water import Water, WaterPropertyRange, WaterQualityMonitor
 
+
 class TestWaterPropertyRange(unittest.TestCase):
     """
     Unit tests for the WaterPropertyRange class, ensuring correct initialization and validation of property ranges.
@@ -317,6 +318,133 @@ class TestWaterTDS(unittest.TestCase):
         with self.assertRaises(ValueError, msg="Setting TDS to a negative value should raise ValueError"):
             self.water.tds = -10
 
+class TestWaterCurrentVolume(unittest.TestCase):
+
+    def setUp(self):
+        """Set up a Water instance for testing."""
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+
+    def test_default_current_volume(self):
+        """Test the default current volume value."""
+        self.assertEqual(self.water.current_volume, 0, "Default current volume should be 0")
+
+    def test_set_valid_current_volume(self):
+        """Test setting a valid current volume."""
+        valid_volumes = [0, 50, 200]
+        for volume in valid_volumes:
+            with self.subTest(volume=volume):
+                self.water.current_volume = volume
+                self.assertEqual(self.water.current_volume, volume, f"Current volume should be set to {volume} liters")
+
+    def test_set_invalid_current_volume(self):
+        """Test setting an invalid current volume raises ValueError."""
+        invalid_volumes = [-10, 250]  # Negative value and exceeding capacity
+        for volume in invalid_volumes:
+            with self.subTest(volume=volume):
+                with self.assertRaises(ValueError, msg=f"Setting current volume to {volume} should raise ValueError"):
+                    self.water.current_volume = volume
+
+    def test_current_volume_exceeding_capacity(self):
+        """Test behavior when current volume exceeds tank capacity."""
+        with self.assertRaises(ValueError, msg="Current volume cannot exceed tank capacity"):
+            self.water.current_volume = self.water.tank_capacity + 10
+
+class TestWaterUnderflowCapacityThreshold(unittest.TestCase):
+    def setUp(self):
+        """
+        Set up a Water instance and define the underflow capacity threshold.
+        """
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+        self.water.underflow_capacity_threshold = 20
+
+    def test_default_underflow_capacity_threshold(self):
+        """
+        Test the default value of the underflow capacity threshold.
+        """
+        self.assertEqual(self.water.underflow_capacity_threshold, 20,
+                         "Default underflow capacity threshold should be 20.")
+
+    def test_set_valid_underflow_capacity_threshold(self):
+        """
+        Test setting a valid underflow capacity threshold.
+        """
+        valid_thresholds = [10, 15, 30]
+        for threshold in valid_thresholds:
+            with self.subTest(threshold=threshold):
+                self.water.underflow_capacity_threshold = threshold
+                self.assertEqual(self.water.underflow_capacity_threshold, threshold,
+                                 f"Underflow capacity threshold should be set to {threshold}.")
+
+    def test_set_invalid_underflow_capacity_threshold(self):
+        """
+        Test setting an invalid underflow capacity threshold raises ValueError.
+        Invalid values include negative numbers or values greater than the tank capacity.
+        """
+        invalid_thresholds = [-10, 250]
+        for threshold in invalid_thresholds:
+            with self.subTest(threshold=threshold):
+                with self.assertRaises(ValueError,
+                                       msg=f"Setting underflow capacity threshold to {threshold} should raise ValueError"):
+                    self.water.underflow_capacity_threshold = threshold
+
+class TestWaterOverflowCapacityThreshold(unittest.TestCase):
+    def setUp(self):
+        """
+        Set up a Water instance and define the overflow capacity threshold.
+        """
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+        self.water.overflow_capacity_threshold = 180
+
+    def test_default_overflow_capacity_threshold(self):
+        """
+        Test the default value of the overflow capacity threshold.
+        """
+        self.assertEqual(self.water.overflow_capacity_threshold, 180,
+                         "Default overflow capacity threshold should be 180.")
+
+    def test_set_valid_overflow_capacity_threshold(self):
+        """
+        Test setting a valid overflow capacity threshold.
+        """
+        valid_thresholds = [150, 160, 190]
+        for threshold in valid_thresholds:
+            with self.subTest(threshold=threshold):
+                self.water.overflow_capacity_threshold = threshold
+                self.assertEqual(self.water.overflow_capacity_threshold, threshold,
+                                 f"Overflow capacity threshold should be set to {threshold}.")
+
+    def test_set_invalid_overflow_capacity_threshold(self):
+        """
+        Test setting an invalid overflow capacity threshold raises ValueError.
+        Invalid values include negative numbers or values greater than the tank capacity.
+        """
+        invalid_thresholds = [-10, 250]
+        for threshold in invalid_thresholds:
+            with self.subTest(threshold=threshold):
+                with self.assertRaises(ValueError,
+                                       msg=f"Setting overflow capacity threshold to {threshold} should raise ValueError"):
+                    self.water.overflow_capacity_threshold = threshold
+
+class TestWaterStatus(unittest.TestCase):
+    def setUp(self):
+        self.water = Water(initial_nutrients=50, tank_capacity=200)
+        self.water.underflow_capacity_threshold = 20
+        self.water.overflow_capacity_threshold = 180
+    def test_default_status(self):
+        water_tank_status = self.water.status
+        self.assertEqual(25, water_tank_status.get('temperature'), f"Water temperature should be 25")
+        self.assertEqual(7, water_tank_status.get('ph'), f"Water pH should be 7")
+        self.assertEqual(0, water_tank_status.get('tds'), f"Water TDS should be 0")
+        self.assertEqual(0.00089, water_tank_status.get('viscosity'), f"Water viscosity should be 0")
+        self.assertEqual(0, water_tank_status.get('turbidity'), f"Water turbidity should be 0")
+        self.assertEqual(0, water_tank_status.get('current_volume'), f"Water current volume should be 0")
+        self.assertEqual(20, water_tank_status.get('underflow_capacity_threshold'), f"Water underflow capacity threshold should be 20")
+        self.assertEqual(180, water_tank_status.get('overflow_capacity_threshold'), f"Water overflow capacity threshold should be 180")
+        self.assertTrue(water_tank_status.get('is_empty'), f"Water tank should be empty")
+        self.assertFalse(water_tank_status.get('is_full'), f"Water tank should not be full")
+        self.assertEqual(200, water_tank_status.get('tank_capacity'), f"Water tank capacity should be 200")
+        self.assertEqual(0, water_tank_status.get('overflow_volume'), f"Water overflow volume should be 0")
+
 class TestWaterPrecipitationManagement(unittest.TestCase):
 
     def setUp(self):
@@ -366,11 +494,8 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         precipitation_type = 'rain'
         amount = 300  # Exceeds tank capacity
         pattern = 'steady'
-
-        self.water.manage_precipitation(precipitation_type, amount, pattern)
-
-        self.assertEqual(self.water.current_volume, self.water.tank_capacity,
-                         "Water volume should not exceed tank capacity")
+        with self.assertRaises(ValueError, msg="Current volume cannot exceed the capacity."):
+            self.water.manage_precipitation(precipitation_type, amount, pattern)
 
 class TestWaterEvaporationManagement(unittest.TestCase):
     """
@@ -455,6 +580,9 @@ class TestWaterEvaporationManagement(unittest.TestCase):
 
         # Set the water temperature for the test case
         self.water.temperature = water_temperature
+
+        # Set an initial water volume greater than 0
+        self.water.current_volume = 100
 
         # Use the Water class to calculate evaporation
         water_evaporated = self.water.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
@@ -842,6 +970,302 @@ class TestWaterQualityMonitor(unittest.TestCase):
         self.assertTrue(monitor.output_status() != {}, 'Output status should return a not empty dictionary')
         self.assertFalse(all(['OK' in item for item in monitor.output_status().values()]),
                         'Output status value should not contain OK for all values')
+
+class TestWaterStorageManagement(unittest.TestCase):
+    def setUp(self):
+        initial_nutrients = 50
+        tank_capacity = 100
+        self.water_tank = Water(initial_nutrients, tank_capacity)
+
+    def test_add_rain_precipitation(self):
+        """
+        Test adding rain precipitation to the water tank.
+    
+        This test ensures that precipitation in the form of rain increases
+        the tank's water volume correctly, given the rain amount.
+        
+        Test Parameters:
+        - Rain amount: 10 liters
+        - Precipitation type: 'rain'
+    
+        Procedure:
+        - Retrieve the initial water volume before precipitation.
+        - Simulate the addition of rain using the `manage_precipitation` method.
+        - Calculate the expected volume after precipitation.
+        - Compare the actual water volume to the expected value.
+    
+        Assertions:
+        - The water tank's current volume should match the calculated expected volume.
+    
+        Raises:
+        AssertionError: If the calculated volume does not match the tank's actual volume after precipitation.
+        """
+        # Define the rain amount to be added (in liters)
+        rain_amount = 10
+    
+        # Retrieve the current water volume before precipitation
+        current_volume = self.water_tank.current_volume
+    
+        # Simulate the addition of rain to the tank
+        self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+    
+        # Calculate the expected volume after precipitation
+        expected_volume = current_volume + rain_amount
+    
+        # Assert that the tank's current volume matches the expected volume
+        self.assertEqual(expected_volume,
+                         self.water_tank.current_volume,
+                         f'After rain amount {rain_amount} liters, the volume should be {expected_volume} '
+                         f'from previous volume {current_volume}')
+
+    def test_add_rain_precipitation_over_capacity(self):
+        """
+        Test handling of rain precipitation exceeding the tank's capacity.
+
+        This test verifies the following:
+        - Adding rain that exceeds the tank's predefined capacity raises a ValueError.
+        - The water tank's volume does not exceed its maximum capacity after attempting
+          to add excessive precipitation.
+        - The appropriate error message is raised when the remaining capacity is insufficient.
+
+        Test Parameters:
+        - Rain amount: 110 liters
+        - Precipitation type: 'rain'
+
+        Assertions:
+        - A ValueError is raised when the rain amount exceeds the tank's capacity.
+        - The error message is "Current volume cannot exceed the capacity."
+        """
+        # Set the rain amount to be added to the tank
+        rain_amount = 110
+
+        # Expect Value error the rain amount exceeded the capacity
+        with self.assertRaises(ValueError, msg="Current volume should not exceed tank's capacity.") as context:
+            # Add precipitation of rain to the tank using the appropriate method
+            self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+
+        # Ensure the exception message matches when current volume is 0
+        self.assertEqual(str(context.exception), "Current volume cannot exceed the tank's capacity.")
+
+    def test_add_rain_precipitation_over_capacity_overflow_value(self):
+        expected_overflow_volume = 50
+        rain_amount = self.water_tank.tank_capacity + expected_overflow_volume
+
+        with self.assertRaises(ValueError, msg="Current volume should not exceed tank's capacity."):
+            self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+
+        self.assertEqual(expected_overflow_volume, self.water_tank.overflow_volume,
+                         f'Current overflow volume should be {expected_overflow_volume}.')
+
+    def test_evaporation(self):
+        """
+        Test the evaporation functionality of the Water class.
+    
+        This test case verifies the following:
+        - Evaporation reduces the current water volume correctly.
+        - It calculates the evaporated water using provided environmental parameters
+          like air temperature, surface area, relative humidity, and time elapsed.
+        - It ensures the final water volume matches the expected result based on
+          the evaporation calculations.
+        """
+        # Set the initial water volume in the tank
+        current_volume = 100
+        self.water_tank.current_volume = current_volume
+    
+        # Define environmental parameters for evaporation
+        air_temp = 30  # Air temperature in degrees Celsius
+        surface_area = 10  # Surface area of exposed water in sq. meters
+        rel_humidity = 0.5  # Relative humidity as a fraction
+        time_elapsed = 10000  # Time elapsed in seconds
+    
+        # Perform evaporation calculation and get the water evaporated
+        water_evaporated = self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
+    
+        # Calculate the expected water volume after evaporation
+        expected_volume = current_volume - water_evaporated
+    
+        # Assert that the water volume matches the expected volume
+        self.assertEqual(expected_volume,
+                         self.water_tank.current_volume,
+                         f'After evaporation amount {water_evaporated} liters, the volume should be '
+                         f'{expected_volume} from previous volume {current_volume}')
+
+    def test_evaporation_empty_tank(self):
+        """
+        Test the evaporation functionality for an empty water tank.
+    
+        This test ensures that attempting to evaporate water from an empty tank raises a ValueError.
+        It verifies the robustness of the `evaporate` method in handling situations where there is
+        insufficient water for evaporation.
+    
+        Raises:
+            ValueError: If evaporation is attempted with zero current volume.
+        """
+        # Define environmental parameters for evaporation
+        air_temp = 30  # Air temperature in degrees Celsius
+        surface_area = 10  # Surface area of the exposed water in square meters
+        rel_humidity = 0.5  # Relative humidity as a fraction
+        time_elapsed = 10000  # Time elapsed in seconds
+    
+        # Expect a ValueError since the water tank is empty (current_volume = 0 by default)
+        with self.assertRaises(ValueError) as context:
+            self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed)
+
+        # Ensure the exception message matches when current volume is 0
+        self.assertEqual(str(context.exception), "Current volume must be non-negative.")
+    
+    def test_water_underflow_management(self):
+        """
+        Test water underflow management in the tank.
+    
+        This test verifies that extracting water from the tank works as expected when the underflow capacity threshold
+        is enforced. If water extraction exceeds the underflow threshold, a ValueError is raised.
+    
+        Steps:
+        - Add 50 liters of precipitation to the tank.
+        - Attempt to extract an amount exceeding the underflow capacity threshold.
+        - Verify that a ValueError is raised with the appropriate error message.
+    
+        Assertions:
+        - A ValueError is raised if the water amount extracted exceeds the underflow threshold.
+        """
+        self.water_tank.manage_precipitation('rain', 50)
+        with self.assertRaises(ValueError, 
+                               msg="The current volume to extract cannot exceed the underflow capacity threshold."):
+            self.water_tank.extract_water(45)
+
+    def test_water_tank_from_empty_to_full(self):
+        """
+        Test the behavior of the water tank when transitioning from empty to full.
+    
+        This test iterates over a range of values from 0 (empty tank) to the tank's maximum capacity,
+        verifying the `is_empty` and `is_full` properties of the water tank. It ensures that:
+        - The tank is marked as empty when the current volume is less than or equal to the underflow capacity threshold.
+        - The tank is marked as full when the current volume exceeds the overflow capacity threshold.
+        - All other states are categorized appropriately as neither empty nor full.
+        """
+        for increment in range(self.water_tank.tank_capacity + 1):  # Iterate from 0 to the tank’s capacity
+            with self.subTest(increment=increment):
+                self.water_tank.current_volume = increment  # Set the tank volume at each step
+    
+                # Validate the is_empty property
+                if increment <= self.water_tank.underflow_capacity_threshold:
+                    self.assertTrue(self.water_tank.is_empty, 
+                                    f"Tank should be empty when volume is {increment} or below the threshold.")
+                else:
+                    self.assertFalse(self.water_tank.is_empty, 
+                                     f"Tank should not be empty when volume is above the threshold.")
+    
+                # Validate the is_full property
+                if increment >= self.water_tank.tank_capacity - self.water_tank.overflow_capacity_threshold:
+                    self.assertTrue(self.water_tank.is_full, 
+                                    f"Tank should be full when volume is {increment} or above the threshold.")
+                else:
+                    self.assertFalse(self.water_tank.is_full, 
+                                     f"Tank should not be full when volume is below the threshold.")
+
+class TestWaterAddWater(unittest.TestCase):
+    """
+    Unit tests for the `add_water` method in the Water class.
+    """
+
+    def setUp(self):
+        """
+        Set up a Water instance for testing.
+        """
+        self.water_tank = Water(initial_nutrients=50, tank_capacity=200)
+        self.water_tank.current_volume = 100  # Initial water level set to 100 for testing.
+
+    def test_add_valid_water_volume(self):
+        """
+        Test adding water with a valid volume.
+        """
+        initial_volume = self.water_tank.current_volume
+        volume_to_add = 50
+
+        self.water_tank.add_water(volume_to_add)
+
+        expected_volume = initial_volume + volume_to_add
+        self.assertEqual(expected_volume, self.water_tank.current_volume,
+                         f"After adding {volume_to_add} liters, the volume should be {expected_volume}.")
+        self.assertEqual(self.water_tank.current_volume, expected_volume,
+                         "Current volume should match the result of adding water.")
+
+    def test_add_water_causes_overflow(self):
+        """
+        Test adding water that exceeds the tank's capacity.
+        """
+        volume_to_add = 150  # Exceeds current available capacity.
+        with self.assertRaises(ValueError, msg="Adding water beyond capacity should raise ValueError."):
+            self.water_tank.add_water(volume_to_add)
+
+    def test_add_invalid_water_volume(self):
+        """
+        Test adding invalid water volumes (negative or zero values).
+        """
+        invalid_volumes = [-10, 0]
+        for volume in invalid_volumes:
+            with self.subTest(volume=volume):
+                with self.assertRaises(ValueError, msg=f"Adding {volume} liters should raise ValueError."):
+                    self.water_tank.add_water(volume)
+
+class TestWaterExtractWater(unittest.TestCase):
+    """
+    Unit tests for the `extract_water` method in the Water class.
+    """
+
+    def setUp(self):
+        """
+        Set up a Water instance for testing.
+        """
+        self.water_tank = Water(initial_nutrients=50, tank_capacity=200)
+        self.water_tank.manage_precipitation('rain', 100, 'steady')
+
+    def test_extract_valid_volume(self):
+        """
+        Test extracting water when the current volume is within allowable range.
+        """
+        initial_volume = self.water_tank.current_volume
+        volume_to_extract = 50
+
+        extracted_volume = self.water_tank.extract_water(volume_to_extract)
+
+        self.assertEqual(extracted_volume, volume_to_extract,
+                         f"Extracted volume should be {volume_to_extract}.")
+        self.assertEqual(self.water_tank.current_volume, initial_volume - volume_to_extract,
+                         f"Current volume should decrease by {volume_to_extract}.")
+
+    def test_extract_underflow_volume(self):
+        """
+        Test extracting water when the volume goes below the underflow threshold.
+        """
+        water_amount_to_extract = (self.water_tank.current_volume - self.water_tank.underflow_capacity_threshold) + 10
+        with self.assertRaises(ValueError, msg="Extracting volume below the underflow threshold should raise ValueError."):
+            self.water_tank.extract_water(water_amount_to_extract)
+
+    def test_extract_invalid_volume(self):
+        """
+        Test extracting invalid water volume (negative or exceeding the current volume).
+        """
+        invalid_volumes = [-10, self.water_tank.current_volume + 1]
+        for volume in invalid_volumes:
+            with self.subTest(volume=volume):
+                with self.assertRaises(ValueError, msg=f"Extracting volume {volume} should raise ValueError."):
+                    self.water_tank.extract_water(volume)
+
+    def test_extract_entire_volume_forcing_underflow_capacity_threshold(self):
+        """
+        Test extracting the entire current water volume.
+        """
+        initial_volume = self.water_tank.current_volume
+
+        extracted_volume = self.water_tank.extract_water(initial_volume, True)
+
+        self.assertEqual(extracted_volume, initial_volume,
+                         f"Extracted volume should match the entire tank volume of {initial_volume}.")
+        self.assertEqual(self.water_tank.current_volume, 0,
+                         "Current volume should be 0 after extracting the entire volume.")
+
 
 
 if __name__ == '__main__':

@@ -35,7 +35,7 @@
 ### 1.4 Water Circulation
 - **Pumping**
   - [ ] Simulate water movement with realistic flow rates.
-- **Biofiltration**
+- **Bio filtration**
   - [ ] Implement biological filtration processes.
 
 ### 1.5 Aeroponic Integration

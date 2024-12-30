@@ -9,7 +9,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 | **Python Fundamentals**                     | 9.0               | Syntax and Basic Data Types              | 9.0                  |
 |                                             |                   | Control Flow (Loops, Conditionals)       | 9.0                  |
 |                                             |                   | Functions (Defining and Calling)         | 9.0                  |
-|                                             |                   | Basic Debugging and Error Identification | 8.5                  |
+|                                             |                   | Basic Debugging and Error Identification | 9.0                  |
 | **Intermediate Python**                     | 8.0               | Modules and Packages                     | 8.0                  |
 |                                             |                   | File I/O                                 | 8.5                  |
 |                                             |                   | Error Handling                           | 9.0                  |

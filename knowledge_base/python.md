@@ -16,7 +16,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Basic Regular Expressions                | 7.5                  |
 | **Advanced Python Programming**             | 9.0               | Object-Oriented Programming (OOP)        | 9.6                  |
 |                                             |                   | Lambda and Functional Programming        | 8.5                  |
-|                                             |                   | Closures                                 | 7.5                  |
+|                                             |                   | Closures                                 | 8.5                  |
 |                                             |                   | Decorators                               | 9.0                  |
 |                                             |                   | Metaclasses and Dynamic Attributes       | 6.0                  |
 |                                             |                   | Context Managers                         | 9.0                  |

@@ -1,5 +1,7 @@
 from src.simulation.water.water_property_range import WaterPropertyRange
 from src.simulation.water.water_tank import WaterTank
+from functools import wraps
+
 
 class WaterDissolvedElementsMonitor:
     def __init__(self, water_tank: WaterTank, dissolved_elements: dict):
@@ -7,6 +9,61 @@ class WaterDissolvedElementsMonitor:
             raise TypeError("The `water_tank` parameter must be a `WaterTank` instance.")
         self.water_tank = water_tank
         self.set_dissolved_elements(dissolved_elements)
+
+        # Track the initial volume of the water to handle proportional updates
+        self._last_known_volume = self.water_tank.current_volume
+
+        # Decorate the Water instance's `evaporate` method
+        self.decorate_evaporate_method()
+
+    def _get_dissolved_element_properties(self):
+        """
+        Retrieves all properties of the WaterDissolvedElementsMonitor instance that represent
+        dissolved element concentrations. These are attributes that do not contain "_range".
+        """
+        return [
+            attr.removeprefix('_').removesuffix('_dissolved_element')
+            for attr in self.__dict__.keys()
+            if not attr.endswith("_range") and attr.endswith("_dissolved_element")
+        ]
+
+    def decorate_evaporate_method(self):
+        """
+        Decorates the evaporate method of the Water instance within the WaterTank
+        to automatically adjust dissolved element concentrations after evaporation.
+        """
+        water_instance = self.water_tank._water_instance  # Access the Water instance
+        original_evaporate = water_instance.evaporate  # Store the original evaporate method
+
+        @wraps(original_evaporate)  # Preserve metadata of the original method
+        def evaporate_with_concentration_update(*args, **kwargs):
+            # Call the original evaporate method and get the amount evaporated
+            evaporated_water = original_evaporate(*args, **kwargs)
+
+            # Adjust the dissolved element concentrations
+            new_volume = self.water_tank.current_volume
+
+            # Handle edge cases (no volume left or no evaporation occurred)
+            if new_volume <= 0:
+                # Set all element concentrations to 0 if no water remains
+                for element in self._get_dissolved_element_properties():
+                    setattr(self, element, 0)
+            else:
+                # Update concentrations based on volume reduction
+                for element in self._get_dissolved_element_properties():
+                    # Calculate updated concentration
+                    current_concentration = getattr(self, element)
+                    concentration_reduction = current_concentration * (1 - (new_volume / self._last_known_volume))
+                    new_concentration = max(0, current_concentration - concentration_reduction)
+                    setattr(self, element, new_concentration)
+
+            # Update the tracked volume
+            self._last_known_volume = new_volume
+
+            return evaporated_water  # Return the result from the original method
+
+        # Replace the original evaporate method with the decorated one
+        water_instance.evaporate = evaporate_with_concentration_update
 
     def set_dissolved_elements(self, dissolved_elements: dict):
         """
@@ -35,7 +92,7 @@ class WaterDissolvedElementsMonitor:
                                                              "upper_bound": element_dict['max']}
             def create_value_getter(e):  # Capture loop variable
                 def value_getter(class_instance):
-                    return class_instance.__dict__.get(f"_{e}", 0)
+                    return class_instance.__dict__.get(f"_{e}_dissolved_element", 0)
 
                 return value_getter
 
@@ -48,7 +105,7 @@ class WaterDissolvedElementsMonitor:
                     value_range = class_instance.__dict__.get(f"_{e}_range", None)
                     if value_range is not None:
                         value_range.check_property_value(value)
-                    class_instance.__dict__[f"_{e}"] = value
+                    class_instance.__dict__[f"_{e}_dissolved_element"] = value
 
                 return value_setter
 
@@ -93,5 +150,6 @@ class WaterDissolvedElementsMonitor:
             ))
 
             # Use the dynamically defined property setters to initialize values
-            setattr(self, element, initial_value)
             setattr(self, f"{element}_range", element_range)
+            setattr(self, element, initial_value)
+

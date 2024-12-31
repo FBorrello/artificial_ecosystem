@@ -3,14 +3,19 @@
 import unittest
 from random import randint
 
-from src.simulation.water import Water, WaterPropertyRange, WaterQualityMonitor, WaterTank
+from src.simulation.water.water import Water
+from src.simulation.water.water_property_range import WaterPropertyRange
+from src.simulation.water.water_quality_monitor import WaterQualityMonitor
+from src.simulation.water.water_tank import WaterTank
+from src.simulation.water.water_dissolved_elements_monitor import WaterDissolvedElementsMonitor
 
 
 class TestWaterPropertyRange(unittest.TestCase):
     """
     Unit tests for the WaterPropertyRange class, ensuring correct initialization and validation of property ranges.
     """
-    properties_ranges = WaterPropertyRange.properties_ranges
+    def setUp(self):
+        self.properties_ranges = WaterPropertyRange.properties_ranges
 
     def test_init_property_range(self):
         """
@@ -1355,7 +1360,108 @@ class TestWaterFishTank(unittest.TestCase):
                 self.assertAlmostEqual(expected_evaporation_rate, evaporation_rate, 10,
                                  f"Evaporation rate should be {expected_evaporation_rate} but is {evaporation_rate}")
     
-    
+class TestWaterDissolvedElementsTracker(unittest.TestCase):
+    def setUp(self):
+        self.initial_properties_ranges = {property_range_name: property_range
+                                     for property_range_name, property_range
+                                     in WaterPropertyRange.properties_ranges.items()}
+        self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
+        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        self.water_dissolved_elements = {
+            # Macronutrients
+            'ammonia': {'min': 0.1, 'max': 1, 'initial': 0.02},
+            'nitrate': {'min': 0.1, 'max': 50, 'initial': 10},
+            'nitrite': {'min': 0.1, 'max': 0.5, 'initial': 0.01},
+            'phosphate': {'min': 0.1, 'max': 2, 'initial': 0.05},
+        
+            # Micronutrients
+            'potassium': {'min': 1, 'max': 5, 'initial': 2},
+            'iron': {'min': 0.1, 'max': 0.5, 'initial': 0.1},
+            'magnesium': {'min': 2, 'max': 10, 'initial': 5},
+            'calcium': {'min': 20, 'max': 150, 'initial': 40},
+        
+            # Pollutants from fish metabolism and decomposition
+            'hydrogen_sulfide': {'min': 0.1, 'max': 0.5, 'initial': 0.1},
+            'organic_debris': {'min': 0.1, 'max': 100, 'initial': 5},
+
+            # Dissolved gas
+            'oxygen': {'min': 0.1, 'max': 100, 'initial': 50},
+            'carbon_dioxide': {'min': 0.1, 'max': 100, 'initial': 10}
+        }
+        self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(self.water_tank, self.water_dissolved_elements)
+
+    def tearDown(self):
+        WaterPropertyRange.properties_ranges = self.initial_properties_ranges
+
+    def test_init_empty_dict_water_dissolved_elements(self):
+        water_dissolved_elements = {}
+        self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
+        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        with self.assertRaises(ValueError, msg="Empty dictionary should raise ValueError.") as context:
+            self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(self.water_tank, water_dissolved_elements)
+        self.assertEqual(str(context.exception), "The dissolved_elements dictionary cannot be empty.")
+
+    def test_init_invalid_type_water_dissolved_elements(self):
+        water_dissolved_elements = []
+        self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
+        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        error_msg = "water_dissolved_elements not dictionary should raise TypeError."
+        with self.assertRaises(TypeError, msg=error_msg) as context:
+            self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(self.water_tank, water_dissolved_elements)
+        self.assertEqual(str(context.exception), "The dissolved_elements parameter must be a dictionary.")
+
+    def test_init_None_water_dissolved_elements(self):
+        with self.assertRaises(TypeError, msg="Invalid water_tank argument should raise TypeError.") as context:
+            self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(None,
+                                                                            self.water_dissolved_elements)
+        self.assertEqual(str(context.exception), "The `water_tank` parameter must be a `WaterTank` instance.")
+
+    def test_add_dissolved_elements_value_within_range(self):
+        for element in self.water_dissolved_elements:
+            with self.subTest(element=element):
+                min_value = int(self.water_dissolved_elements[element]['min'] * 100)
+                max_value = int(self.water_dissolved_elements[element]['max'] * 100)
+                for value in range(min_value, max_value + 1):
+                    value /= 100
+                    setattr(self.dissolved_elements_monitor, element, value)
+                    modified_value = getattr(self.dissolved_elements_monitor, element)
+                    self.assertEqual(value, modified_value,
+                                     f"Modified value for {element} should be {value} "
+                                     f"not {modified_value}")
+
+    def test_add_dissolved_elements_value_out_of_range(self):
+        for element in self.water_dissolved_elements:
+            with self.subTest(element=element):
+                min_value = self.water_dissolved_elements[element]['min']
+                max_value = self.water_dissolved_elements[element]['max']
+                out_of_range_min_value = min_value - 0.01
+                error_msg = f"Value for {element} should be between {min_value} and {max_value}"
+                with self.assertRaises(ValueError, msg=error_msg) as context:
+                    setattr(self.dissolved_elements_monitor, element, out_of_range_min_value)
+                error_msg = f"{out_of_range_min_value} must be greater than or equal to {min_value} for {element}."
+                self.assertEqual(str(context.exception), error_msg)
+                out_of_range_max_value = max_value + 0.01
+                with self.assertRaises(ValueError, msg=error_msg) as context:
+                    setattr(self.dissolved_elements_monitor, element, out_of_range_max_value)
+                error_msg = f"{out_of_range_max_value} must be less than or equal to {max_value} for {element}."
+                self.assertEqual(str(context.exception), error_msg)
+
+    def test_add_dissolved_elements_value_negative_number(self):
+        for element in self.water_dissolved_elements:
+            with self.subTest(element=element):
+                error_msg = f"Value for {element} should be a non-negative number."
+                with self.assertRaises(ValueError, msg=error_msg) as context:
+                    setattr(self.dissolved_elements_monitor, element, -1)
+                self.assertEqual(str(context.exception), f"{element} concentration must be non-negative.")
+
+    def test_add_dissolved_elements_type_error(self):
+        for element in self.water_dissolved_elements:
+            with self.subTest(element=element):
+                initial_value = getattr(self.dissolved_elements_monitor, element)
+                error_msg = f"Setting {element} to a non-numeric value should raise TypeError."
+                with self.assertRaises(TypeError, msg=error_msg) as context:
+                    setattr(self.dissolved_elements_monitor, element, str(initial_value))
+                self.assertEqual(str(context.exception),f"{element} concentration must be a numeric value.")
 
 
 if __name__ == '__main__':

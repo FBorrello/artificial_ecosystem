@@ -1369,19 +1369,19 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
         self.water_tank.manage_precipitation('rain', 4000, 'steady')
         self.water_dissolved_elements = {
             # Macronutrients
-            'ammonia': {'min': 0.1, 'max': 1, 'initial': 0.02},
+            'ammonia': {'min': 0.1, 'max': 1, 'initial': 0.2},
             'nitrate': {'min': 0.1, 'max': 50, 'initial': 10},
-            'nitrite': {'min': 0.1, 'max': 0.5, 'initial': 0.01},
-            'phosphate': {'min': 0.1, 'max': 2, 'initial': 0.05},
+            'nitrite': {'min': 0.1, 'max': 0.5, 'initial': 0.2},
+            'phosphate': {'min': 0.1, 'max': 2, 'initial': 0.5},
         
             # Micronutrients
             'potassium': {'min': 1, 'max': 5, 'initial': 2},
-            'iron': {'min': 0.1, 'max': 0.5, 'initial': 0.1},
+            'iron': {'min': 0.1, 'max': 0.5, 'initial': 0.2},
             'magnesium': {'min': 2, 'max': 10, 'initial': 5},
             'calcium': {'min': 20, 'max': 150, 'initial': 40},
         
             # Pollutants from fish metabolism and decomposition
-            'hydrogen_sulfide': {'min': 0.1, 'max': 0.5, 'initial': 0.1},
+            'hydrogen_sulfide': {'min': 0.1, 'max': 0.5, 'initial': 0.2},
             'organic_debris': {'min': 0.1, 'max': 100, 'initial': 5},
 
             # Dissolved gas
@@ -1462,6 +1462,22 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
                 with self.assertRaises(TypeError, msg=error_msg) as context:
                     setattr(self.dissolved_elements_monitor, element, str(initial_value))
                 self.assertEqual(str(context.exception),f"{element} concentration must be a numeric value.")
+
+    def test_evaporation_affect_dissolved_elements_concentration(self):
+        dissolved_elements = self.dissolved_elements_monitor._get_dissolved_element_properties()
+        dissolved_elements = {element: getattr(self.dissolved_elements_monitor, element)
+                              for element in dissolved_elements}
+        air_temp = 30
+        surface_area = self.water_tank.water_surface_area
+        rel_humidity = 0.5
+        time_elapsed_sec = 3600
+        self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
+        new_dissolved_elements = {element: getattr(self.dissolved_elements_monitor, element)
+                                  for element in dissolved_elements}
+        for element in new_dissolved_elements:
+            with self.subTest(element=element):
+                self.assertLess(new_dissolved_elements[element], dissolved_elements[element],
+                                f"Dissolved element {element} should decrease.")
 
 
 if __name__ == '__main__':

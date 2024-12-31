@@ -22,7 +22,7 @@
 - **Precipitation Management**
   - [X] `manage_precipitation(self, precipitation_type, amount, pattern)`: Simulates and manages precipitation events, including variable rainfall based on seasonal data or user-defined patterns, and considers snow accumulation and melting.
 - **Storage Management**
-  - [ ] Track water volume, ensuring it remains within capacity limits.
+  - [X] Track water volume, ensuring it remains within capacity limits.
 
 ### 1.3 Water Quality Management
 - **Water Quality Monitoring**

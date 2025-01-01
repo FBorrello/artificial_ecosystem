@@ -19,6 +19,7 @@ class Water:
         self._tds = 0  # Default TDS value
         self.is_empty = True
         self.is_full = False
+        self._water_status = {}
 
     @property
     def temperature(self):
@@ -389,7 +390,7 @@ class Water:
         Returns:
             dict: A dictionary summarizing the current status of the water system.
         """
-        return {
+        self._water_status = {
             "temperature": self.temperature,
             "ph": self.ph,
             "turbidity": self.turbidity,
@@ -403,6 +404,7 @@ class Water:
             "tank_capacity": self.tank_capacity,
             "overflow_volume": self.overflow_volume
         }
+        return self._water_status
 
     def update_water_viscosity(self):
         """

@@ -49,7 +49,6 @@ class WaterTank(Water):
         self._decorate_evaporate()
         self._tank_status = {}
 
-
     @property
     def status(self):
         """
@@ -112,26 +111,50 @@ class WaterTank(Water):
         return self.tank_depth
 
     def _decorate_evaporate(self):
-        original_evaporate = self.evaporate  # Store the original evaporate method
+        """
+        A method that decorates the `evaporate` method to track and calculate additional metrics
+        such as total evaporated water and evaporation rate. This allows the tank to 
+        monitor evaporation rates under varying conditions like air temperature.
+    
+        The decorated method also maintains a record of evaporation metrics in a dictionary.
+        """
+        # Store the original `evaporate` method for use in decoration
+        original_evaporate = self.evaporate
+    
         @wraps(original_evaporate)
         def evaporate_with_evaporation_tracker(*args, **kwargs):
-            # Invoke the 'evaporate' method and track evaporated water
+            """
+            A wrapper function around the `evaporate` method to track evaporated water
+            and compute evaporation metrics such as evaporation rate, updated using
+            the tank's water surface area and input temperature.
+    
+            Args:
+                *args: Positional arguments passed to the original `evaporate` method.
+                **kwargs: Keyword arguments passed to the original `evaporate` method.
+    
+            Returns:
+                float: The amount of water evaporated in liters.
+            """
+            # Invoke the original `evaporate` method and capture the water evaporated
             water_evaporated = original_evaporate(*args, **kwargs)
+            
+            # Update the tracked total water evaporation
             self.total_water_evaporated += water_evaporated
-
-            # Extract `air_temp` and `time_elapsed_sec` for metrics
+    
+            # Extract relevant parameters (`air_temp` and `time_elapsed_sec`) from arguments
             air_temp = kwargs.get("air_temp", args[0] if args else 0)
             time_elapsed_sec = kwargs.get("time_elapsed_sec", args[-1] if args else 1)
-
-            # Calculate evaporation rate if evaporation occurred
-            if self.water_surface_area > 0 and water_evaporated > 0:
+    
+            # Calculate and record the evaporation rate if evaporation occurred
+            if self.water_surface_area > 0 and water_evaporated > 0:  # Ensure valid conditions
                 evaporation_rate = (water_evaporated / self.water_surface_area) / time_elapsed_sec
-                self.evaporation_rates[air_temp] = evaporation_rate
-
+                self.evaporation_rates[air_temp] = evaporation_rate  # Store result by temperature
+    
+            # Return the amount of water evaporated for further use
             return water_evaporated
-
+    
+        # Replace the `evaporate` method with the decorated version
         self.evaporate = evaporate_with_evaporation_tracker
-
 
     def _define_water_surface_area(self):
         """

@@ -14,18 +14,18 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | File I/O                                 | 8.5                  |
 |                                             |                   | Error Handling                           | 9.0                  |
 |                                             |                   | Basic Regular Expressions                | 7.5                  |
-| **Advanced Python Programming**             | 9.0               | Object-Oriented Programming (OOP)        | 9.6                  |
+| **Advanced Python Programming**             | 9.3               | Object-Oriented Programming (OOP)        | 10.0                 |
 |                                             |                   | Lambda and Functional Programming        | 8.5                  |
-|                                             |                   | Closures                                 | 8.5                  |
-|                                             |                   | Decorators                               | 9.0                  |
+|                                             |                   | Closures                                 | 9.0                  |
+|                                             |                   | Decorators                               | 9.5                  |
 |                                             |                   | Metaclasses and Dynamic Attributes       | 6.0                  |
 |                                             |                   | Context Managers                         | 9.0                  |
-| **Pythonic Idioms and Best Practices**      | 8.5               | List and Dictionary Comprehensions       | 8.5                  |
-|                                             |                   | Generator Functions and Expressions      | 7.5                  |
+| **Pythonic Idioms and Best Practices**      | 9.0               | List and Dictionary Comprehensions       | 9.0                  |
+|                                             |                   | Generator Functions and Expressions      | 8.5                  |
 |                                             |                   | Writing Pythonic Code                    | 8.5                  |
 |                                             |                   | PEP 8 Compliance and Code Style          | 10                   |
 |                                             |                   | Zen of Python Principles                 | 8.0                  |
-| **Testing and Debugging**                   | 9.5               | Testing Frameworks (unittest, pytest)    | 9.5                  |
+| **Testing and Debugging**                   | 9.7               | Testing Frameworks (unittest, pytest)    | 10.0                 |
 |                                             |                   | Mocking and Test Doubles                 | 9.0                  |
 |                                             |                   | Edge Case Testing and Validation         | 9.7                  |
 |                                             |                   | Debugging Strategies and Tools           | 8.7                  |
@@ -33,17 +33,17 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Custom Data Structures Implementation    | 7.0                  |
 |                                             |                   | Algorithmic Thinking                     | 8.0                  |
 |                                             |                   | Algorithm Complexity Analysis            | 6.5                  |
-| **Advanced Topics**                         | 7.5               | Concurrency and Multithreading           | 8.0                  |
+| **Advanced Topics**                         | 7.8               | Concurrency and Multithreading           | 8.0                  |
 |                                             |                   | AsyncIO and Coroutines                   | 3.0                  |
 |                                             |                   | Multiprocessing                          | 6.0                  |
-|                                             |                   | Type Hints and Annotations               | 8.5                  |
+|                                             |                   | Type Hints and Annotations               | 9.0                  |
 |                                             |                   | Metaprogramming                          | 6.0                  |
 |                                             |                   | C Extensions and Low-Level Interfacing   | 5.5                  |
 | **Scientific Computing and Data Analytics** | 7.2               | NumPy and SciPy                          | 4.0                  |
 |                                             |                   | Pandas                                   | 4.5                  |
 |                                             |                   | Matplotlib and Data Visualization        | 4.5                  |
 |                                             |                   | Statistical Analysis                     | 6.5                  |
-| **Practical Applications**                  | 8.7               | Project Building                         | 9.5                  |
+| **Practical Applications**                  | 9.8               | Project Building                         | 10.0                 |
 |                                             |                   | Code Review and Refactoring              | 8.5                  |
 |                                             |                   | Web Development (Django, Flask)          | 7.0                  |
 |                                             |                   | API Development and Integration          | 8.0                  |
@@ -56,9 +56,9 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Algorithm Optimization                   | 7.5                  |
 |                                             |                   | Memory Management                        | 7.5                  |
 |                                             |                   | Parallel and Distributed Computing       | 6.5                  |
-| **Documentation and Code Maintainability**  | 8.0               | Writing Documentation                    | 8.5                  |
+| **Documentation and Code Maintainability**  | 8.5               | Writing Documentation                    | 8.5                  |
 |                                             |                   | Docstrings and API Documentation         | 7.5                  |
-|                                             |                   | Code Readability and Maintainability     | 8.5                  |
+|                                             |                   | Code Readability and Maintainability     | 9.0                  |
 | **Version Control and Collaboration**       | 7.5               | Git Basics (Commits, Branching, Merging) | 7.5                  |
 |                                             |                   | Advanced Git Usage and Workflows         | 7.0                  |
 |                                             |                   | CI/CD Integration                        | 6.5                  |

@@ -32,8 +32,7 @@ class WaterDissolvedElementsMonitor:
         Decorates the evaporate method of the Water instance within the WaterTank
         to automatically adjust dissolved element concentrations after evaporation.
         """
-        water_instance = self.water_tank._water_instance  # Access the Water instance
-        original_evaporate = water_instance.evaporate  # Store the original evaporate method
+        original_evaporate = self.water_tank.evaporate  # Store the original evaporate method
 
         @wraps(original_evaporate)  # Preserve metadata of the original method
         def evaporate_with_concentration_update(*args, **kwargs):
@@ -63,7 +62,7 @@ class WaterDissolvedElementsMonitor:
             return evaporated_water  # Return the result from the original method
 
         # Replace the original evaporate method with the decorated one
-        water_instance.evaporate = evaporate_with_concentration_update
+        self.water_tank.evaporate = evaporate_with_concentration_update
 
     def set_dissolved_elements(self, dissolved_elements: dict):
         """

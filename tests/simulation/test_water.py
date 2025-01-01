@@ -1479,6 +1479,5 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
                 self.assertLess(new_dissolved_elements[element], dissolved_elements[element],
                                 f"Dissolved element {element} should decrease.")
 
-
 if __name__ == '__main__':
     unittest.main()

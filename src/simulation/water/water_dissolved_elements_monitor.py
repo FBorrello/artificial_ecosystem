@@ -8,30 +8,41 @@ class WaterDissolvedElementsMonitor:
         if not isinstance(water_tank, WaterTank):
             raise TypeError("The `water_tank` parameter must be a `WaterTank` instance.")
         self.water_tank = water_tank
-        self.set_dissolved_elements(dissolved_elements)
+        self._set_dissolved_elements(dissolved_elements)
 
         # Track the initial volume of the water to handle proportional updates
         self._last_known_volume = self.water_tank.current_volume
 
         # Decorate the Water instance's `evaporate` method
-        self.decorate_evaporate_method()
+        self._decorate_evaporate_method()
+
+        # Decorate the Water instance's `manage_precipitation` method
+        self._decorate_manage_precipitation()
+
+        # Decorate the Water instance's `add_water` method
+        self._decorate_add_water()
 
     def _get_dissolved_element_properties(self):
         """
         Retrieves all properties of the WaterDissolvedElementsMonitor instance that represent
         dissolved element concentrations. These are attributes that do not contain "_range".
         """
-        return [
-            attr.removeprefix('_').removesuffix('_dissolved_element')
-            for attr in self.__dict__.keys()
-            if not attr.endswith("_range") and attr.endswith("_dissolved_element")
-        ]
+        if not hasattr(self, "_cached_dissolved_properties"):
+            self._cached_dissolved_properties = [
+                attr.removeprefix('_').removesuffix('_dissolved_element')
+                for attr in self.__dict__.keys()
+                if not attr.endswith("_range") and attr.endswith("_dissolved_element")
+            ]
+        return self._cached_dissolved_properties
 
-    def decorate_evaporate_method(self):
+    def _decorate_evaporate_method(self):
         """
         Decorates the evaporate method of the Water instance within the WaterTank
         to automatically adjust dissolved element concentrations after evaporation.
         """
+        if not hasattr(self.water_tank, 'evaporate'):
+            raise AttributeError(f"The method 'evaporate' does not exist in WaterTank.")
+
         original_evaporate = self.water_tank.evaporate  # Store the original evaporate method
 
         @wraps(original_evaporate)  # Preserve metadata of the original method
@@ -52,8 +63,8 @@ class WaterDissolvedElementsMonitor:
                 for element in self._get_dissolved_element_properties():
                     # Calculate updated concentration
                     current_concentration = getattr(self, element)
-                    concentration_reduction = current_concentration * (1 - (new_volume / self._last_known_volume))
-                    new_concentration = max(0, current_concentration - concentration_reduction)
+                    concentration_increment = current_concentration * (1 - (new_volume / self._last_known_volume))
+                    new_concentration = current_concentration + concentration_increment
                     setattr(self, element, new_concentration)
 
             # Update the tracked volume
@@ -64,7 +75,87 @@ class WaterDissolvedElementsMonitor:
         # Replace the original evaporate method with the decorated one
         self.water_tank.evaporate = evaporate_with_concentration_update
 
-    def set_dissolved_elements(self, dissolved_elements: dict):
+    def _decorate_manage_precipitation(self):
+        """
+        Decorates the manage_precipitation method of the WaterTank instance 
+        to update dissolved element concentrations automatically whenever 
+        precipitation occurs, incorporating water volume changes.
+    
+        This ensures that the concentrations of dissolved elements in the water 
+        are recalculated in proportion to the updated water volume after precipitation.
+    
+        Inputs:
+            - *args, **kwargs: Any arguments passed to the original manage_precipitation method.
+        Outputs:
+            - The decorated method does not modify the return value of the original method.
+        """
+        if not hasattr(self.water_tank, 'manage_precipitation'):
+            raise AttributeError(f"The method 'manage_precipitation' does not exist in WaterTank.")
+
+        # Store the original manage_precipitation method
+        original_manage_precipitation = self.water_tank.manage_precipitation
+    
+        # Preserve metadata of the original method
+        wraps(original_manage_precipitation)
+    
+        # Define the wrapped method
+        def manage_precipitation_with_dissolved_elements_concentration_update(*args, **kwargs):
+            # Call the original manage_precipitation method
+            original_manage_precipitation(*args, **kwargs)
+    
+            # Loop through each dissolved element to update its concentration
+            for element in self._get_dissolved_element_properties():
+                # Get the current concentration level
+                current_concentration = getattr(self, element)
+    
+                # Calculate the change in concentration due to precipitation
+                concentration_decrement = current_concentration * (1 - (self.water_tank.current_volume / self._last_known_volume))
+    
+                # Apply the calculated changes to update the concentration
+                new_concentration = current_concentration + concentration_decrement
+    
+                # Set the new concentration value
+                setattr(self, element, new_concentration)
+    
+        # Replace the original manage_precipitation method with the decorated version
+        self.water_tank.manage_precipitation = manage_precipitation_with_dissolved_elements_concentration_update
+
+    def _decorate_add_water(self):
+        """
+        Decorates the `add_water` method of the WaterTank instance 
+        to adjust dissolved element concentrations automatically 
+        whenever water is added, maintaining consistency with the 
+        proportional change in water volume.
+        """
+        if not hasattr(self.water_tank, 'add_water'):
+            raise AttributeError(f"The method 'add_water' does not exist in WaterTank.")
+        
+        # Store the original `add_water` method from WaterTank
+        original_add_water = self.water_tank.add_water
+        
+        # Preserve the original method's metadata
+        wraps(original_add_water)
+    
+        # Define the decorated method
+        def add_water_with_dissolved_elements_concentration_update(*args, **kwargs):
+            # Call the original `add_water` method
+            original_add_water(*args, **kwargs)
+            
+            # Adjust each dissolved element's concentration based on the new volume
+            for element in self._get_dissolved_element_properties():
+                current_concentration = getattr(self, element)
+                
+                # Calculate the decrease in concentration proportional to added water volume
+                concentration_decrement = current_concentration * (1 - (self.water_tank.current_volume / self._last_known_volume))
+                
+                # Update the concentration
+                new_concentration = current_concentration + concentration_decrement
+                setattr(self, element, new_concentration)
+    
+        # Replace the original `add_water` method with the new decorated one
+        self.water_tank.add_water = add_water_with_dissolved_elements_concentration_update
+
+    def _set_dissolved_elements(self, dissolved_elements: dict):
         """
         Dynamically sets dissolved element properties and their ranges for the water tank.
 

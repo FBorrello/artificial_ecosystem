@@ -7,7 +7,6 @@
 #### 1.1.1 Physical Properties
 - **Temperature**
   - [X] Influences biological processes, species distribution, and chemical reactions.
-  - [ ] Implementation considerations include data integration, temporal and spatial variability, feedback loops, sensitivity analysis, and model calibration.
 - **Viscosity**
   - [X] Affects flow dynamics, heat transfer, biological interactions, and chemical dispersion.
   - [X] Considerations include temperature dependency, pressure and salinity effects, computational complexity, and model calibration.
@@ -28,9 +27,9 @@
 - **Water Quality Monitoring**
   - [X] Continuously monitor water quality parameters.
 - **Nutrient Tracking**
-  - [ ] Monitor and adjust levels of key nutrients.
+  - [X] Monitor and adjust levels of key nutrients.
 - **Pollution Management**
-  - [ ] Model pollutant accumulation and removal.
+  - [X] Model pollutant accumulation and removal.
 
 ### 1.4 Water Circulation
 - **Pumping**

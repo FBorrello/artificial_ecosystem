@@ -1,70 +1,81 @@
-# Artificial Ecosystem Project Structure
+
+# Artificial Ecosystem Project Structure and Roadmap
 ```
+
 artificial_ecosystem/
+│   # Folders and files structured based on evolved modular requirements
+├── README.md                        # Updated project description, setup instructions, etc.
+
+├── requirements_simulation.txt      # Dependencies for simulation environment
+├── requirements_hardware.txt        # Dependencies for hardware-based deployment
+├── setup.py                         # Python setup script for modular packaging
 │
-├── README.md                        # Project description, setup instructions, etc.
-├── requirements.txt                 # List of Python packages needed for both simulation and real-world
-├── setup.py                         # Python setup script for packaging (if needed)
+├── src/                             # Core source code ensuring modularity and seamless integration
+├── src/                             # Central source code for the simulation, hardware, and shared logic
 │
-├── src/                             # Source code for both simulation and real-world application
-│   ├── init.py                      # Makes 'src' a Python package
+│   ├── __init__.py                  # Initialization of the 'src' module
+
+│   ├── __init__.py                  # Initialization of core 'src' functionality
 │   ├── main.py                      # Entry point for both simulation and real-world app
 │   │
-│   ├── simulation/                  # Simulation-specific code
-│   │   ├── init.py
-│   │   ├── models.py                # Models for fish, plants, environment
+│   ├── simulation/                  # Represents the simulated ecosystem environment
+│   │   ├── __init__.py
+│   │   ├── models.py                # Represents simulated agents (e.g., fish, plants) and environment interactions
 │   │   ├── sensors.py               # Simulated sensor logic
 │   │   ├── actuators.py             # Simulated actuator logic
 │   │   └── visualization.py         # Visualization of the simulation
 │   │
-│   ├── hardware/                    # Hardware interface for real-world application
+│   ├── hardware/                    # Folder for real-world hardware integration and control logic
 │   │   ├── init.py
-│   │   ├── sensors.py               # Real sensor interface
-│   │   ├── actuators.py             # Real actuator control
+│   │   ├── sensors_interface.py     # Sensor abstraction for real-world interaction
+│   │   ├── actuator_control.py      # Controller interfaces for handling actuators
 │   │   └── hardware_interface.py    # General hardware control logic
 │   │
-│   ├── common/                      # Shared logic between simulation and real-world
-│   │   ├── init.py
-│   │   ├── ecosystem.py             # Core ecosystem logic
+│   ├── shared_logic/                # Contains shared libraries and utilities between simulation & hardware
+│   │   ├── __init__.py
+│   │   ├── ecosystem_core.py        # Common behavioral logic for base ecosystem dynamics
 │   │   └── utils.py                 # Utility functions
 │   │
-│   └── web/                         # Web interface
-│       ├── init.py
-│       ├── app.py                   # Flask or Django application
-│       └── templates/               # HTML templates for web UI
+│   └── web_interface/               # Frontend and backend integration for ecosystem user interaction
+│       ├── __init__.py
+│       ├── web_app.py               # Flask or Django application
+│       └── templates/               # HTML templates supporting the web-based application
 │
 ├── tests/                           # Tests for both simulation and real-world code
 │   ├── init.py
-│   ├── test_simulation.py           # Tests for simulation
+│   ├── test_sim_env.py              # Refactored tests for simulation components
 │   └── test_hardware.py             # Tests for hardware interaction
 │
-├── docs/                            # Documentation
-│   ├── setup_guide.md               # How to set up both simulation and real-world environments
-│   └── api_docs.md                  # API documentation if applicable
+├── docs/                            # Detailed project documentation and guides
+├── docs/                            # Refined and detailed project documentation structure
+│
+│   ├── setup_instructions.md        # Installation, setup, and deployment for simulation & hardware environments
 │
 ├── data/                            # Data storage
 │   ├── calibration_data.json        # Example: sensor calibration data
 │   └── logs/                        # Log files from both simulation and real-world
 │
-└── config/                          # Configuration files
-    ├── simulation_config.yml        # Configuration for simulation parameters
-    └── hardware_config.yml          # Configuration for real hardware connections
+└── config/                          # Central configurations for simulation and hardware
+
+    ├── sim_env_config.yml           # Configurations for environmental simulation parameters
+    ├── hw_device_config.yml         # Detailed hardware configurations for device connections
+    └── runtime_settings.yml         # Cross-environment runtime parameters (logging, debug levels)
 ```
 
-### **Explanations and Tips:**
+### **Architecture Considerations and Roadmap:**
+# **Refined Structure for Seamless Simulation-to-Real-World Transition**
 
-- **Modular Approach**: Separate simulation code from hardware interaction code but keep common 
-functionalities in the `common` directory. This modular approach helps in transitioning from 
+- **Modular Design**: Implement a decoupled architecture by isolating simulation, 
+  hardware interactions, and shared logic in respective folders. This simplifies scaling 
 simulation to real-world by allowing you to swap out simulation modules with hardware modules.
 
-- **Configuration Files**: Use YAML or JSON for configurations. This way, you can easily switch 
-between simulation and real-world settings by changing configuration files rather than code.
+- **Configuration Flexibility**: Use editable YAML files (e.g., `simulation_config.yml`, 
+   `hardware_config.yml`) to streamline switching between simulation and hardware without impacting core logic.
 
 - **Shared Code**: The `common` folder contains logic that applies to both simulation and real-world 
 scenarios, like the ecosystem behavior model. This ensures that changes in one environment can be 
-reflected in the other without code duplication.
-
-- **Testing**: Keep tests for both simulation and hardware in separate files but within the same 
+- **Shared Core Logic**: Preserve shared components like the `ecosystem.py` in 
+   the `common` folder to eliminate redundancy and ensure synchronized updates.
 `tests` directory. This helps in ensuring that the transition doesn't break functionality.
 
 - **Documentation**: Detailed setup guides in 'docs' should cover how to switch from simulation 
@@ -79,8 +90,8 @@ can help maintain consistency.
   real-world modes. In your `main.py`, you could check for an environment variable like `MODE` to decide whether 
   to import from `simulation` or `hardware`.
   
-  - **Dependency Injection**: Implement dependency injection where components are passed into 
-  the system rather than created within it. This allows you to inject either simulated or real hardware 
+  - **Dependency Injection**: Establish flexible component injection for transitioning easily 
+    between simulated and hardware modes without altering major architectural workflows.
   components at runtime.
   
   - **Configuration Management**: Write your code so that loading different configurations

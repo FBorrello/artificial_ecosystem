@@ -44,7 +44,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Matplotlib and Data Visualization        | 4.5                  |
 |                                             |                   | Statistical Analysis                     | 6.5                  |
 | **Practical Applications**                  | 9.8               | Project Building                         | 10.0                 |
-|                                             |                   | Code Review and Refactoring              | 8.5                  |
+|                                             |                   | Code Review and Refactoring              | 9.0                  |
 |                                             |                   | Web Development (Django, Flask)          | 7.0                  |
 |                                             |                   | API Development and Integration          | 8.0                  |
 |                                             |                   | Task Automation                          | 8.5                  |

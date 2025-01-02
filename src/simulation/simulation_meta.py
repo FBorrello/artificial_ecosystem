@@ -60,8 +60,55 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         self.water_tank_volume_history = []
         self.simulated_seconds = 1
         self.plot_tasks = dict()
+        self._validate_weather_data()
 
-    def simulate_precipitation(self, precipitation_type, month, month_season_data, air_temp, sampling_rate):
+    def _validate_weather_data(self):
+        """
+        Validates the seasonal weather data in the configuration.
+    
+        Checks that the required keys ('rain', 'snow', 'temperature', and 'humidity')
+        are present for each month's weather data. If any key is missing, a 
+        ValueError is raised indicating the missing key and the corresponding month.
+    
+        Raises:
+            ValueError: If any of the required keys are missing in weather data for a particular month.
+        """
+        required_keys = ['rain', 'snow', 'temperature', 'humidity']
+        for month, data in self.seasonal_weather_data.items():
+            for key in required_keys:
+                if key not in data:
+                    raise ValueError(f"Missing key '{key}' in weather data for {month}")
+    
+    @staticmethod
+    def calculate_snow_density(temp: float) -> float:
+        """
+        Calculates the density of snow based on the given air temperature.
+        
+        Args:
+            temp (float): The air temperature in degrees Celsius.
+        
+        Returns:
+            float: The density of snow (in g/cm³) based on temperature. 
+                - Powder snow: 0.1 for temperatures below -5°C.
+                - Wet snow: 0.3 for temperatures between -5°C and 0°C.
+                - Slush: 0.5 for temperatures above 0°C (near melting point).
+        """
+        if not isinstance(temp, float):
+            raise ValueError("Invalid temperature value. Expected float.")
+
+        if temp < -5:
+            return 0.1  # Powder snow
+        elif -5 <= temp <= 0:
+            return 0.3  # Wet snow
+        else:
+            return 0.5  # Slush (near melting point)
+    
+    def simulate_precipitation(self, 
+                               precipitation_type: str, 
+                               month: str, 
+                               month_season_data: dict, 
+                               air_temp: float, 
+                               sampling_rate: int) -> float:
         """
         Simulates precipitation and its impact on the water tank.
     
@@ -76,21 +123,33 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             float: The amount of precipitation added to the water tank.
         """
         precipitation_season_data = month_season_data.get(precipitation_type)
+        # Calculate the total remaining precipitation seconds based on average days
         total_precipitation_days = precipitation_season_data.get('average_days')
-        total_precipitation_seconds_remaining = max((total_precipitation_days * 24 * 60 * 60) - len(self.simulation_data.get(precipitation_type).get(month) * sampling_rate), 0)
-
+        total_precipitation_seconds_remaining = max(
+            (total_precipitation_days * 24 * 60 * 60) - len(
+                self.simulation_data.get(precipitation_type).get(month) * sampling_rate), 0)
+    
+        # Calculate the total precipitation amount in liters
         total_precipitation_amount_mm = precipitation_season_data.get('total_mm')
         total_precipitation_amount_liters = 0
         if precipitation_type == 'rain':
+            # Rain: Use roof surface to calculate water volume
             total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface
         elif precipitation_type == 'snow':
-            snow_density_factor = 0.1  # Density of snow as a factor of water (10%)
+            # Snow: Apply density factor to calculate equivalent water volume
+            snow_density_factor = self.calculate_snow_density(air_temp)
             total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface * snow_density_factor / 1000
-        remaining_precipitation_amount_liters = max(total_precipitation_amount_liters - sum(self.simulation_data.get(precipitation_type).get(month)), 0)
-
+    
+        # Calculate remaining precipitation amount
+        remaining_precipitation_amount_liters = max(
+            total_precipitation_amount_liters - sum(self.simulation_data.get(precipitation_type).get(month)), 0)
+    
+        # If there is remaining precipitation, simulate distribution over seconds
         if round(remaining_precipitation_amount_liters) > 0 and round(total_precipitation_seconds_remaining) > 0:
             remaining_precipitation_amount_liters_second = remaining_precipitation_amount_liters / total_precipitation_seconds_remaining * sampling_rate
+            # Randomize precipitation patterns (steady or intermittent)
             precipitation_patterns = ['steady', 'intermittent'][random.randrange(0, 2)]
+            # Add randomized precipitation amount
             precipitation_amount = random.randrange(0, int(remaining_precipitation_amount_liters_second * 1000000) * random.randrange(1, 10)) / 1000000
             self.water_tank.manage_precipitation(precipitation_type, precipitation_amount, air_temp, precipitation_patterns)
             return precipitation_amount
@@ -134,7 +193,12 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
                 prev_len = len(data_reference)  # Update tracked length
 
             await asyncio.sleep(1)  # Plot updates every second
-    
+
+    @staticmethod
+    def validate_time_units(unit, valid_units):
+        if unit not in valid_units:
+            raise ValueError(f"Invalid time unit '{unit}'. Supported units are: {', '.join(valid_units)}")
+
     def get_date_time_simulation_data(self) -> tuple[datetime, int, int]:
         """
         Extracts and calculates essential time-based simulation parameters.
@@ -162,11 +226,13 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         # Extract the simulation duration and its unit from the configuration.
         duration = self.duration
         time_unit = self.time_unit
+        self.validate_time_units(time_unit, unit_to_seconds.keys())
         # Convert the simulation duration into seconds.
         sim_duration = unit_to_seconds.get(time_unit.lower(), 1) * duration
         
         # Extract the sample unit and convert it to seconds, defaulting to 1 second if unknown.
         sample_unit = self.sample_unit
+        self.validate_time_units(sample_unit, unit_to_seconds.keys())
         sampling_rate = unit_to_seconds.get(sample_unit.lower(), 1)  # Default to 1 second if unit is unknown
 
         # Return the formatted start date/time, total simulation duration, and sampling rate.
@@ -213,10 +279,18 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             self.simulation_data['snow'][month] = []
 
         if air_temp > 3:
-            rain_amount = self.simulate_precipitation('rain', month, month_season_data, air_temp, sampling_rate)
+            rain_amount = self.simulate_precipitation('rain', 
+                                                      month, 
+                                                      month_season_data, 
+                                                      air_temp, 
+                                                      sampling_rate)
             self.simulation_data['rain'][month].append(rain_amount)
         else:
-            snow_amount = self.simulate_precipitation('snow', month, month_season_data, air_temp, sampling_rate)
+            snow_amount = self.simulate_precipitation('snow', 
+                                                      month, 
+                                                      month_season_data, 
+                                                      air_temp, 
+                                                      sampling_rate)
             self.simulation_data['snow'][month].append(snow_amount)
 
         if air_temp > 0:

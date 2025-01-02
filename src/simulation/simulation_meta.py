@@ -1,5 +1,5 @@
-from typing import Any
-
+import time
+import tkinter
 import matplotlib.pyplot as plt
 import asyncio
 import json
@@ -61,6 +61,17 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         self.simulated_seconds = 1
         self.plot_tasks = dict()
         self._validate_weather_data()
+        self.plot_grid = {'rain_section': {
+                            'row_1': list(),
+                            'row_2': list(),
+                            'row_3': list(),
+                            'row_4': list(),},
+                          'snow_section': {
+                              'row_1': list(),
+                              'row_2': list(),
+                              'row_3': list(),
+                              'row_4': list(),}
+                          }
 
     def _validate_weather_data(self):
         """
@@ -166,9 +177,8 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             time_elapsed_sec (int): The elapsed simulation time in seconds.
         """
         self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
-    
-    @staticmethod
-    async def plot_sim_data(plot_name: str, y_label: str, data_reference: list, main_plot: bool = False, monitor_width=2560, monitor_height=1440):
+
+    async def plot_sim_data(self, plot_name: str, y_label: str, data_reference: list, main_plot: bool = False, monitor_width=2560, monitor_height=1240):
         """
         Asynchronously generates a real-time line plot for simulation data.
     
@@ -191,7 +201,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         plt.ion()  # Enable interactive mode to allow non-blocking updates
         dpi = 100  # Assuming 100 DPI (dots per inch)
         width = monitor_width / 6
-        height = monitor_height / 3 * 2 / 4
+        height = ((monitor_height / 3) * 2) / 4
         if main_plot:
             width = monitor_width
             height = monitor_height / 3
@@ -201,14 +211,44 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         ax.set_ylabel(f'{y_label} liters')  # Label for the vertical axis
         fig.canvas.manager.set_window_title(plot_name)  # Set window title
 
-        # try:
-        #     fig.canvas.manager.window.move(x, y)
-        # except AttributeError:
-        #     print("Window positioning is not supported on your backend.")
+        plt.pause(1)
+        x, y = 0, 0
+        if not main_plot:
+            y = monitor_height / 3 + 35
+            if 'rain' in plot_name:
+                row_counter = 0
+                for row, columns_lst in self.plot_grid.get('rain_section').items():
+                    if len(columns_lst) < 3:
+                        y += row_counter * height + 30 * row_counter
+                        x = len(columns_lst) * width
+                        columns_lst.append((x, y))
+                        break
+                    else:
+                        row_counter += 1
+            elif 'snow' in plot_name:
+                row_counter = 0
+                for row, columns_lst in self.plot_grid.get('snow_section').items():
+                    if len(columns_lst) < 3:
+                        y += row_counter * height + 30 * row_counter
+                        x = len(columns_lst) * width + (monitor_width / 2)
+                        columns_lst.append((x, y))
+                        break
+                    else:
+                        row_counter += 1
 
-        plt.show(block=False)  # Show the plot window without blocking execution
+        def move_window(event):
+            manager = event.canvas.manager
+            if hasattr(manager, 'window') and isinstance(manager.window, tkinter.Tk):
+                manager.window.wm_geometry(f"+{int(x)}+{int(y)}")
+                # Remove plot elements (toolbar, axis, etc.)
+                manager.toolbar.pack_forget()  # Hides the toolbar
+
+        # Inside the `plot_sim_data` method, after creating `fig`:
+        fig.canvas.mpl_connect("draw_event", move_window)
+
+        plt.show(block=False) # Show the plot window without blocking execution
         prev_len = 0  # Track the length of data_reference to detect new data points
-    
+
         while True:
             if len(data_reference) > prev_len:  # Check if new data has been added
                 ax.clear()  # Clear the previous plot
@@ -388,14 +428,16 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
 
                 self.simulated_seconds += sampling_rate
                 date_time += timedelta(seconds=sampling_rate)
-                
 
+        finally:
             # Print completion message
             print("Simulation complete!")
-        finally:
             for name, plot_task in self.plot_tasks.items():
                 plot_task.cancel()  # Stop plotting when the simulation ends.
+
 
 if __name__ == "__main__":
     sim = FishTankSimulator()
     asyncio.run(sim.simulate())
+    # Prevent process termination
+    input("Simulation completed. Press Enter to exit and close windows.")

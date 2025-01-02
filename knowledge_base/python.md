@@ -34,7 +34,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Algorithmic Thinking                     | 8.0                  |
 |                                             |                   | Algorithm Complexity Analysis            | 6.5                  |
 | **Advanced Topics**                         | 7.8               | Concurrency and Multithreading           | 8.0                  |
-|                                             |                   | AsyncIO and Coroutines                   | 3.0                  |
+|                                             |                   | AsyncIO and Coroutines                   | 6.5                  |
 |                                             |                   | Multiprocessing                          | 6.0                  |
 |                                             |                   | Type Hints and Annotations               | 9.0                  |
 |                                             |                   | Metaprogramming                          | 6.0                  |

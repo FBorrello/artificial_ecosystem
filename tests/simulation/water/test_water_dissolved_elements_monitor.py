@@ -28,7 +28,7 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
         self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
 
         # Add water to the tank
-        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        self.water_tank.manage_precipitation('rain', 4000, 15,'steady')
 
         # Define an initial dictionary of dissolved elements with their concentrations
         self.water_dissolved_elements = {
@@ -71,7 +71,7 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
         """
         water_dissolved_elements = {}
         self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
-        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        self.water_tank.manage_precipitation('rain', 4000, 15, 'steady')
         with self.assertRaises(ValueError, msg="Empty dictionary should raise ValueError.") as context:
             self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(self.water_tank, water_dissolved_elements)
         self.assertEqual(str(context.exception), "The dissolved_elements dictionary cannot be empty.")
@@ -83,7 +83,7 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
         """
         water_dissolved_elements = []
         self.water_tank = WaterTank(tank_length=400, tank_width=150, tank_depth=100, tank_type='fish tank')
-        self.water_tank.manage_precipitation('rain', 4000, 'steady')
+        self.water_tank.manage_precipitation('rain', 4000, 15,'steady')
         error_msg = "water_dissolved_elements not dictionary should raise TypeError."
         with self.assertRaises(TypeError, msg=error_msg) as context:
             self.dissolved_elements_monitor = WaterDissolvedElementsMonitor(self.water_tank, water_dissolved_elements)
@@ -190,7 +190,7 @@ class TestWaterDissolvedElementsTracker(unittest.TestCase):
         dissolved_elements = self.dissolved_elements_monitor._get_dissolved_element_properties()
         dissolved_elements = {element: getattr(self.dissolved_elements_monitor, element)
                               for element in dissolved_elements}
-        self.water_tank.manage_precipitation('rain', 1000, 'steady')
+        self.water_tank.manage_precipitation('rain', 1000, 15, 'steady')
         new_dissolved_elements = {element: getattr(self.dissolved_elements_monitor, element)
                                   for element in dissolved_elements}
         for element in new_dissolved_elements:

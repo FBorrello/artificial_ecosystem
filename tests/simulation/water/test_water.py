@@ -370,10 +370,11 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         """Test managing precipitation with rain."""
         precipitation_type = 'rain'
         amount = 20
+        air_temp = 15
         pattern = 'steady'
 
         initial_volume = self.water.current_volume
-        self.water.manage_precipitation(precipitation_type, amount, pattern)
+        self.water.manage_precipitation(precipitation_type, amount, air_temp, pattern)
 
         expected_volume = initial_volume + amount
         self.assertEqual(self.water.current_volume, expected_volume,
@@ -383,16 +384,14 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         """Test managing precipitation with snow."""
         precipitation_type = 'snow'
         amount = 10
+        air_temp = 5
         pattern = 'intermittent'
 
-        # Set temperature to a value above 0 to allow snow melting
-        self.water.temperature = 5
-
         initial_volume = self.water.current_volume
-        self.water.manage_precipitation(precipitation_type, amount, pattern)
+        self.water.manage_precipitation(precipitation_type, amount, air_temp, pattern)
 
         # Calculate expected volume after snow melting
-        melting_rate = int(self.water.temperature ** 2)
+        melting_rate = int(air_temp ** 2)
         expected_melted_snow = min(amount, melting_rate)
         expected_volume = initial_volume + expected_melted_snow
 
@@ -408,9 +407,10 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         """Test precipitation management when it exceeds tank capacity."""
         precipitation_type = 'rain'
         amount = 300  # Exceeds tank capacity
+        air_temp = 15
         pattern = 'steady'
         with self.assertRaises(ValueError, msg="Current volume cannot exceed the capacity."):
-            self.water.manage_precipitation(precipitation_type, amount, pattern)
+            self.water.manage_precipitation(precipitation_type, amount, air_temp, pattern)
 
 class TestWaterEvaporationManagement(unittest.TestCase):
     """
@@ -655,12 +655,13 @@ class TestWaterStorageManagement(unittest.TestCase):
         """
         # Define the rain amount to be added (in liters)
         rain_amount = 10
+        air_temp = 15
     
         # Retrieve the current water volume before precipitation
         current_volume = self.water_tank.current_volume
     
         # Simulate the addition of rain to the tank
-        self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+        self.water_tank.manage_precipitation('rain', rain_amount, air_temp,'steady')
     
         # Calculate the expected volume after precipitation
         expected_volume = current_volume + rain_amount
@@ -691,11 +692,12 @@ class TestWaterStorageManagement(unittest.TestCase):
         """
         # Set the rain amount to be added to the tank
         rain_amount = 110
+        air_temp = 15
 
         # Expect Value error the rain amount exceeded the capacity
         with self.assertRaises(ValueError, msg="Current volume should not exceed tank's capacity.") as context:
             # Add precipitation of rain to the tank using the appropriate method
-            self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+            self.water_tank.manage_precipitation('rain', rain_amount, air_temp, 'steady')
 
         # Ensure the exception message matches when current volume is 0
         self.assertEqual(str(context.exception), "Current volume cannot exceed the tank's capacity.")
@@ -703,9 +705,10 @@ class TestWaterStorageManagement(unittest.TestCase):
     def test_add_rain_precipitation_over_capacity_overflow_value(self):
         expected_overflow_volume = 50
         rain_amount = self.water_tank.tank_capacity + expected_overflow_volume
+        air_temp = 15
 
         with self.assertRaises(ValueError, msg="Current volume should not exceed tank's capacity."):
-            self.water_tank.manage_precipitation('rain', rain_amount, 'steady')
+            self.water_tank.manage_precipitation('rain', rain_amount, air_temp,'steady')
 
         self.assertEqual(expected_overflow_volume, self.water_tank.overflow_volume,
                          f'Current overflow volume should be {expected_overflow_volume}.')
@@ -782,7 +785,7 @@ class TestWaterStorageManagement(unittest.TestCase):
         Assertions:
         - A ValueError is raised if the water amount extracted exceeds the underflow threshold.
         """
-        self.water_tank.manage_precipitation('rain', 50)
+        self.water_tank.manage_precipitation('rain', 50, 15, "steady")
         with self.assertRaises(ValueError, 
                                msg="The current volume to extract cannot exceed the underflow capacity threshold."):
             self.water_tank.extract_water(45)
@@ -872,7 +875,7 @@ class TestWaterExtractWater(unittest.TestCase):
         Set up a Water instance for testing.
         """
         self.water_tank = Water(initial_nutrients=50, tank_capacity=200)
-        self.water_tank.manage_precipitation('rain', 100, 'steady')
+        self.water_tank.manage_precipitation('rain', 100, 25,'steady')
 
     def test_extract_valid_volume(self):
         """

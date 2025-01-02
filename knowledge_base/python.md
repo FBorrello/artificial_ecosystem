@@ -10,7 +10,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Control Flow (Loops, Conditionals)       | 9.0                  |
 |                                             |                   | Functions (Defining and Calling)         | 9.0                  |
 |                                             |                   | Basic Debugging and Error Identification | 9.0                  |
-| **Intermediate Python**                     | 8.0               | Modules and Packages                     | 8.0                  |
+| **Intermediate Python**                     | 8.0               | Modules and Packages                     | 8.5                  |
 |                                             |                   | File I/O                                 | 8.5                  |
 |                                             |                   | Error Handling                           | 9.0                  |
 |                                             |                   | Basic Regular Expressions                | 7.5                  |
@@ -18,11 +18,11 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Lambda and Functional Programming        | 8.5                  |
 |                                             |                   | Closures                                 | 9.0                  |
 |                                             |                   | Decorators                               | 9.5                  |
-|                                             |                   | Metaclasses and Dynamic Attributes       | 6.0                  |
+|                                             |                   | Metaclasses and Dynamic Attributes       | 8.0                  |
 |                                             |                   | Context Managers                         | 9.0                  |
 | **Pythonic Idioms and Best Practices**      | 9.0               | List and Dictionary Comprehensions       | 9.0                  |
 |                                             |                   | Generator Functions and Expressions      | 8.5                  |
-|                                             |                   | Writing Pythonic Code                    | 8.5                  |
+|                                             |                   | Writing Pythonic Code                    | 9.0                  |
 |                                             |                   | PEP 8 Compliance and Code Style          | 10                   |
 |                                             |                   | Zen of Python Principles                 | 8.0                  |
 | **Testing and Debugging**                   | 9.7               | Testing Frameworks (unittest, pytest)    | 10.0                 |
@@ -48,7 +48,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Web Development (Django, Flask)          | 7.0                  |
 |                                             |                   | API Development and Integration          | 8.0                  |
 |                                             |                   | Task Automation                          | 8.5                  |
-| **System Interaction**                      | 7.0               | File System Manipulation                 | 7.5                  |
+| **System Interaction**                      | 7.0               | File System Manipulation                 | 8.0                  |
 |                                             |                   | OS Module and Shell Command Execution    | 7.0                  |
 |                                             |                   | Networking (Sockets, HTTP Requests)      | 6.5                  |
 |                                             |                   | Interfacing with Hardware or APIs        | 6.0                  |
@@ -57,7 +57,7 @@ This document provides a detailed assessment of Python mastery, divided into exp
 |                                             |                   | Memory Management                        | 7.5                  |
 |                                             |                   | Parallel and Distributed Computing       | 6.5                  |
 | **Documentation and Code Maintainability**  | 8.5               | Writing Documentation                    | 8.5                  |
-|                                             |                   | Docstrings and API Documentation         | 7.5                  |
+|                                             |                   | Docstrings and API Documentation         | 8.0                  |
 |                                             |                   | Code Readability and Maintainability     | 9.0                  |
 | **Version Control and Collaboration**       | 7.5               | Git Basics (Commits, Branching, Merging) | 7.5                  |
 |                                             |                   | Advanced Git Usage and Workflows         | 7.0                  |

@@ -168,7 +168,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
     
     @staticmethod
-    async def plot_sim_data(plot_name: str, y_label: str, data_reference):
+    async def plot_sim_data(plot_name: str, y_label: str, data_reference: list, main_plot: bool = False, monitor_width=2560, monitor_height=1440):
         """
         Asynchronously generates a real-time line plot for simulation data.
     
@@ -181,6 +181,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             plot_name (str): The title of the plot.
             y_label (str): The label for the plot's vertical axis.
             data_reference (list): A list that stores the data points to be plotted over time.
+            main_plot (bool, optional): Indicates whether this is the main plot. Defaults to False.
     
         Behavior:
             - Continuously monitors `data_reference` for new data points.
@@ -188,11 +189,23 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             - Runs indefinitely until the simulation ends or the task is canceled.
         """
         plt.ion()  # Enable interactive mode to allow non-blocking updates
-        fig, ax = plt.subplots()  # Create a new figure and axis for the plot
+        dpi = 100  # Assuming 100 DPI (dots per inch)
+        width = monitor_width / 6
+        height = monitor_height / 3 * 2 / 4
+        if main_plot:
+            width = monitor_width
+            height = monitor_height / 3
+        fig, ax = plt.subplots(figsize=(width / dpi, height / dpi))  # Create a new figure and axis for the plot with custom size
         ax.set_title(plot_name)  # Set the plot title
         ax.set_xlabel("Time Steps")  # Label for the horizontal axis
         ax.set_ylabel(f'{y_label} liters')  # Label for the vertical axis
-    
+        fig.canvas.manager.set_window_title(plot_name)  # Set window title
+
+        # try:
+        #     fig.canvas.manager.window.move(x, y)
+        # except AttributeError:
+        #     print("Window positioning is not supported on your backend.")
+
         plt.show(block=False)  # Show the plot window without blocking execution
         prev_len = 0  # Track the length of data_reference to detect new data points
     
@@ -337,7 +350,8 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
                     plot_tasks[plot_name] = asyncio.create_task(
                         self.plot_sim_data(plot_name=plot_name,
                                            y_label=f'{name if name is not None else ""} {key}',
-                                           data_reference=sim_data)
+                                           data_reference=sim_data,
+                                           main_plot=True if name is None else False)
                     )
         return plot_tasks
 

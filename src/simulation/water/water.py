@@ -461,7 +461,10 @@ class Water:
         # Ensure viscosity never goes below a realistic minimum threshold (0.000282) pure water at 100 degrees C
         self.viscosity = max(viscosity_with_tds, 0.000282)
 
-    def manage_precipitation(self, precipitation_type: str, amount: int, pattern: str = 'steady'):
+    def manage_precipitation(self, precipitation_type: str,
+                             amount: int,
+                             air_temperature: int|float,
+                             pattern: str = 'steady'):
         """
         Manages the effect of precipitation (rain or snow) on the water system.
 
@@ -473,6 +476,7 @@ class Water:
         Parameters:
             precipitation_type (str): The type of precipitation ('rain' or 'snow').
             amount (float): The amount of precipitation received (in liters or appropriate unit).
+            air_temperature (int | float): The air temperature in degrees Celsius.
             pattern (str): The pattern of precipitation (e.g., 'steady', 'intermittent').
                            [Note: Currently unused, provided for potential future use.]
 
@@ -495,6 +499,10 @@ class Water:
         elif amount < 0:
             raise ValueError("Amount must be non-negative.")
 
+        # Validate air_temperature
+        if not isinstance(air_temperature, (int, float)):
+            raise TypeError("Air temperature must be a numeric value.")
+
         # Validate pattern
         if pattern not in ['steady', 'intermittent']:
             raise ValueError("Invalid pattern. Must be 'steady' or 'intermittent'.")
@@ -512,17 +520,18 @@ class Water:
             # Snow accumulates in a separate variable
             self.snow_accumulation += amount
 
-            # Simulate snow melting if temperature is above 0°C
-            if self.temperature > 0:  # Snow melts at temperatures greater than 0°C
-                # Determine the amount of snow that melts
-                melting_rate = int(self.temperature ** 2)  # Quadratic relation
-                melted_snow = min(self.snow_accumulation, melting_rate)
-
-                # Add the melted snow to the current water volume
+        # Simulate snow melting if temperature is above 0°C
+        if air_temperature > 0:  # Snow melts at temperatures greater than 0°C
+            # Determine the amount of snow that melts
+            melting_rate = 0.01 * self.snow_accumulation * (air_temperature / (air_temperature + 5))
+            melted_snow = min(self.snow_accumulation, melting_rate)
+        
+            # Add the melted snow to the current water volume
+            if melted_snow > 0:
                 self.current_volume += melted_snow
-
-                # Subtract the melted snow from the remaining snow accumulation
-                self.snow_accumulation -= melted_snow
+        
+            # Subtract the melted snow from the remaining snow accumulation
+            self.snow_accumulation -= melted_snow
 
     def evaporate(self,
                   air_temp: int | float,

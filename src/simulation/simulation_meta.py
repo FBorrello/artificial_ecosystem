@@ -169,30 +169,48 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
     
     @staticmethod
     async def plot_sim_data(plot_name: str, y_label: str, data_reference):
-        """Asynchronous method to plot water volume."""
-        plt.ion()  # Enable interactive mode
-        fig, ax = plt.subplots()
-        ax.set_title(plot_name)
-        ax.set_xlabel("Time Steps")
-        ax.set_ylabel(f'{y_label} liters')
-
-        plt.show(block=False)  # Non-blocking show
-        prev_len = 0
+        """
+        Asynchronously generates a real-time line plot for simulation data.
+    
+        This method creates a non-blocking interactive plot that updates dynamically 
+        as new data points are added to the provided data reference. It is designed 
+        to run as an asynchronous task, allowing other simulation processes to 
+        continue while plotting.
+    
+        Args:
+            plot_name (str): The title of the plot.
+            y_label (str): The label for the plot's vertical axis.
+            data_reference (list): A list that stores the data points to be plotted over time.
+    
+        Behavior:
+            - Continuously monitors `data_reference` for new data points.
+            - Updates the plot in real time as data points are appended to `data_reference`.
+            - Runs indefinitely until the simulation ends or the task is canceled.
+        """
+        plt.ion()  # Enable interactive mode to allow non-blocking updates
+        fig, ax = plt.subplots()  # Create a new figure and axis for the plot
+        ax.set_title(plot_name)  # Set the plot title
+        ax.set_xlabel("Time Steps")  # Label for the horizontal axis
+        ax.set_ylabel(f'{y_label} liters')  # Label for the vertical axis
+    
+        plt.show(block=False)  # Show the plot window without blocking execution
+        prev_len = 0  # Track the length of data_reference to detect new data points
+    
         while True:
-            if len(data_reference) > prev_len:
-                ax.clear()
+            if len(data_reference) > prev_len:  # Check if new data has been added
+                ax.clear()  # Clear the previous plot
                 ax.plot(range(1, len(data_reference) + 1),
                         data_reference,
-                        label=y_label)
-                ax.legend()
-
-                plt.pause(0.001)
-                fig.canvas.draw_idle()  # Mark the figure as "stale," indicating it needs a refresh
-                fig.canvas.flush_events()  # Force update of the graphic canvas
-
-                prev_len = len(data_reference)  # Update tracked length
-
-            await asyncio.sleep(1)  # Plot updates every second
+                        label=y_label)  # Plot new data
+                ax.legend()  # Add legend to the plot
+    
+                plt.pause(0.001)  # Pause briefly to render the plot
+                fig.canvas.draw_idle()  # Mark the figure as needing a refresh
+                fig.canvas.flush_events()  # Flush GUI events to update the canvas
+    
+                prev_len = len(data_reference)  # Update the tracked data length
+    
+            await asyncio.sleep(1)  # Wait for 1 second before checking for new data again
 
     @staticmethod
     def validate_time_units(unit, valid_units):

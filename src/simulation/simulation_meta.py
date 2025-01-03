@@ -58,20 +58,9 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         """
         self.simulation_data = dict()
         self.water_tank_volume_history = []
-        self.simulated_seconds = 1
+        self.simulated_seconds = 0
         self.plot_tasks = dict()
         self._validate_weather_data()
-        self.plot_grid = {'rain_section': {
-                            'row_1': list(),
-                            'row_2': list(),
-                            'row_3': list(),
-                            'row_4': list(),},
-                          'snow_section': {
-                              'row_1': list(),
-                              'row_2': list(),
-                              'row_3': list(),
-                              'row_4': list(),}
-                          }
 
     def _validate_weather_data(self):
         """
@@ -157,12 +146,19 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
     
         # If there is remaining precipitation, simulate distribution over seconds
         if round(remaining_precipitation_amount_liters) > 0 and round(total_precipitation_seconds_remaining) > 0:
-            remaining_precipitation_amount_liters_second = remaining_precipitation_amount_liters / total_precipitation_seconds_remaining * sampling_rate
+            remaining_precipitation_amount_liters_second = (remaining_precipitation_amount_liters /
+                                                            total_precipitation_seconds_remaining * sampling_rate)
             # Randomize precipitation patterns (steady or intermittent)
             precipitation_patterns = ['steady', 'intermittent'][random.randrange(0, 2)]
             # Add randomized precipitation amount
-            precipitation_amount = random.randrange(0, int(remaining_precipitation_amount_liters_second * 1000000) * random.randrange(1, 10)) / 1000000
-            self.water_tank.manage_precipitation(precipitation_type, precipitation_amount, air_temp, precipitation_patterns)
+            precipitation_amount = random.randrange(
+                0, int(remaining_precipitation_amount_liters_second * 1000000) *
+                   random.randrange(1, 10)) / 1000000
+
+            self.water_tank.manage_precipitation(precipitation_type,
+                                                 precipitation_amount,
+                                                 air_temp,
+                                                 precipitation_patterns)
             return precipitation_amount
         return 0
 
@@ -178,7 +174,13 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         """
         self.water_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
 
-    async def plot_sim_data(self, plot_name: str, y_label: str, data_reference: list, main_plot: bool = False, monitor_width=2560, monitor_height=1240):
+    async def plot_sim_data(self,
+                            plot_name: str,
+                            y_label: str,
+                            data_reference: list,
+                            main_plot: bool = False,
+                            monitor_width=3840,
+                            monitor_height=1920):
         """
         Asynchronously generates a real-time line plot for simulation data.
     
@@ -192,6 +194,8 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             y_label (str): The label for the plot's vertical axis.
             data_reference (list): A list that stores the data points to be plotted over time.
             main_plot (bool, optional): Indicates whether this is the main plot. Defaults to False.
+            monitor_width (int, optional): Width of the monitor in pixels. Defaults to 3840.
+            monitor_height (int, optional): Height of the monitor in pixels. Defaults to 1920.
     
         Behavior:
             - Continuously monitors `data_reference` for new data points.
@@ -205,7 +209,8 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         if main_plot:
             width = monitor_width
             height = monitor_height / 3
-        fig, ax = plt.subplots(figsize=(width / dpi, height / dpi))  # Create a new figure and axis for the plot with custom size
+        # Create a new figure and axis for the plot with custom size
+        fig, ax = plt.subplots(figsize=(width / dpi, height / dpi))
         ax.set_title(plot_name)  # Set the plot title
         ax.set_xlabel("Time Steps")  # Label for the horizontal axis
         ax.set_ylabel(f'{y_label} liters')  # Label for the vertical axis

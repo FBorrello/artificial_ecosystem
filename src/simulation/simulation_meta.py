@@ -149,7 +149,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         elif precipitation_type == 'snow':
             # Snow: Apply density factor to calculate equivalent water volume
             snow_density_factor = self.calculate_snow_density(air_temp)
-            total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface * snow_density_factor / 1000
+            total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface * snow_density_factor
     
         # Calculate remaining precipitation amount
         remaining_precipitation_amount_liters = max(
@@ -349,20 +349,22 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         if self.simulation_data.get('snow').get(month) is None:
             self.simulation_data['snow'][month] = []
 
-        if air_temp > 3:
-            rain_amount = self.simulate_precipitation('rain', 
-                                                      month, 
-                                                      month_season_data, 
-                                                      air_temp, 
-                                                      sampling_rate)
-            self.simulation_data['rain'][month].append(rain_amount)
-        else:
-            snow_amount = self.simulate_precipitation('snow', 
-                                                      month, 
-                                                      month_season_data, 
-                                                      air_temp, 
-                                                      sampling_rate)
-            self.simulation_data['snow'][month].append(snow_amount)
+        randomize_precipitation = random.randrange(0, 10)
+        if 0 <= randomize_precipitation <= 3:
+            if air_temp > 3:
+                rain_amount = self.simulate_precipitation('rain',
+                                                          month,
+                                                          month_season_data,
+                                                          air_temp,
+                                                          sampling_rate)
+                self.simulation_data['rain'][month].append(rain_amount)
+            else:
+                snow_amount = self.simulate_precipitation('snow',
+                                                          month,
+                                                          month_season_data,
+                                                          air_temp,
+                                                          sampling_rate)
+                self.simulation_data['snow'][month].append(snow_amount)
 
         if air_temp > 0:
             rel_humidity = month_season_data.get('humidity')[hour] / 100
@@ -410,34 +412,31 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         start_date_time, sim_duration, sampling_rate = self.get_date_time_simulation_data()
         date_time = start_date_time
 
-        try:
-            while self.simulated_seconds < sim_duration:
-                self.plot_tasks.update(self.detect_sim_data(self.simulation_data))
-                try:
-                    self.apply_seasonal_weather_data_to_sim(date_time, sampling_rate)
-                except ValueError:
-                    self.water_tank.current_volume -= self.water_tank.overflow_capacity_threshold
+        while self.simulated_seconds < sim_duration:
+            self.plot_tasks.update(self.detect_sim_data(self.simulation_data))
+            try:
+                self.apply_seasonal_weather_data_to_sim(date_time, sampling_rate)
+            except ValueError:
+                self.water_tank.current_volume -= self.water_tank.overflow_capacity_threshold
 
-                # Update tank water volume data
-                if self.simulation_data.get('tank_water_volume') is None:
-                    self.simulation_data['tank_water_volume'] = []
-                self.simulation_data['tank_water_volume'].append(self.water_tank.current_volume)
+            # Update tank water volume data
+            if self.simulation_data.get('tank_water_volume') is None:
+                self.simulation_data['tank_water_volume'] = []
+            self.simulation_data['tank_water_volume'].append(self.water_tank.current_volume)
 
-                # Simulate async time progression
-                await asyncio.sleep(0.001)  # Speed up time.
+            # Simulate async time progression
+            await asyncio.sleep(0.001)  # Speed up time.
 
-                self.simulated_seconds += sampling_rate
-                date_time += timedelta(seconds=sampling_rate)
-
-        finally:
-            # Print completion message
-            print("Simulation complete!")
-            for name, plot_task in self.plot_tasks.items():
-                plot_task.cancel()  # Stop plotting when the simulation ends.
+            self.simulated_seconds += sampling_rate
+            date_time += timedelta(seconds=sampling_rate)
 
 
 if __name__ == "__main__":
     sim = FishTankSimulator()
-    asyncio.run(sim.simulate())
-    # Prevent process termination
-    input("Simulation completed. Press Enter to exit and close windows.")
+    try:
+        asyncio.run(sim.simulate())
+        # Prevent process termination
+        input("Simulation completed. Press Enter to exit and close windows.")
+    finally:
+        for name, plot_task in sim.plot_tasks.items():
+            plot_task.cancel()  # Stop plotting when the simulation ends.

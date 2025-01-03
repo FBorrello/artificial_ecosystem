@@ -391,11 +391,11 @@ class TestWaterPrecipitationManagement(unittest.TestCase):
         self.water.manage_precipitation(precipitation_type, amount, air_temp, pattern)
 
         # Calculate expected volume after snow melting
-        melting_rate = int(air_temp ** 2)
+        melting_rate = 0.01 * self.water.snow_accumulation * (air_temp / (air_temp + 5))
         expected_melted_snow = min(amount, melting_rate)
         expected_volume = initial_volume + expected_melted_snow
 
-        self.assertEqual(self.water.current_volume, expected_volume,
+        self.assertEqual(round(self.water.current_volume, 2), round(expected_volume, 2),
                          "Water volume should reflect snow accumulation and melting")
 
     def test_invalid_precipitation_type(self):

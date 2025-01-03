@@ -758,6 +758,17 @@
         ]
       }
     },
-    "roof_surface": 100
+    "roof_surface": 100,
+    "plot_grid": {"rain_section": {
+                    "row_1": [],
+                    "row_2": [],
+                    "row_3": [],
+                    "row_4": []},
+                  "snow_section": {
+                      "row_1": [],
+                      "row_2": [],
+                      "row_3": [],
+                      "row_4": []}
+                  }
   }
 }

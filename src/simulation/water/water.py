@@ -524,7 +524,7 @@ class Water:
         if air_temperature > 0:  # Snow melts at temperatures greater than 0°C
             # Determine the amount of snow that melts
             melting_rate = 0.01 * self.snow_accumulation * (air_temperature / (air_temperature + 5))
-            melted_snow = min(self.snow_accumulation, melting_rate)
+            melted_snow = min((self.snow_accumulation, melting_rate))
         
             # Add the melted snow to the current water volume
             if melted_snow > 0:

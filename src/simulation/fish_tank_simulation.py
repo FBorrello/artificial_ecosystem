@@ -1,3 +1,4 @@
+import math
 import tkinter
 import matplotlib.pyplot as plt
 import asyncio
@@ -127,8 +128,8 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         # Calculate the total remaining precipitation seconds based on average days
         total_precipitation_days = precipitation_season_data.get('average_days')
         total_precipitation_seconds_remaining = max(
-            (total_precipitation_days * 24 * 60 * 60) - len(
-                self.simulation_data.get(precipitation_type).get(month) * sampling_rate), 0)
+            ((total_precipitation_days * 24 * 60 * 60) - len(
+                self.simulation_data.get(precipitation_type).get(month) * sampling_rate), 0))
 
         # Calculate the total precipitation amount in liters
         total_precipitation_amount_mm = precipitation_season_data.get('total_mm')
@@ -143,23 +144,36 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
 
         # Calculate remaining precipitation amount
         remaining_precipitation_amount_liters = max(
-            total_precipitation_amount_liters - sum(self.simulation_data.get(precipitation_type).get(month)), 0)
+            (total_precipitation_amount_liters - sum(self.simulation_data.get(precipitation_type).get(month)), 0))
 
         # If there is remaining precipitation, simulate distribution over seconds
         if round(remaining_precipitation_amount_liters) > 0 and round(total_precipitation_seconds_remaining) > 0:
-            remaining_precipitation_amount_liters_second = (remaining_precipitation_amount_liters /
-                                                            total_precipitation_seconds_remaining * sampling_rate)
-            # Randomize precipitation patterns (steady or intermittent)
-            precipitation_patterns = ['steady', 'intermittent'][random.randrange(0, 2)]
-            # Add randomized precipitation amount
-            precipitation_amount = random.randrange(
-                0, int(remaining_precipitation_amount_liters_second * 1000000) *
-                   random.randrange(1, 10)) / 1000000
+            # Use randomized weighting to simulate varying precipitation over the remaining time
+            random_weight = random.uniform(0.5, 1.5)  # Random weight introduces variability
+            remaining_precipitation_amount_liters_second = (
+                    (remaining_precipitation_amount_liters / total_precipitation_seconds_remaining) *
+                    random_weight * sampling_rate
+            )
 
-            self.fish_tank.manage_precipitation(precipitation_type,
-                                                 precipitation_amount,
-                                                 air_temp,
-                                                 precipitation_patterns)
+            # Further randomize precipitation patterns (steady or intermittent)
+            precipitation_patterns = ['steady', 'intermittent'][random.randrange(0, 2)]
+
+            # Optionally, add phasic or cyclic variation (simulate peaks and troughs like real weather events)
+            cyclic_variation = max(0.5, math.sin(
+                2 * math.pi * (1 - total_precipitation_seconds_remaining / (30 * 24 * 60 * 60))) + 1)  # Sinusoidal variation
+            precipitation_amount = (
+                    random.uniform(0.7, 1.3) *
+                    remaining_precipitation_amount_liters_second *
+                    cyclic_variation
+            )
+
+            # Manage the precipitation impact on the fish tank
+            self.fish_tank.manage_precipitation(
+                precipitation_type,
+                precipitation_amount,
+                air_temp,
+                precipitation_patterns
+            )
             return precipitation_amount
         return 0
 
@@ -419,7 +433,10 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
 
         while self.simulated_seconds < sim_duration:
             self.plot_tasks.update(self.detect_sim_data(self.simulation_data))
-            self.apply_seasonal_weather_data_to_sim(date_time, sampling_rate)
+            try:
+                self.apply_seasonal_weather_data_to_sim(date_time, sampling_rate)
+            except ValueError:
+                self.fish_tank.current_volume = self.fish_tank.underflow_capacity_threshold
 
             # Update tank water volume data
             if self.simulation_data.get('tank_water_volume') is None:

@@ -58,13 +58,17 @@ class ArtificialEcosystemSimulator:
                 return SeasonalWeatherSimulator(**seasonal_weather_config)
 
     async def simulate(self):
-        seasonal_weather_task = asyncio.create_task(self.seasonal_weather_simulator.simulate(self.simulation_data,
-                                                                                             True))
+        seasonal_weather_task = asyncio.create_task(self.seasonal_weather_simulator.simulate(self.simulation_data))
         self.sim_tasks['seasonal_weather'] = seasonal_weather_task
+        weather_sim_data = self.seasonal_weather_simulator.simulation_data
 
         while True:
-            await asyncio.sleep(1)
-            if seasonal_weather_task.done():
+            try:
+                await asyncio.sleep(1)
+                if seasonal_weather_task.done():
+                    break
+            except asyncio.CancelledError:
+                # Perform cleanup (if necessary)
                 break
 
 

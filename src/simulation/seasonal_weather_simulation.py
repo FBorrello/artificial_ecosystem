@@ -36,6 +36,7 @@ class SeasonalWeatherSimulatorMeta(type):
                 if key not in data:
                     raise ValueError(f"Missing key '{key}' in weather data for {month}")
 
+
 class SeasonalWeatherSimulator(metaclass=SeasonalWeatherSimulatorMeta):
     def __init__(self, **kwargs):
         super().__init__()
@@ -332,6 +333,14 @@ class SeasonalWeatherSimulator(metaclass=SeasonalWeatherSimulatorMeta):
                                                           air_temp,
                                                           sampling_rate)
                 self.simulation_data['snow'][month].append(snow_amount)
+
+            if not self.simulation_data.get('air_temperature'):
+                self.simulation_data['air_temperature'] = []
+            self.simulation_data['air_temperature'].append(air_temp)
+
+            if not self.simulation_data.get('humidity'):
+                self.simulation_data['humidity'] = []
+            self.simulation_data['humidity'].append(month_season_data.get('humidity')[hour] / 100)
 
         return rain_amount + snow_amount
 

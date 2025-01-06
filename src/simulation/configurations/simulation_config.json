@@ -1,0 +1,9 @@
+{
+  "name": "artificial ecosystem life cycle",
+  "duration": 12,
+  "time_unit": "month",
+  "sample_unit": "hour",
+  "start_date_time": "01/01 00:00:00",
+  "start_date_time_format": "%m/%d %H:%M:%S",
+  "roof_surface": 100
+}

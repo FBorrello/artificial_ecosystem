@@ -164,7 +164,7 @@ class WaterTank(Water):
             float: The water surface area in square meters. If the tank type is unsupported,
                    the result is 0 because that means the water tank is sealed from ambient air.
         """
-        if self.tank_type in ("fish tank", "liquid composter"):
+        if self.tank_type in ("fish_tank", "liquid_composter"):
             return (self.tank_length / 100) * (self.tank_width / 100)
         else:
             return 0

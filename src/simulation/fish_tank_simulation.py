@@ -1,4 +1,3 @@
-import math
 import tkinter
 import matplotlib.pyplot as plt
 import asyncio
@@ -6,7 +5,9 @@ import json
 from src.simulation.water.water_tank import WaterTank
 import matplotlib
 import random
+import traceback
 from datetime import datetime, timedelta
+from src.simulation.common import get_date_time_simulation_data
 
 matplotlib.use('TkAgg')  # Explicitly use the Tkinter-based backend
 plt.style.use('dark_background')  # Use the dark background style
@@ -25,15 +26,16 @@ class SimulatorMeta(type):
     parameters. It is used to streamline the setup of simulation objects.
     """
 
-    def __new__(cls, name, bases, dct, **sim_config):
-        dct['fish_tank'] = WaterTank(**sim_config['fish_tank'])
-        # Add attributes from the config to the class
-        for key, value in sim_config.get('simulation_config').items():
-            dct[key] = value
+    def __new__(cls, name, bases, dct):
+        dct['fish_tank'] = dict()
         return super().__new__(cls, name, bases, dct)
 
+    def __call__(cls, *args, **kwargs):
+        # Intercept object instantiation and set seasonal_weather_data
+        obj = super().__call__(*args, **kwargs)
+        return obj
 
-class FishTankSimulator(metaclass=SimulatorMeta, **config):
+class FishTankSimulator(metaclass=SimulatorMeta):
     """
     A simulator for modeling the dynamics of a fish tank, integrating precipitation,
     evaporation, and seasonal weather effects.
@@ -50,7 +52,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         plot_tasks (dict): Tracks asynchronous plotting tasks.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Initializes the FishTankSimulator instance.
     
@@ -58,124 +60,13 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
         simulation results, history of water tank volumes, simulated duration, and tasks
         for real-time plotting.
         """
+        super().__init__()
+        kwargs.update({'tank_type': 'fish_tank'})
+        self.fish_tank = WaterTank(**kwargs)
         self.simulation_data = dict()
         self.fish_tank_volume_history = []
         self.simulated_seconds = 0
         self.plot_tasks = dict()
-        self._validate_weather_data()
-
-    def _validate_weather_data(self):
-        """
-        Validates the seasonal weather data in the configuration.
-    
-        Checks that the required keys ('rain', 'snow', 'temperature', and 'humidity')
-        are present for each month's weather data. If any key is missing, a 
-        ValueError is raised indicating the missing key and the corresponding month.
-    
-        Raises:
-            ValueError: If any of the required keys are missing in weather data for a particular month.
-        """
-        required_keys = ['rain', 'snow', 'temperature', 'humidity']
-        for month, data in self.seasonal_weather_data.items():
-            for key in required_keys:
-                if key not in data:
-                    raise ValueError(f"Missing key '{key}' in weather data for {month}")
-
-    @staticmethod
-    def calculate_snow_density(temp: float) -> float:
-        """
-        Calculates the density of snow based on the given air temperature.
-        
-        Args:
-            temp (float): The air temperature in degrees Celsius.
-        
-        Returns:
-            float: The density of snow (in g/cm³) based on temperature. 
-                - Powder snow: 0.1 for temperatures below -5°C.
-                - Wet snow: 0.3 for temperatures between -5°C and 0°C.
-                - Slush: 0.5 for temperatures above 0°C (near melting point).
-        """
-        if not isinstance(temp, float):
-            raise ValueError("Invalid temperature value. Expected float.")
-
-        if temp < -5:
-            return 0.1  # Powder snow
-        elif -5 <= temp <= 0:
-            return 0.3  # Wet snow
-        else:
-            return 0.5  # Slush (near melting point)
-
-    def simulate_precipitation(self,
-                               precipitation_type: str,
-                               month: str,
-                               month_season_data: dict,
-                               air_temp: float,
-                               sampling_rate: int) -> float:
-        """
-        Simulates precipitation and its impact on the water tank.
-    
-        Args:
-            precipitation_type (str): The type of precipitation (e.g., 'rain' or 'snow').
-            month (str): The current month being simulated.
-            month_season_data (dict): Seasonal weather data for the current month.
-            air_temp (float): The current air temperature during the simulation.
-            sampling_rate (int): The time step in seconds for data sampling.
-    
-        Returns:
-            float: The amount of precipitation added to the water tank.
-        """
-        precipitation_season_data = month_season_data.get(precipitation_type)
-        # Calculate the total remaining precipitation seconds based on average days
-        total_precipitation_days = precipitation_season_data.get('average_days')
-        total_precipitation_seconds_remaining = max(
-            ((total_precipitation_days * 24 * 60 * 60) - len(
-                self.simulation_data.get(precipitation_type).get(month) * sampling_rate), 0))
-
-        # Calculate the total precipitation amount in liters
-        total_precipitation_amount_mm = precipitation_season_data.get('total_mm')
-        total_precipitation_amount_liters = 0
-        if precipitation_type == 'rain':
-            # Rain: Use roof surface to calculate water volume
-            total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface
-        elif precipitation_type == 'snow':
-            # Snow: Apply density factor to calculate equivalent water volume
-            snow_density_factor = self.calculate_snow_density(air_temp)
-            total_precipitation_amount_liters = total_precipitation_amount_mm * self.roof_surface * snow_density_factor
-
-        # Calculate remaining precipitation amount
-        remaining_precipitation_amount_liters = max(
-            (total_precipitation_amount_liters - sum(self.simulation_data.get(precipitation_type).get(month)), 0))
-
-        # If there is remaining precipitation, simulate distribution over seconds
-        if round(remaining_precipitation_amount_liters) > 0 and round(total_precipitation_seconds_remaining) > 0:
-            # Use randomized weighting to simulate varying precipitation over the remaining time
-            random_weight = random.uniform(0.5, 1.5)  # Random weight introduces variability
-            remaining_precipitation_amount_liters_second = (
-                    (remaining_precipitation_amount_liters / total_precipitation_seconds_remaining) *
-                    random_weight * sampling_rate
-            )
-
-            # Further randomize precipitation patterns (steady or intermittent)
-            precipitation_patterns = ['steady', 'intermittent'][random.randrange(0, 2)]
-
-            # Optionally, add phasic or cyclic variation (simulate peaks and troughs like real weather events)
-            cyclic_variation = max(0.5, math.sin(
-                2 * math.pi * (1 - total_precipitation_seconds_remaining / (30 * 24 * 60 * 60))) + 1)  # Sinusoidal variation
-            precipitation_amount = (
-                    random.uniform(0.7, 1.3) *
-                    remaining_precipitation_amount_liters_second *
-                    cyclic_variation
-            )
-
-            # Manage the precipitation impact on the fish tank
-            self.fish_tank.manage_precipitation(
-                precipitation_type,
-                precipitation_amount,
-                air_temp,
-                precipitation_patterns
-            )
-            return precipitation_amount
-        return 0
 
     def simulate_evaporation(self, air_temp, surface_area, rel_humidity, time_elapsed_sec):
         """
@@ -187,7 +78,10 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
             rel_humidity (float): The relative humidity (0–1) of the air.
             time_elapsed_sec (int): The elapsed simulation time in seconds.
         """
-        self.fish_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
+        water_evaporated_amount = self.fish_tank.evaporate(air_temp, surface_area, rel_humidity, time_elapsed_sec)
+        if self.simulation_data.get('water_evaporated') is None:
+            self.simulation_data['water_evaporated'] = []
+        self.simulation_data['water_evaporated'].append(water_evaporated_amount)
 
     async def plot_sim_data(self,
                             plot_name: str,
@@ -285,109 +179,22 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
 
             await asyncio.sleep(1)  # Wait for 1 second before checking for new data again
 
-    @staticmethod
-    def validate_time_units(unit, valid_units):
-        if unit not in valid_units:
-            raise ValueError(f"Invalid time unit '{unit}'. Supported units are: {', '.join(valid_units)}")
-
-    def get_date_time_simulation_data(self) -> tuple[datetime, int, int]:
-        """
-        Extracts and calculates essential time-based simulation parameters.
-    
-        Returns:
-            tuple: A tuple containing:
-                - datetime: The start date and time of the simulation.
-                - int: The total duration of the simulation in seconds.
-                - int: The sampling rate for data collection in seconds.
-        """
-        # Extract the start date/time and formatting string from the configuration.
-        start_date_time = datetime.strptime(self.start_date_time, self.start_date_time_format)
-
-        # Define conversion factors for various time units to seconds.
-        unit_to_seconds = {
-            "second": 1,
-            "minute": 60,
-            "hour": 3600,
-            "day": 86400,
-            "week": 604800,
-            "month": 30 * 86400,  # Approximation for a month
-            "year": 365 * 86400,  # Approximation for a year
-        }
-
-        # Extract the simulation duration and its unit from the configuration.
-        duration = self.duration
-        time_unit = self.time_unit
-        self.validate_time_units(time_unit, unit_to_seconds.keys())
-        # Convert the simulation duration into seconds.
-        sim_duration = unit_to_seconds.get(time_unit.lower(), 1) * duration
-
-        # Extract the sample unit and convert it to seconds, defaulting to 1 second if unknown.
-        sample_unit = self.sample_unit
-        self.validate_time_units(sample_unit, unit_to_seconds.keys())
-        sampling_rate = unit_to_seconds.get(sample_unit.lower(), 1)  # Default to 1 second if unit is unknown
-
-        # Return the formatted start date/time, total simulation duration, and sampling rate.
-        return start_date_time, sim_duration, sampling_rate
-
     def apply_seasonal_weather_data_to_sim(self, sim_date_time, sampling_rate):
-        """
-        Applies seasonal weather data to the simulation for a specific time step.
-    
-        This method updates the simulation data with precipitation (rain or snow)
-        and evaporation values based on the current weather conditions and time.
-    
-        Args:
-            sim_date_time (datetime): The current simulated date and time.
-            sampling_rate (int): The time step in seconds for data sampling.
-        """
-        month_mapping = {
-            1: "January",
-            2: "February",
-            3: "March",
-            4: "April",
-            5: "May",
-            6: "June",
-            7: "July",
-            8: "August",
-            9: "September",
-            10: "October",
-            11: "November",
-            12: "December"
-        }
-        month = month_mapping[sim_date_time.month]
-        hour = sim_date_time.hour
-        month_season_data = self.seasonal_weather_data.get(month)
-        air_temp = month_season_data.get('temperature')[hour] + random.uniform(-1, 1)
 
-        if self.simulation_data.get('rain') is None:
-            self.simulation_data['rain'] = {}
-        if self.simulation_data.get('rain').get(month) is None:
-            self.simulation_data['rain'][month] = []
-        if self.simulation_data.get('snow') is None:
-            self.simulation_data['snow'] = {}
-        if self.simulation_data.get('snow').get(month) is None:
-            self.simulation_data['snow'][month] = []
+        precipitation_volume = self.simulation_data.get('precipitation_volume')
+        if precipitation_volume:
+            precipitation_volume = precipitation_volume[-1]
+            if precipitation_volume > 0:
+                self.fish_tank.add_water(precipitation_volume)
 
-        randomize_precipitation = random.randrange(0, 10)
-        if 0 <= randomize_precipitation <= 3:
-            if air_temp > 3:
-                rain_amount = self.simulate_precipitation('rain',
-                                                          month,
-                                                          month_season_data,
-                                                          air_temp,
-                                                          sampling_rate)
-                self.simulation_data['rain'][month].append(rain_amount)
-            else:
-                snow_amount = self.simulate_precipitation('snow',
-                                                          month,
-                                                          month_season_data,
-                                                          air_temp,
-                                                          sampling_rate)
-                self.simulation_data['snow'][month].append(snow_amount)
-
-        if air_temp > 0:
-            rel_humidity = month_season_data.get('humidity')[hour] / 100
-            self.simulate_evaporation(air_temp, self.fish_tank.water_surface_area, rel_humidity, sampling_rate)
+        air_temp = self.simulation_data.get('air_temperature')
+        if air_temp:
+            air_temp = air_temp[-1]
+            if air_temp > 0:
+                rel_humidity = self.simulation_data.get('relative_humidity')
+                if rel_humidity:
+                    rel_humidity = rel_humidity[-1]
+                    self.simulate_evaporation(air_temp, self.fish_tank.water_surface_area, rel_humidity, sampling_rate)
 
     def detect_sim_data(self, sim_data, name: str = None):
         """
@@ -416,7 +223,7 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
                     )
         return plot_tasks
 
-    async def simulate(self):
+    async def simulate(self, simulation_config: dict, plot: bool = False):
         """
         Runs the fish tank simulation for the configured duration.
     
@@ -426,17 +233,17 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
     
         Uses asynchronous operations to update plots during each simulation step.
         """
-        print(f"Starting simulation: {self.name}")
-
-        start_date_time, sim_duration, sampling_rate = self.get_date_time_simulation_data()
+        start_date_time, sim_duration, sampling_rate = get_date_time_simulation_data(simulation_config)
         date_time = start_date_time
 
         while self.simulated_seconds < sim_duration:
-            self.plot_tasks.update(self.detect_sim_data(self.simulation_data))
+            if plot:
+                self.plot_tasks.update(self.detect_sim_data(self.simulation_data))
             try:
                 self.apply_seasonal_weather_data_to_sim(date_time, sampling_rate)
-            except ValueError:
-                self.fish_tank.current_volume = self.fish_tank.underflow_capacity_threshold
+            except Exception as e:
+                print(f'Error applying seasonal weather data: {e}')
+                traceback.print_exc()
 
             # Update tank water volume data
             if self.simulation_data.get('tank_water_volume') is None:
@@ -448,15 +255,3 @@ class FishTankSimulator(metaclass=SimulatorMeta, **config):
 
             self.simulated_seconds += sampling_rate
             date_time += timedelta(seconds=sampling_rate)
-
-        # Prevent process termination
-        input("Simulation completed. Press Enter to exit and close windows.")
-
-
-if __name__ == "__main__":
-    sim = FishTankSimulator()
-    try:
-        asyncio.run(sim.simulate())
-    finally:
-        for name, plot_task in sim.plot_tasks.items():
-            plot_task.cancel()  # Stop plotting when the simulation ends.

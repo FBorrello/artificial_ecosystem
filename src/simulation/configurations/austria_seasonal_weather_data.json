@@ -34,7 +34,7 @@
       -3,
       -3
     ],
-    "humidity": [
+    "relative_humidity": [
       85,
       86,
       87,
@@ -96,7 +96,7 @@
       -2,
       -2
     ],
-    "humidity": [
+    "relative_humidity": [
       84,
       85,
       86,
@@ -158,7 +158,7 @@
       4,
       4
     ],
-    "humidity": [
+    "relative_humidity": [
       78,
       79,
       80,
@@ -220,7 +220,7 @@
       9,
       9
     ],
-    "humidity": [
+    "relative_humidity": [
       73,
       74,
       75,
@@ -282,7 +282,7 @@
       15,
       15
     ],
-    "humidity": [
+    "relative_humidity": [
       69,
       70,
       71,
@@ -344,7 +344,7 @@
       18,
       18
     ],
-    "humidity": [
+    "relative_humidity": [
       67,
       68,
       69,
@@ -406,7 +406,7 @@
       20,
       20
     ],
-    "humidity": [
+    "relative_humidity": [
       66,
       67,
       68,
@@ -468,7 +468,7 @@
       20,
       20
     ],
-    "humidity": [
+    "relative_humidity": [
       68,
       69,
       70,
@@ -530,7 +530,7 @@
       17,
       17
     ],
-    "humidity": [
+    "relative_humidity": [
       70,
       71,
       72,
@@ -592,7 +592,7 @@
       9,
       9
     ],
-    "humidity": [
+    "relative_humidity": [
       75,
       76,
       77,
@@ -654,7 +654,7 @@
       4,
       4
     ],
-    "humidity": [
+    "relative_humidity": [
       80,
       81,
       82,
@@ -716,7 +716,7 @@
         -1,
         -1
       ],
-      "humidity": [
+      "relative_humidity": [
         83,
         84,
         85,

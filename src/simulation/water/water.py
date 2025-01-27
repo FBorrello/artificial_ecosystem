@@ -608,7 +608,7 @@ class Water:
         saturation_vapor_pressor_air = rel_humidity * saturation_vapor_pressure
 
         # Evaporation rate coefficient (k) varies depending on air temperature relative to water temperature
-        k = 0.1 + 0.01 * (air_temp - self.temperature)
+        k = 0.1 + 0.01 * (abs(air_temp - self.temperature))
 
         # Calculate the evaporation rate in grams per hour
         # This is determined by the difference between SVP and AVP, the surface area, and the coefficient

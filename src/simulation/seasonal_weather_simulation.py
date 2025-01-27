@@ -2,10 +2,10 @@ import math
 import tkinter
 import matplotlib.pyplot as plt
 import asyncio
-from src.simulation.water.water_tank import WaterTank
 import matplotlib
 import random
 from datetime import datetime, timedelta
+from src.simulation.common import get_date_time_simulation_data
 
 matplotlib.use('TkAgg')  # Explicitly use the Tkinter-based backend
 plt.style.use('dark_background')  # Use the dark background style
@@ -30,7 +30,7 @@ class SeasonalWeatherSimulatorMeta(type):
             raise ValueError("Invalid seasonal weather data. Expected dictionary.")
         elif not seasonal_weather_data:
             raise ValueError("Seasonal weather data is empty.")
-        required_keys = ['rain', 'snow', 'temperature', 'humidity']
+        required_keys = ['rain', 'snow', 'temperature', 'relative_humidity']
         for month, data in seasonal_weather_data.items():
             for key in required_keys:
                 if key not in data:
@@ -56,43 +56,6 @@ class SeasonalWeatherSimulator(metaclass=SeasonalWeatherSimulatorMeta):
                 "row_3": [],
                 "row_4": []}
             }
-
-    @staticmethod
-    def validate_time_units(unit, valid_units):
-        if unit not in valid_units:
-            raise ValueError(f"Invalid time unit '{unit}'. Supported units are: {', '.join(valid_units)}")
-
-    def get_date_time_simulation_data(self, simulation_data: dict) -> tuple[datetime, int, int]:
-        # Extract the start date/time and formatting string from the configuration.
-        start_date_time = simulation_data.get('start_date_time')
-        start_date_time_format = simulation_data.get('start_date_time_format')
-        start_date_time = datetime.strptime(start_date_time, start_date_time_format)
-
-        # Define conversion factors for various time units to seconds.
-        unit_to_seconds = {
-            "second": 1,
-            "minute": 60,
-            "hour": 3600,
-            "day": 86400,
-            "week": 604800,
-            "month": 30 * 86400,  # Approximation for a month
-            "year": 365 * 86400,  # Approximation for a year
-        }
-
-        # Extract the simulation duration and its unit from the configuration.
-        duration = simulation_data.get('duration')
-        time_unit = simulation_data.get('time_unit')
-        self.validate_time_units(time_unit, unit_to_seconds.keys())
-        # Convert the simulation duration into seconds.
-        sim_duration = unit_to_seconds.get(time_unit.lower(), 1) * duration
-
-        # Extract the sample unit and convert it to seconds, defaulting to 1 second if unknown.
-        sample_unit = simulation_data.get('sample_unit')
-        self.validate_time_units(sample_unit, unit_to_seconds.keys())
-        sampling_rate = unit_to_seconds.get(sample_unit.lower(), 1)  # Default to 1 second if unit is unknown
-
-        # Return the formatted start date/time, total simulation duration, and sampling rate.
-        return start_date_time, sim_duration, sampling_rate
 
     @staticmethod
     def calculate_snow_density(temp: float) -> float:
@@ -338,17 +301,17 @@ class SeasonalWeatherSimulator(metaclass=SeasonalWeatherSimulatorMeta):
                 self.simulation_data['air_temperature'] = []
             self.simulation_data['air_temperature'].append(air_temp)
 
-            if not self.simulation_data.get('humidity'):
-                self.simulation_data['humidity'] = []
-            self.simulation_data['humidity'].append(month_season_data.get('humidity')[hour] / 100)
+            if not self.simulation_data.get('relative_humidity'):
+                self.simulation_data['relative_humidity'] = []
+            self.simulation_data['relative_humidity'].append(month_season_data.get('relative_humidity')[hour] / 100)
 
         return rain_amount + snow_amount
 
-    async def simulate(self, simulation_data: dict, plot: bool = False):
+    async def simulate(self, simulation_config: dict, plot: bool = False):
 
-        start_date_time, sim_duration, sampling_rate = self.get_date_time_simulation_data(simulation_data)
+        start_date_time, sim_duration, sampling_rate = get_date_time_simulation_data(simulation_config)
         date_time = start_date_time
-        self.roof_surface = simulation_data.get('roof_surface')
+        self.roof_surface = simulation_config.get('roof_surface')
 
         while self.simulated_seconds < sim_duration:
             if plot:

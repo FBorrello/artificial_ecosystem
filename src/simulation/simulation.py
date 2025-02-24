@@ -80,7 +80,7 @@ class ArtificialEcosystemSimulator:
                 return FishTankSimulator(**fish_tank_config)
 
     async def simulate(self):
-        seasonal_weather_task = asyncio.create_task(self.seasonal_weather_simulator.simulate(self.simulation_config))
+        seasonal_weather_task = asyncio.create_task(self.seasonal_weather_simulator.simulate(self.simulation_config, True))
         self.sim_tasks['seasonal_weather'] = seasonal_weather_task
         fish_tank_task = asyncio.create_task(self.fish_tank_simulator.simulate(self.simulation_config))
         self.sim_tasks['fish_tank'] = fish_tank_task

@@ -1,47 +1,38 @@
 # Dome Frames Detailed Specifications
 
-This document provides detailed specifications for the tubular frames that support the dome structure. The frames form the skeletal framework of the 24 gores, ensuring structural integrity against wind, snow, and self-weight loads.
+This document provides detailed specifications for the minimal frames that support the dome structure. Since the panels are structural and self-supporting, frames are limited to base connections and minimal reinforcement.
 
 ## Overview
-The dome frames consist of tubular arches arranged in 24 radial gores, with arches spaced every 1-2 meters. Each gore has frames connected at the apex and base, forming a geodesic-like structure for optimal load distribution.
+The dome uses structural polycarbonate panels that are self-supporting when pressurized. Frames are minimal, consisting of base rings and occasional supports for stability.
 
 ## Design Specifications
-- **Type**: Triangular lattice arches made of 3 connected aluminum pipes.
-- **Configuration**: Triangular cross-section with vertices pointing inwards, flat side outwards. 10 layers, layers 1-7 with 40 gores each (40 arches per layer), layers 8-9 with 20 gores each (20 arches per layer), layer 10 unified (no arches, supported by lower layers).
-- **Spacing**: Arches every 1-2 meters along the meridional direction within each layer.
-- **Total Frames**: ~300 arches (layers 1-7: 280, layers 8-9: 40).
+- **Type**: Minimal steel or aluminum rings and supports.
+- **Configuration**: Base ring for foundation connection, occasional vertical supports.
+- **Total Frames**: Base ring ~94 m circumference, few vertical supports.
 
 ## Dimensions
-- **Base Arches**: Triangular lattice, each pipe 50mm diameter, 3mm wall, length ~15m, total per arch ~45m of pipe.
-- **Mid Arches**: Pipes tapering to 40mm diameter, 2.5mm wall.
-- **Apex Arches**: Pipes 30mm diameter, 2mm wall, length ~5m, total ~15m of pipe.
-- **Total Length**: ~10,000-12,000 m of aluminum tubing (3 pipes per arch).
+- **Base Ring**: Steel tube, 200mm diameter, 10mm wall, length ~94 m.
+- **Supports**: Aluminum tubes, 100mm diameter, spaced every 5m, height 2m.
 
 ## Materials
-- **Primary Material**: Aluminum alloy (6061-T6, yield 300 MPa) for lightweight and corrosion resistance.
-- **Coating**: Anodized for additional protection.
+- **Base Ring**: Steel (S355).
+- **Supports**: Aluminum alloy.
 
 ## Structural Analysis
-- **Load Cases**: Wind (dynamic pressure 1.25 kN/m²), snow (1 kN/m²), self-weight (50 kg/m²).
-- **Analysis Method**: Finite element modeling for stress and buckling.
-- **Safety Factors**: Stress < 0.6 yield, buckling safety factor 2.
-- **Connections**: Bolted with high-strength bolts or welded, gusset plates at intersections.
+- **Load Cases**: Wind uplift at base.
+- **Analysis Method**: Simple calculations for base anchoring.
 
 ## Fabrication Process
-1. Cut aluminum pipes to curved profiles using CNC bending.
-2. Assemble 3 pipes into triangular lattice using connectors or welding at joints.
-3. Apply anodized coating.
-4. Quality check: Dimensional accuracy, joint integrity.
+1. Cut and weld base ring.
+2. Fabricate supports.
 
 ## Installation
-- Prefabricate lattice sections off-site, assemble on-site, connect to foundation.
-- Attach panels to the flat outer side of the lattice.
+- Install base ring on foundation.
+- Place supports as needed.
 
 ## Testing and Validation
-- Prototype testing for load capacity and rigidity.
-- On-site inspection.
+- Load testing for base connections.
 
 ## Cost Estimation
-- **Materials**: Aluminum tubing ~30 €/m, connectors ~5 €/m, total ~35 €/m.
-- **Fabrication**: ~15 €/m.
-- **Total**: ~50 €/m * 11000 m = ~550,000 € (higher due to more tubing, but lighter weight).
+- **Materials**: Steel ~50 €/m, aluminum ~30 €/m.
+- **Total**: ~10,000 €.

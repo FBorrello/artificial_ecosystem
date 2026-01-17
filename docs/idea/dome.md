@@ -7,39 +7,36 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Shape**: Hemispherical dome.
 - **Dimensions**: Diameter 30 meters, height 15 meters (radius 15 meters). Surface area: 1,414 m². Projected area: 707 m². Volume: 7,069 m³.
 - **Gores**: 24 segments, each comprising tubular frames and ETFE panels, subdivided into 8 panels. Gores are arranged radially from the apex, with frames following geodesic lines for optimal load distribution.
-- [**Panels**](/docs/idea/dome_panels.md): Double-layer ETFE cushioned panels, 10 layers with varying gores (layers 1-7: 40 gores, layers 8-9: 20 gores), total 320 panels. Each layer spans ~1.5 m height, meridional arc ~2.36 m.
-- [**Frames**](/docs/idea/dome_frames.md): Tubular steel or aluminum arches, spaced every 1-2 meters along the gore edges, connected at apex and base.
+- [**Panels**](/docs/idea/dome_panels.md): 289 structural polycarbonate panels in 36 gores subdivided into 9 layers, last layer one round cap. Each panel double-sheet with internal/external walls, bent borders for assembly, pressurized to 1 bar.
+- [**Frames**](/docs/idea/dome_frames.md): Minimal, as panels are self-structural.
 
 ## Structural Engineering Requirements
 ### Load Calculations
-- **Wind Load**: Assuming location in moderate wind zone (e.g., 50 m/s gust), dynamic pressure ~1.25 kN/m². Total force on dome surface (~1413 m²) ≈ 1766 kN. Frames must withstand this with safety factor of 2.
+- **Wind Load**: Assuming location in moderate wind zone (e.g., 50 m/s gust), dynamic pressure ~1.25 kN/m². Total force on dome surface (~1413 m²) ≈ 1766 kN. Panels withstand this with 1 bar pressurization and bolted connections.
 - **Snow Load**: 1 kN/m², total ~1413 kN.
-- **Self-Weight**: ETFE lightweight, frames ~50 kg/m² total.
+- **Self-Weight**: Polycarbonate panels ~100 kg/m² total.
 
-### Frame Design
-- Tubular frames: Circular hollow sections, e.g., 200mm diameter, 10mm wall for base, tapering to 100mm at apex, material high-strength steel (yield 355 MPa) or aluminum alloy (yield 300 MPa). Frames support panel weight and maintain shape.
-- Stress analysis: Use finite element modeling to ensure max stress < 0.6 yield. Include buckling analysis for wind and snow loads.
-- Connections: Bolted or welded joints at intersections, with gusset plates for reinforcement.
+### Panel Structural Design
+- Polycarbonate sheets with bent borders for rigidity.
+- Pressurized chambers at 1 bar for additional strength.
+- Bolted connections between panels with silicon seals.
 
 ### Foundation
 - Base anchored to concrete foundation, resisting wind uplift.
 
 ## Material Details
-### ETFE Properties
-- **Transparency**: 95% light transmission, minimal UV degradation.
-- **Tensile Strength**: 50-60 MPa.
-- **Thickness**: 100-200 micron per foil layer; cushions inflated to 3-10 cm air gap.
-- **Density**: 1.7 g/cm³.
-- **Chemical Resistance**: Resistant to acids, bases, UV.
-- **Lifespan**: 25+ years.
-
-### Tubular Frames
-- Material: Aluminum alloy (lightweight) or galvanized steel.
-- Corrosion resistance: Coated for outdoor use.
+### Polycarbonate Properties
+- **Transparency**: 85-90% light transmission, UV resistant with coating.
+- **Tensile Strength**: 60-70 MPa.
+- **Thickness**: 5-10 mm per sheet.
+- **Density**: 1.2 g/cm³.
+- **Chemical Resistance**: Resistant to impact, weathering.
+- **Lifespan**: 10-15 years.
 
 ### Panels
-- Double-layer ETFE cushions for insulation and smooth surface.
-- Thickness: Inflated to ~5-10 cm air gap, foil 100-200 micron per layer.
+- Double-sheet polycarbonate with internal/external walls.
+- Bent borders: External 10 cm inwards, internal 5 cm outwards.
+- Pressurized to 1 bar for structural integrity.
 
 ## Integration with Ecosystem Systems
 - **Energy Systems**: Insulates, allows solar gain.
@@ -57,9 +54,9 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Timeline**: 6-12 months, depending on site.
 
 ## Cost Estimates
-- **Materials**: ETFE cushioned panels ~84,000 € (301 panels), frames ~550,000 €, foundation ~71,000 €, total ~705,000 €.
-- **Labor**: Fabrication and installation ~120,000 €.
-- **Total**: ~825,000 € (estimate for cushioned ETFE dome with lattice frames; actual costs may vary with location and suppliers).
+- **Materials**: Polycarbonate structural panels ~121,000 € (289 panels), minimal frames ~50,000 €, foundation ~71,000 €, total ~242,000 €.
+- **Labor**: Fabrication and installation ~80,000 €.
+- **Total**: ~322,000 € (estimate for structural polycarbonate dome; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
 - **Sustainability**: ETFE recyclable, long lifespan (25+ years), reduces need for replacements.

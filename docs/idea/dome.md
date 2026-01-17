@@ -7,7 +7,7 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Shape**: Hemispherical dome.
 - **Dimensions**: Diameter 30 meters, height 15 meters (radius 15 meters). Surface area: 1,414 m². Projected area: 707 m². Volume: 7,069 m³.
 - **Gores**: 24 segments, each comprising tubular frames and ETFE panels, subdivided into 8 panels. Gores are arranged radially from the apex, with frames following geodesic lines for optimal load distribution.
-- [**Panels**](/docs/idea/dome_panels.md): 289 structural polycarbonate panels in 36 gores subdivided into 9 layers, last layer one round cap. Each panel double-sheet with internal/external walls, bent borders for assembly, pressurized to 1 bar.
+- [**Panels**](/docs/idea/dome_panels.md): 289 structural polycarbonate panels in 36 gores subdivided into 9 layers, last layer one round cap. Panels staggered like bricks for improved structural integrity, each double-sheet with internal/external walls, bent borders for assembly, pressurized to 1 bar.
 - [**Frames**](/docs/idea/dome_frames.md): Minimal, as panels are self-structural.
 
 ## Structural Engineering Requirements
@@ -54,9 +54,9 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Timeline**: 6-12 months, depending on site.
 
 ## Cost Estimates
-- **Materials**: Polycarbonate structural panels ~121,000 € (289 panels), minimal frames ~10,000 €, foundation ~71,000 €, total ~202,000 €.
-- **Labor**: Fabrication and installation ~80,000 €.
-- **Total**: ~282,000 € (estimate for structural polycarbonate dome; actual costs may vary with location and suppliers).
+- **Materials**: Polycarbonate structural panels ~135,000 € (289 panels), minimal frames ~10,000 €, foundation ~71,000 €, total ~216,000 €.
+- **Labor**: Fabrication and installation ~90,000 €.
+- **Total**: ~306,000 € (estimate for structural polycarbonate dome with staggered panels; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
 - **Sustainability**: ETFE recyclable, long lifespan (25+ years), reduces need for replacements.

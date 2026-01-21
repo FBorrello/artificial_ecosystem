@@ -1,13 +1,13 @@
 # Transparent Gored Dome for Artificial Ecosystem
 
 ## Overview
-The transparent gored dome serves as the primary enclosure for the habitable artificial ecosystem, providing structural support, insulation, and high light transmission. With a diameter of 30 meters and height of 15 meters, it encloses a hemispherical volume that houses the water reservoir, floating platform, and various subsystems. Constructed from 24 gores with ETFE panels and tubular frames, the dome ensures optimal light for photosynthesis.
+The transparent gored dome serves as the primary enclosure for the habitable artificial ecosystem, providing structural support, insulation, and high light transmission. With a diameter of 30 meters and height of 15 meters, it encloses a hemispherical volume that houses the water reservoir, floating platform, and various subsystems. Constructed from 58 gores with polycarbonate and wooden panels, the dome ensures optimal light for photosynthesis.
 
 ## Design Specifications
 - **Shape**: Hemispherical dome.
 - **Dimensions**: Diameter 30 meters, height 15 meters (radius 15 meters). Surface area: 1,414 m². Projected area: 707 m². Volume: 7,069 m³.
-- **Gores**: 24 segments, each comprising tubular frames and ETFE panels, subdivided into 8 panels. Gores are arranged radially from the apex, with frames following geodesic lines for optimal load distribution.
-- [**Panels**](/docs/idea/dome_panels.md): 289 structural polycarbonate panels in 36 gores subdivided into 9 layers, last layer one round cap. Panels staggered like bricks for improved structural integrity, each double-sheet with internal/external walls, bent borders for assembly, pressurized to 1 bar.
+- **Gores**: 58 segments, subdivided into 9 layers. Last layer is one round cap panel.
+- [**Panels**](/docs/idea/dome_panels.md): 465 panels total: 352 transparent polycarbonate panels and 113 wooden panels in 58 gores for layers 1-8, last layer one wooden round cap. Panels staggered by 1/3 panel width between layers for improved structural integrity, polycarbonate panels double-sheet with internal/external walls, bent borders for assembly, pressurized to 0.5 bar; wooden panels wrapped in 1 mm white PVC UV-stabilized sheets on both surfaces.
 - [**Frames**](/docs/idea/dome_frames.md): Minimal, as panels are self-structural.
 
 ## Structural Engineering Requirements
@@ -34,7 +34,7 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Lifespan**: 10-15 years.
 
 ### Panels
-- Double-sheet polycarbonate with internal/external walls.
+- Double-sheet polycarbonate with internal/external walls, thickness tapering from 16mm at base to 8mm at top.
 - Bent borders: External 10 cm inwards, internal 5 cm outwards.
 - Pressurized to 1 bar for structural integrity.
 
@@ -54,9 +54,9 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Timeline**: 6-12 months, depending on site.
 
 ## Cost Estimates
-- **Materials**: Polycarbonate structural panels ~135,000 € (289 panels), minimal frames ~10,000 €, foundation ~71,000 €, total ~216,000 €.
-- **Labor**: Fabrication and installation ~90,000 €.
-- **Total**: ~306,000 € (estimate for structural polycarbonate dome with staggered panels; actual costs may vary with location and suppliers).
+- **Materials**: Polycarbonate structural panels ~100,000 € (307 panels), minimal frames ~10,000 €, foundation ~71,000 €, total ~181,000 €.
+- **Labor**: Fabrication and installation ~75,000 €.
+- **Total**: ~256,000 € (estimate for structural polycarbonate dome with tapered panels; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
 - **Sustainability**: ETFE recyclable, long lifespan (25+ years), reduces need for replacements.

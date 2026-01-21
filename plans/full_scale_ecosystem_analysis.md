@@ -6,8 +6,8 @@ This document provides a comprehensive analysis of the full-scale habitable arti
 
 **Key Findings:**
 - **Total documented costs are significantly underestimated** - Missing major components
-- **Multiple calculation errors** in dome panel specifications and costs
-- **Inconsistencies** between documents regarding specifications
+- **Cost table inconsistencies** in dome panel calculations
+- **Inconsistencies** between documents regarding material costs
 - **Missing cost categories** for critical systems
 - **Technical feasibility concerns** with several subsystems
 
@@ -39,16 +39,12 @@ This document provides a comprehensive analysis of the full-scale habitable arti
 - 58 gores → Panel width = 94.25 / 58 = **1.625 m** ✅ Matches stated 1.625 m
 
 **Layer Height Check:**
-- 8 layers covering 15 m height
-- Arc length per layer = (π × 15) / 8 = **5.89 m** (arc)
-- Stated height: 2.618 m per panel
+- Hemisphere radius r = 15 m
+- Total arc length from base to apex = πr/2 = π × 15 / 2 = **23.56 m**
+- 9 layers (layers 1-8 + apex layer 9)
+- Arc length per layer = 23.56 / 9 = **2.618 m** ✅ Matches stated 2.618 m
 
-**⚠️ INCONSISTENCY FOUND:**
-The stated panel height of 2.618 m × 8 layers = 20.94 m, but the dome height is only 15 m. The arc length from base to apex is π × r / 2 = 23.56 m, divided by 8 layers = **2.945 m per layer**, not 2.618 m.
-
-**Possible explanation:** The 2.618 m might be the straight-line height, not the arc length. Verification:
-- If 8 layers × 2.618 m = 20.94 m straight height, this exceeds the 15 m dome height
-- **This is a significant error** - panel dimensions need recalculation
+**✅ VERIFIED:** The panel height refers to arc length along the curved surface, not straight-line vertical distance. This is correct for a hemispherical dome.
 
 ### 1.3 Panel Cost Analysis
 
@@ -335,7 +331,6 @@ The dome cost estimate is missing:
 | Document | Issue | Severity |
 |----------|-------|----------|
 | dome_panels.md | Summary table doesn't match detailed breakdowns | HIGH |
-| dome_panels.md | Panel height × 8 layers exceeds dome height | HIGH |
 | dome.md vs dome_panels.md | Material cost discrepancy (87,000 vs 86,567) | MEDIUM |
 | dome.md | References ETFE but uses polycarbonate | LOW |
 | dome.md | Self-weight stated as 100 kg/m² seems high for PC | MEDIUM |
@@ -348,7 +343,7 @@ The dome cost estimate is missing:
 
 The Habitable Artificial Ecosystem is an ambitious and innovative project with significant potential. However, the current documentation contains:
 
-1. **Numerical errors** totaling approximately 3,500 € in panel costs alone
+1. **Cost calculation errors** totaling approximately 3,500 € in panel costs alone
 2. **Missing cost categories** totaling 580,000 - 1,260,000 €
 3. **Underestimated components** by 650,000 - 1,600,000 €
 4. **High technical risks** in several novel systems

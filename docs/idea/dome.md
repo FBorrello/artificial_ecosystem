@@ -28,15 +28,15 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 ### Polycarbonate Properties
 - **Transparency**: 85-90% light transmission, UV resistant with coating.
 - **Tensile Strength**: 60-70 MPa.
-- **Thickness**: 5-10 mm per sheet.
+- **Thickness**: 4 mm per sheet.
 - **Density**: 1.2 g/cm³.
 - **Chemical Resistance**: Resistant to impact, weathering.
 - **Lifespan**: 10-15 years.
 
 ### Panels
-- Double-sheet polycarbonate with internal/external walls, thickness tapering from 16mm at base to 8mm at top.
+- Double-sheet polycarbonate with internal/external walls.
 - Bent borders: External 10 cm inwards, internal 5 cm outwards.
-- Pressurized to 1 bar for structural integrity.
+- Pressurized to 0.5 bar for structural integrity.
 
 ## Integration with Ecosystem Systems
 - **Energy Systems**: Insulates, allows solar gain.
@@ -44,7 +44,7 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 
 ## Safety Considerations and Redundancy
 - **Structural**: Redundant frames, earthquake-resistant design.
-- **Pressure**: Relief valves at 6 bar, overpressure protection.
+- **Pressure**: Relief valves at 1 bar, overpressure protection.
 - **Emergency**: Manual depressurization, evacuation routes.
 - **Redundancy**: Backup air storage, multiple compressors.
 
@@ -59,13 +59,12 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Total**: ~268,000 € (estimate for structural polycarbonate and wooden dome; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
-- **Sustainability**: ETFE recyclable, long lifespan (25+ years), reduces need for replacements.
-- **Impact**: High transparency minimizes artificial lighting, cushioned design improves insulation (lower U-value), reducing energy for heating/cooling.
-- **Carbon Footprint**: Estimate 60 tons CO2 equivalent (higher due to cushion manufacturing, but offset by energy savings).
+- **Sustainability**: policarbonate recyclable, long lifespan (15+ years), reduces need for replacements.
+- **Impact**: High transparency minimizes artificial lighting, double panel design improves insulation (lower U-value), reducing energy for heating/cooling.
 
 ## Maintenance and Monitoring
 - **Inspection**: Annual pressure checks, frame integrity.
-- **Repairs**: Replace panels if punctured.
+- **Repairs**: Replace panels if damaged.
 - **Monitoring**: AI system monitors pressure, alerts for anomalies.
 
 ## Future Development
@@ -74,4 +73,3 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 
 ## References
 - Prototype requirements document.
-- ETFE manufacturer datasheets (e.g., Asahi Glass).

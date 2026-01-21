@@ -54,9 +54,9 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Timeline**: 6-12 months, depending on site.
 
 ## Cost Estimates
-- **Materials**: Polycarbonate and wooden panels ~122,000 € (465 panels), minimal frames ~10,000 €, foundation ~71,000 €, total ~203,000 €.
+- **Materials**: Polycarbonate and wooden panels ~87,000 € (465 panels materials), minimal frames ~10,000 €, foundation ~71,000 €, total ~168,000 €.
 - **Labor**: Fabrication and installation ~100,000 €.
-- **Total**: ~303,000 € (estimate for structural polycarbonate and wooden dome; actual costs may vary with location and suppliers).
+- **Total**: ~268,000 € (estimate for structural polycarbonate and wooden dome; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
 - **Sustainability**: ETFE recyclable, long lifespan (25+ years), reduces need for replacements.

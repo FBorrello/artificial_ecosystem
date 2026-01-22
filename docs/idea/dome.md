@@ -1,13 +1,13 @@
 # Transparent Gored Dome for Artificial Ecosystem
 
 ## Overview
-The transparent gored dome serves as the primary enclosure for the habitable artificial ecosystem, providing structural support, insulation, and high light transmission. With a diameter of 30 meters and height of 15 meters, it encloses a hemispherical volume that houses the water reservoir, floating platform, and various subsystems. Constructed from 58 gores with polycarbonate and wooden panels, the dome ensures optimal light for photosynthesis.
+The transparent gored dome serves as the primary enclosure for the habitable artificial ecosystem, providing structural support, insulation, and high light transmission. With a diameter of 30 meters and height of 15 meters, it encloses a hemispherical volume that houses the water reservoir, floating platform, and various subsystems. Constructed from varying gores (59 to 20) with polycarbonate and wooden panels, the dome ensures optimal light for photosynthesis.
 
 ## Design Specifications
 - **Shape**: Hemispherical dome.
 - **Dimensions**: Diameter 30 meters, height 15 meters (radius 15 meters). Surface area: 1,414 m². Projected area: 707 m². Volume: 7,069 m³.
-- **Gores**: 58 segments, subdivided into 9 layers. Last layer is one round cap panel.
-- [**Panels**](/docs/idea/dome_panels.md): 465 panels total: 352 transparent polycarbonate panels and 113 wooden panels in 58 gores for layers 1-8, last layer one wooden round cap. Panels staggered by 1/3 panel width between layers for improved structural integrity, polycarbonate panels double-sheet with internal/external walls, bent borders for assembly, pressurized to 0.5 bar; wooden panels wrapped in 1 mm white PVC UV-stabilized sheets on both surfaces.
+- **Gores**: 355 segments in layers 1-8 (varying per layer: 59,58,55,51,45,38,29,20), subdivided into 9 layers. Last layer is one round cap panel.
+- [**Panels**](/docs/idea/dome_panels.md): 356 panels total: 253 transparent polycarbonate panels and 102 wooden panels in varying gores for layers 1-8, last layer one wooden round cap. Panels staggered between layers for improved structural integrity, polycarbonate panels double-sheet with internal/external walls, bent borders for assembly, pressurized to 0.5 bar; wooden panels wrapped in 1 mm white PVC UV-stabilized sheets on both surfaces.
 - [**Frames**](/docs/idea/dome_frames.md): Minimal, as panels are self-structural.
 
 ## Structural Engineering Requirements
@@ -54,9 +54,9 @@ The transparent gored dome serves as the primary enclosure for the habitable art
 - **Timeline**: 6-12 months, depending on site.
 
 ## Cost Estimates
-- **Materials**: Polycarbonate and wooden panels ~87,000 € (465 panels materials), minimal frames ~10,000 €, foundation ~71,000 €, total ~168,000 €.
+- **Materials**: Polycarbonate and wooden panels ~70,000 € (356 panels materials), minimal frames ~10,000 €, foundation ~71,000 €, total ~151,000 €.
 - **Labor**: Fabrication and installation ~100,000 €.
-- **Total**: ~268,000 € (estimate for structural polycarbonate and wooden dome; actual costs may vary with location and suppliers).
+- **Total**: ~251,000 € (estimate for structural polycarbonate and wooden dome; actual costs may vary with location and suppliers).
 
 ## Environmental Impact and Sustainability
 - **Sustainability**: policarbonate recyclable, long lifespan (15+ years), reduces need for replacements.

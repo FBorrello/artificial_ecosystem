@@ -1,6 +1,6 @@
 # Dome Panels Detailed Specifications
 
-This document provides detailed specifications for the 465 panels in the dome: 352 transparent polycarbonate panels and 113 wooden panels. 58 gores for layers 1-8, last layer one wooden round cap panel. Panels are staggered by 1/3 panel width between layers for enhanced structural integrity.
+This document provides detailed specifications for the 356 panels in the dome: 253 transparent polycarbonate panels and 102 wooden panels. Varying number of gores for layers 1-8 (59,58,55,51,45,38,29,20), last layer one wooden round cap panel. Panels are staggered between layers for enhanced structural integrity.
 
 ## Polycarbonate Panels Specifications
 - **Parts**: Two polycarbonate sheets (internal and external walls), bent borders, bolts, silicon seals.
@@ -15,106 +15,106 @@ This document provides detailed specifications for the 465 panels in the dome: 3
 - **Specifications**: Non-transparent, UV-stabilized, durable, spherical shape.
 
 ## Panel Assembly Process
-1. Thermoform polycarbonate sheets to curved trapezoid shapes, accounting for staggering by 1/3 panel width.
+1. Thermoform polycarbonate sheets to curved trapezoid shapes.
 2. Bend borders: external inwards 10 cm, internal outwards 5 cm.
 3. Assemble internal into external wall.
-4. Connect adjacent panels with bolts and silicon seals, ensuring staggering by 1/3 panel width between layers.
+4. Connect adjacent panels with bolts and silicon seals, ensuring staggering of each layers.
 5. Pressurize interconnected chambers to 0.5 bar.
 
 For wooden panels: Shape wooden core to trapezoid, wrap with PVC sheets on both surfaces, secure edges.
 
-## Panel layer 1 (Base Layer, 58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.625 m, top width 1.601 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 1 (Base Layer, 59 gores: 45 polycarbonate, 14 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.576 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 2 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.601 m, top width 1.529 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 2 (58 gores: 43 polycarbonate, 15 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.528 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 3 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.529 m, top width 1.421 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 3 (55 gores: 40 polycarbonate, 15 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.487 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 4 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.421 m, top width 1.279 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 4 (51 gores: 36 polycarbonate, 15 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.44 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 5 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.279 m, top width 1.104 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 5 (45 gores: 31 polycarbonate, 14 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.382 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 6 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 1.104 m, top width 0.903 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 6 (38 gores: 26 polycarbonate, 12 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.308 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 7 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 0.903 m, top width 0.683 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 7 (29 gores: 19 polycarbonate, 10 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.211 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
-## Panel layer 8 (58 gores: 44 polycarbonate, 14 wooden)
-- **Dimensions**: Curved trapezoid, bottom width 0.683 m, top width 0.445 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
+## Panel layer 8 (20 gores: 13 polycarbonate, 7 wooden)
+- **Dimensions**: Curved trapezoid, bottom width 1.6 m, top width 1.042 m, height 2.618 m, polycarbonate: external wall 4 mm, internal wall 4 mm; wooden: wrapped in PVC.
 
 ## Panel layer 9 (Apex Layer, no gores, wooden)
 - **Dimensions**: Round panel, diameter 4.82 m, wooden wrapped in PVC.
 
 ## Material Requirements and Costs per Layer
 
-**Layer 1 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 (2 per panel) @ 100 € = 8,800 €
+**Layer 1 (45 PC, 14 Wood):**
+- Polycarbonate sheets: 90 (2 per panel) @ 100 € = 9,000 €
 - Plywood: 14 @ 25 € = 350 €
 - Wood profiles: 182 m (13 m per panel) @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 40 € = 560 €
+- Polystyrene: 14 @ 39 € = 546 €
 - PVC: 14 @ 20 € = 280 €
-- Total materials: 11,446 €
+- Total materials: 11,632 €
 
-**Layer 2 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
+**Layer 2 (43 PC, 15 Wood):**
+- Polycarbonate sheets: 86 @ 100 € = 8,600 €
+- Plywood: 15 @ 25 € = 375 €
+- Wood profiles: 195 m @ 8 €/m = 1,560 €
+- Polystyrene: 15 @ 38 € = 570 €
+- PVC: 15 @ 19 € = 285 €
+- Total materials: 11,390 €
+
+**Layer 3 (40 PC, 15 Wood):**
+- Polycarbonate sheets: 80 @ 100 € = 8,000 €
+- Plywood: 15 @ 25 € = 375 €
+- Wood profiles: 195 m @ 8 €/m = 1,560 €
+- Polystyrene: 15 @ 36 € = 540 €
+- PVC: 15 @ 18 € = 270 €
+- Total materials: 10,745 €
+
+**Layer 4 (36 PC, 15 Wood):**
+- Polycarbonate sheets: 72 @ 100 € = 7,200 €
+- Plywood: 15 @ 25 € = 375 €
+- Wood profiles: 195 m @ 8 €/m = 1,560 €
+- Polystyrene: 15 @ 35 € = 525 €
+- PVC: 15 @ 17 € = 255 €
+- Total materials: 9,915 €
+
+**Layer 5 (31 PC, 14 Wood):**
+- Polycarbonate sheets: 62 @ 100 € = 6,200 €
 - Plywood: 14 @ 25 € = 350 €
 - Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 38 € = 532 €
-- PVC: 14 @ 19 € = 266 €
-- Total materials: 11,404 €
+- Polystyrene: 14 @ 35 € = 490 €
+- PVC: 14 @ 18 € = 252 €
+- Total materials: 8,748 €
 
-**Layer 3 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 34 € = 476 €
-- PVC: 14 @ 17 € = 238 €
-- Total materials: 11,320 €
+**Layer 6 (26 PC, 12 Wood):**
+- Polycarbonate sheets: 52 @ 100 € = 5,200 €
+- Plywood: 12 @ 25 € = 300 €
+- Wood profiles: 156 m @ 8 €/m = 1,248 €
+- Polystyrene: 12 @ 35 € = 420 €
+- PVC: 12 @ 17 € = 204 €
+- Total materials: 7,372 €
 
-**Layer 4 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 31 € = 434 €
-- PVC: 14 @ 15 € = 210 €
-- Total materials: 11,250 €
+**Layer 7 (19 PC, 10 Wood):**
+- Polycarbonate sheets: 38 @ 100 € = 3,800 €
+- Plywood: 10 @ 25 € = 250 €
+- Wood profiles: 130 m @ 8 €/m = 1,040 €
+- Polystyrene: 10 @ 35 € = 350 €
+- PVC: 10 @ 18 € = 180 €
+- Total materials: 5,620 €
 
-**Layer 5 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 28 € = 392 €
-- PVC: 14 @ 14 € = 196 €
-- Total materials: 11,194 €
-
-**Layer 6 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 24 € = 336 €
-- PVC: 14 @ 12 € = 168 €
-- Total materials: 11,110 €
-
-**Layer 7 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 20 € = 280 €
-- PVC: 14 @ 10 € = 140 €
-- Total materials: 11,026 €
-
-**Layer 8 (44 PC, 14 Wood):**
-- Polycarbonate sheets: 88 @ 100 € = 8,800 €
-- Plywood: 14 @ 25 € = 350 €
-- Wood profiles: 182 m @ 8 €/m = 1,456 €
-- Polystyrene: 14 @ 16 € = 224 €
-- PVC: 14 @ 8 € = 112 €
-- Total materials: 10,942 €
+**Layer 8 (13 PC, 7 Wood):**
+- Polycarbonate sheets: 26 @ 100 € = 2,600 €
+- Plywood: 7 @ 25 € = 175 €
+- Wood profiles: 91 m @ 8 €/m = 728 €
+- Polystyrene: 7 @ 37 € = 259 €
+- PVC: 7 @ 19 € = 133 €
+- Total materials: 3,895 €
 
 **Layer 9 (1 Wood):**
 - Plywood: 3 @ 25 € = 75 €
@@ -125,13 +125,13 @@ For wooden panels: Shape wooden core to trapezoid, wrap with PVC sheets on both 
 
 | Layer | Polycarbonate Cost (€) | Wooden Cost (€) | Total (€) |
 |-------|-------------------------|-----------------|-----------|
-| 1 (44 PC, 14 Wood) | 8,800 | 2,646 | 11,446 |
-| 2 (44 PC, 14 Wood) | 8,800 | 2,534 | 11,334 |
-| 3 (44 PC, 14 Wood) | 8,800 | 2,268 | 11,068 |
-| 4 (44 PC, 14 Wood) | 8,800 | 2,002 | 10,802 |
-| 5 (44 PC, 14 Wood) | 8,800 | 1,736 | 10,536 |
-| 6 (44 PC, 14 Wood) | 8,800 | 1,470 | 10,270 |
-| 7 (44 PC, 14 Wood) | 8,800 | 1,204 | 10,004 |
-| 8 (44 PC, 14 Wood) | 8,800 | 938 | 9,738 |
+| 1 (45 PC, 14 Wood) | 9,000 | 2,632 | 11,632 |
+| 2 (43 PC, 15 Wood) | 8,600 | 2,790 | 11,390 |
+| 3 (40 PC, 15 Wood) | 8,000 | 2,745 | 10,745 |
+| 4 (36 PC, 15 Wood) | 7,200 | 2,715 | 9,915 |
+| 5 (31 PC, 14 Wood) | 6,200 | 2,548 | 8,748 |
+| 6 (26 PC, 12 Wood) | 5,200 | 2,172 | 7,372 |
+| 7 (19 PC, 10 Wood) | 3,800 | 1,820 | 5,620 |
+| 8 (13 PC, 7 Wood) | 2,600 | 1,295 | 3,895 |
 | 9 (1 Wood) | 0 | 369 | 369 |
-| **Grand Total** | **70,400** | **16,167** | **86,567** |
+| **Grand Total** | **50,600** | **19,086** | **69,686** |

@@ -45,7 +45,7 @@ The system is made of the following primary components, all integrated and desig
 ## Component Details
 
 ### Transparent Gored Dome
-The dome shall have a diameter of 30 meters and a height of 15 meters. It shall be made of 58 gores with polycarbonate and wooden panels. The polycarbonate panels provide transparency for light transmission, while wooden panels in the northern quarter offer insulation and UV protection. Panels are self-structural with minimal framing.
+The dome shall have a diameter of 30 meters and a height of 15 meters. It shall be made of varying gores (59 to 20) with polycarbonate and wooden panels. The polycarbonate panels provide transparency for light transmission, while wooden panels in the northern quarter offer insulation and UV protection. Panels are self-structural with minimal framing.
 
 ### Main Water Reservoir
 Enclosed under the gored transparent dome shall be the main water reservoir, with a diameter of 20 meters and a depth of 5 meters. It shall contain water and host aquatic creatures like non-carnivorous fish, shrimp, and beneficial bacteria. Integrated into the reinforced concrete walls of the reservoir shall be 6 compressed air cylinders, each with a diameter of 2.5 meters and depth of 5 meters, filled with compressed air at 10+ bar for storage.
